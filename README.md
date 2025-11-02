@@ -205,19 +205,28 @@ Authorization: Bearer {google-id-token}
 
 ## Security Considerations
 
+### ⚠️ IMPORTANT: Demo Mode vs Production Mode
+
+This project runs in **DEMO MODE** by default for ease of testing. This mode has security limitations.
+
+**See [SECURITY.md](SECURITY.md) for detailed security information and production deployment guide.**
+
 ### Current Implementation (Demo)
 - JWT tokens are decoded without verification for demo purposes
 - In-memory session storage (non-persistent)
 - CORS enabled for all origins
+- Default secret key if not configured
 
 ### Production Recommendations
-1. **Token Verification**: Use `google.oauth2.id_token.verify_oauth2_token()` for proper token verification
-2. **Database**: Replace in-memory storage with a proper database (PostgreSQL, MongoDB, etc.)
-3. **CORS**: Restrict CORS to specific trusted origins
-4. **HTTPS**: Always use HTTPS in production
-5. **Session Management**: Implement secure session handling with expiration
-6. **Rate Limiting**: Add rate limiting to prevent abuse
-7. **Secret Management**: Use environment variables or secret management service for sensitive data
+1. **Enable Production Mode**: Set `PRODUCTION_MODE=true`
+2. **Configure Secret Key**: Set `SECRET_KEY` environment variable
+3. **Set Google Client ID**: Set `GOOGLE_CLIENT_ID` environment variable
+4. **Use Database**: Replace in-memory storage with PostgreSQL/MongoDB
+5. **Restrict CORS**: Configure allowed origins
+6. **Use HTTPS**: Enable TLS for all connections
+7. **Add Rate Limiting**: Prevent abuse
+
+**Full production security checklist available in [SECURITY.md](SECURITY.md)**
 
 ## Environment Variables
 

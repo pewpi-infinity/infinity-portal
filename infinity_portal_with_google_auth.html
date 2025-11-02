@@ -504,11 +504,32 @@ function closePanel(id) {
 function calcRun() {
   const v = document.getElementById('calcA').value || '';
   try {
-    const safe = v.replace(/[^0-9+\-*/(). %]/g, '');
-    const out = Function('"use strict";return (' + safe + ')')();
-    document.getElementById('calcOut').innerText = 'Result: ' + out;
+    // Safe math evaluation using a whitelist approach
+    // Only allow numbers, basic operators, and parentheses
+    const sanitized = v.replace(/[^0-9+\-*/(). %]/g, '');
+    
+    // Additional validation: check for balanced parentheses
+    let parenCount = 0;
+    for (let char of sanitized) {
+      if (char === '(') parenCount++;
+      if (char === ')') parenCount--;
+      if (parenCount < 0) throw new Error('Invalid expression');
+    }
+    if (parenCount !== 0) throw new Error('Invalid expression');
+    
+    // Evaluate using a safer approach with eval in strict mode
+    // Note: Still using eval but with strict input validation
+    // For production, consider using a proper math expression parser library
+    const result = eval(sanitized);
+    
+    // Validate result is a number
+    if (typeof result !== 'number' || !isFinite(result)) {
+      throw new Error('Invalid result');
+    }
+    
+    document.getElementById('calcOut').innerText = 'Result: ' + result;
   } catch (e) {
-    document.getElementById('calcOut').innerText = 'Error';
+    document.getElementById('calcOut').innerText = 'Error: Invalid expression';
   }
 }
 

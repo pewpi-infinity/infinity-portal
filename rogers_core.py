@@ -1,6 +1,12 @@
 """
 Rogers Core - Infinity Portal Authentication Hub
 Handles Google Auth and distributes authentication to all realms
+
+SECURITY NOTES:
+- For production, implement proper Google token verification using google.auth
+- Use environment variables for sensitive configuration
+- Replace in-memory storage with a proper database
+- Implement rate limiting and request validation
 """
 
 from flask import Flask, request, jsonify, session
@@ -12,9 +18,21 @@ import json
 import time
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+import warnings
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', os.urandom(24).hex())
+
+# Use environment variable for secret key, warn if not set
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    warnings.warn(
+        "SECRET_KEY environment variable not set. Using a default key. "
+        "This is insecure for production! Set SECRET_KEY environment variable.",
+        RuntimeWarning
+    )
+    SECRET_KEY = 'dev-secret-key-change-in-production'
+
+app.secret_key = SECRET_KEY
 CORS(app, supports_credentials=True)
 
 # In-memory storage for demo (use database in production)
@@ -30,27 +48,81 @@ REALM_DATA = {
 def verify_google_token(token):
     """
     Verify Google OAuth token
-    In production, use google.oauth2.id_token.verify_oauth2_token
-    For demo, we'll decode the JWT payload without verification
-    """
+    
+    SECURITY WARNING: This is a DEMO implementation that does NOT verify token signatures.
+    
+    For PRODUCTION use, implement proper verification:
+    
+    from google.oauth2 import id_token
+    from google.auth.transport import requests
+    
     try:
-        import base64
-        parts = token.split('.')
-        if len(parts) != 3:
-            return None
+        idinfo = id_token.verify_oauth2_token(
+            token, 
+            requests.Request(), 
+            os.getenv('GOOGLE_CLIENT_ID')
+        )
         
-        payload = parts[1]
-        # Add padding if needed
-        padding = len(payload) % 4
-        if padding:
-            payload += '=' * (4 - padding)
-        
-        decoded = base64.urlsafe_b64decode(payload)
-        user_data = json.loads(decoded)
-        return user_data
-    except Exception as e:
-        print(f"Token verification error: {e}")
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+            
+        return idinfo
+    except ValueError:
         return None
+    
+    CURRENT BEHAVIOR: Decodes JWT without signature verification (INSECURE for production)
+    """
+    # Check if we should use production verification
+    if os.getenv('PRODUCTION_MODE', '').lower() == 'true':
+        # In production mode, we require proper verification
+        try:
+            from google.oauth2 import id_token
+            from google.auth.transport import requests as google_requests
+            
+            client_id = os.getenv('GOOGLE_CLIENT_ID')
+            if not client_id:
+                print("ERROR: GOOGLE_CLIENT_ID not set in production mode")
+                return None
+            
+            idinfo = id_token.verify_oauth2_token(
+                token, 
+                google_requests.Request(), 
+                client_id
+            )
+            
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                print("ERROR: Invalid token issuer")
+                return None
+                
+            return idinfo
+        except Exception as e:
+            print(f"Production token verification error: {e}")
+            return None
+    else:
+        # DEMO MODE: Decode without verification (INSECURE)
+        warnings.warn(
+            "Running in DEMO mode with insecure token verification. "
+            "Set PRODUCTION_MODE=true and GOOGLE_CLIENT_ID for secure operation.",
+            RuntimeWarning
+        )
+        try:
+            import base64
+            parts = token.split('.')
+            if len(parts) != 3:
+                return None
+            
+            payload = parts[1]
+            # Add padding if needed
+            padding = len(payload) % 4
+            if padding:
+                payload += '=' * (4 - padding)
+            
+            decoded = base64.urlsafe_b64decode(payload)
+            user_data = json.loads(decoded)
+            return user_data
+        except Exception as e:
+            print(f"Token verification error: {e}")
+            return None
 
 
 def require_auth(f):

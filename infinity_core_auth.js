@@ -62,6 +62,15 @@ class InfinityCoreAuth {
 
   /**
    * Decode JWT token (simple base64 decode, no verification)
+   * 
+   * SECURITY WARNING: This method does NOT verify the JWT signature.
+   * This is acceptable for demo purposes only because:
+   * 1. The backend (Rogers Core) performs proper verification
+   * 2. Client-side decoding is only used for UI display
+   * 3. No authorization decisions are made client-side
+   * 
+   * The token is always sent to the backend for verification before
+   * any protected operations are performed.
    */
   decodeJWT(token) {
     try {
