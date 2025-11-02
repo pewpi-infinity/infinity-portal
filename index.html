@@ -364,12 +364,6 @@
       add('user', q);
       input.value = '';
       
-      // Remove "Thinking..." message if it exists
-      const thinkingMsg = msgBox.querySelector('.ai:last-child');
-      if (thinkingMsg && thinkingMsg.textContent.includes('Thinking...')) {
-        msgBox.removeChild(thinkingMsg);
-      }
-      
       // Minimal Rogers brain - placeholder for future backend integration
       const responses = [
         "I'm here to help! This is a demo response from Rogers.",
@@ -425,14 +419,7 @@
     // Open app in stage
     function openApp(title, path) {
       stageTitle.textContent = title;
-      
-      // Check if PDF
-      if (path.toLowerCase().endsWith('.pdf')) {
-        stageFrame.src = path;
-      } else {
-        stageFrame.src = path;
-      }
-      
+      stageFrame.src = path;
       stage.classList.add('active');
     }
     
