@@ -62,6 +62,11 @@ def trigger_analysis(path, meta):
         result = {"service": "GPT", "status": "mock success"}
     return {"orchestrationId": orchestration_id, "result": result}
 
+@app.route("/")
+def index():
+    from flask import send_file
+    return send_file('index.html')
+
 @app.route("/api/register", methods=["POST"])
 def register():
     try:
