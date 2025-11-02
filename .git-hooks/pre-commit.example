@@ -1,0 +1,59 @@
+#!/bin/bash
+# Pre-commit hook to check for potential API key leaks
+# 
+# To install this hook:
+# 1. Copy this file: cp .git-hooks/pre-commit.example .git/hooks/pre-commit
+# 2. Make it executable: chmod +x .git/hooks/pre-commit
+#
+# This hook checks for common patterns that might indicate exposed secrets
+
+echo "🔍 Checking for potential API key leaks..."
+
+# Patterns to check for
+patterns=(
+    "sk-[a-zA-Z0-9_-]{20,}"           # OpenAI keys
+    "sk-svcacct-[a-zA-Z0-9_-]{20,}"   # OpenAI service account keys
+    "AIza[0-9A-Za-z_-]{35}"           # Google API keys
+    "AKIA[0-9A-Z]{16}"                # AWS Access Key IDs
+    "[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com"  # Google OAuth
+)
+
+found_issue=0
+
+for pattern in "${patterns[@]}"; do
+    # Check staged files for patterns
+    if git diff --cached --diff-filter=ACMRTUXB | grep -E "$pattern" > /dev/null; then
+        echo "❌ ERROR: Potential API key pattern detected: $pattern"
+        echo "   Please review your changes and remove any hardcoded secrets."
+        found_issue=1
+    fi
+done
+
+# Check for common filenames that shouldn't be committed
+sensitive_files=(
+    "*.key"
+    "*.pem"
+    ".env"
+    "secret*.json"
+)
+
+for file_pattern in "${sensitive_files[@]}"; do
+    if git diff --cached --name-only | grep -E "$file_pattern" > /dev/null; then
+        echo "⚠️  WARNING: Attempting to commit sensitive file: $file_pattern"
+        echo "   Make sure this file doesn't contain real secrets."
+        echo "   Add it to .gitignore if it's not meant to be committed."
+    fi
+done
+
+if [ $found_issue -eq 1 ]; then
+    echo ""
+    echo "❌ Commit blocked due to potential security issues."
+    echo "   If this is a false positive, you can bypass with: git commit --no-verify"
+    echo "   But please be absolutely sure no secrets are being committed!"
+    echo ""
+    echo "   See SECURITY.md for best practices."
+    exit 1
+fi
+
+echo "✅ No obvious API key leaks detected."
+exit 0

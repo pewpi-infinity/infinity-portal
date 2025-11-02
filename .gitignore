@@ -8,6 +8,7 @@ config/apikey*.json
 secret_*.json
 .env
 .env.*
+!.env.example
 secrets.json
 config/secrets.json
 **/openai_key*.json
