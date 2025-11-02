@@ -10,7 +10,11 @@ from datetime import timedelta
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+if not app.config['JWT_SECRET_KEY']:
+    import secrets
+    app.config['JWT_SECRET_KEY'] = secrets.token_hex(32)
+    print("WARNING: Using auto-generated JWT secret key. Set JWT_SECRET_KEY environment variable for production.")
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
 db = SQLAlchemy(app)
@@ -79,7 +83,8 @@ def register():
         access_token = create_access_token(identity=username)
         return jsonify({"status": "success", "access_token": access_token, "username": username}), 201
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        app.logger.error(f"Registration error: {str(e)}")
+        return jsonify({"status": "error", "message": "Registration failed. Please try again."}), 500
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -99,7 +104,8 @@ def login():
         access_token = create_access_token(identity=username)
         return jsonify({"status": "success", "access_token": access_token, "username": username}), 200
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        app.logger.error(f"Login error: {str(e)}")
+        return jsonify({"status": "error", "message": "Login failed. Please try again."}), 500
 
 @app.route("/upload", methods=["POST"])
 @jwt_required()
