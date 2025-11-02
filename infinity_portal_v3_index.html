@@ -491,10 +491,36 @@ function calcRun(){
 function calcSciRun(){
   const v = document.getElementById('calcSci').value||'';
   try{
-    // Allow Math functions for scientific calc
-    const safe = v.replace(/[^0-9+\-*/(). %MathsincoqrtpwlogabefEPI]/g,'');
-    const out = Function('"use strict";return (' + safe + ')')();
-    document.getElementById('calcSciOut').innerText = 'Result: '+out;
+    // Whitelist approach: only allow safe Math methods
+    const allowed = {
+      'Math.sqrt': Math.sqrt,
+      'Math.sin': Math.sin,
+      'Math.cos': Math.cos,
+      'Math.tan': Math.tan,
+      'Math.pow': Math.pow,
+      'Math.log': Math.log,
+      'Math.abs': Math.abs,
+      'Math.exp': Math.exp,
+      'Math.floor': Math.floor,
+      'Math.ceil': Math.ceil,
+      'Math.round': Math.round,
+      'Math.PI': Math.PI,
+      'Math.E': Math.E
+    };
+    // Simple validation: check if starts with allowed Math function or is basic arithmetic
+    if(/^[\d+\-*/(). ]+$/.test(v)){
+      // Basic arithmetic only
+      const safe = v.replace(/[^0-9+\-*/(). ]/g,'');
+      const out = Function('"use strict";return (' + safe + ')')();
+      document.getElementById('calcSciOut').innerText = 'Result: '+out;
+    } else if(/^Math\.(sqrt|sin|cos|tan|pow|log|abs|exp|floor|ceil|round)\([\d+\-*/(). ,]+\)$/.test(v) || /^Math\.(PI|E)$/.test(v)){
+      // Math functions with simple numeric arguments
+      const safe = v.replace(/[^0-9+\-*/(). ,MathsqrtincoalpwgbefluEPI]/g,'');
+      const out = Function('"use strict";return (' + safe + ')')();
+      document.getElementById('calcSciOut').innerText = 'Result: '+out;
+    } else {
+      document.getElementById('calcSciOut').innerText = 'Use basic arithmetic or Math.function() format';
+    }
   }catch(e){
     document.getElementById('calcSciOut').innerText = 'Error: Invalid expression';
   }
@@ -519,9 +545,10 @@ function getBibleVerse(){
     {ref: 'Psalm 23:1', text: 'The Lord is my shepherd, I lack nothing.'},
     {ref: 'Proverbs 3:5-6', text: 'Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.'},
     {ref: 'Romans 8:28', text: 'And we know that in all things God works for the good of those who love him, who have been called according to his purpose.'},
-    {ref: 'Isaiah 1:7', text: 'Your country is desolate, your cities are burned with fire: your land, strangers devour it in your presence, and it is desolate, as overthrown by strangers.'},
     {ref: 'Philippians 4:13', text: 'I can do all this through him who gives me strength.'},
-    {ref: 'Jeremiah 29:11', text: 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'}
+    {ref: 'Jeremiah 29:11', text: 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.'},
+    {ref: 'Psalm 46:1', text: 'God is our refuge and strength, an ever-present help in trouble.'},
+    {ref: '1 Corinthians 13:4-5', text: 'Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs.'}
   ];
   const idx = Math.floor((timeCode % verses.length));
   const verse = verses[idx];
@@ -633,10 +660,11 @@ function generateGame(){
   const theme = document.getElementById('gameTheme').value.trim();
   if(!genre || !theme){ document.getElementById('gameOut').innerText='Enter genre and theme'; return; }
   const games = JSON.parse(STORAGE.getItem('INFINITY_GAMES')||'[]');
+  const genreCapitalized = genre.charAt(0).toUpperCase() + genre.slice(1);
   const concept = {
     genre, 
     theme, 
-    title: genre.charAt(0).toUpperCase() + genre.slice(1) + ' of ' + theme,
+    title: genreCapitalized + ' of ' + theme,
     when: Date.now()
   };
   games.push(concept);
