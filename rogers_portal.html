@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rogers Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #0070ba;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    main {
+      flex: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    #messages {
+      flex: 1;
+      border: 1px solid #ccc;
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      overflow-y: auto;
+    }
+    .msg {
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      max-width: 80%;
+    }
+    .user {
+      background: #d0ebff;
+      align-self: flex-end;
+    }
+    .ai {
+      background: #e9ecef;
+      align-self: flex-start;
+    }
+    footer {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: #f0f0f0;
+      border-top: 1px solid #ccc;
+    }
+    input {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+    }
+    button {
+      background: #0070ba;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005f9e;
+    }
+  </style>
+</head>
+<body>
+  <header>🧠 Rogers Portal</header>
+
+  <main>
+    <div id="messages">
+      <div class="msg ai">Hello, I’m Rogers AI. How can I help today?</div>
+    </div>
+  </main>
+
+  <footer>
+    <input type="text" id="userInput" placeholder="Ask Rogers anything...">
+    <button onclick="sendMessage()">Send</button>
+  </footer>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const msgBox = document.getElementById('messages');
+
+      // show user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg user';
+      userMsg.textContent = text;
+      msgBox.appendChild(userMsg);
+      msgBox.scrollTop = msgBox.scrollHeight;
+      input.value = '';
+
+      // talk to local Flask server
+      try {
+        const res = await fetch(`http://127.0.0.1:5000/ask?q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'msg ai';
+        aiMsg.textContent = data.text || '(no reply)';
+        msgBox.appendChild(aiMsg);
+        msgBox.scrollTop = msgBox.scrollHeight;
+      } catch (err) {
+        const errMsg = document.createElement('div');
+        errMsg.className = 'msg ai';
+        errMsg.textContent = '⚠️ Unable to connect to Rogers backend.';
+        msgBox.appendChild(errMsg);
+      }
+    }
+  </script>
+</body>
+  </html>
+  
