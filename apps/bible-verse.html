@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Verse Infinity • Infinity Portal</title>
+  <style>
+    :root {
+      --gold: #d4af37;
+      --dark: #1a1a2e;
+      --blue-1: #003087;
+      --bg: #ffffff;
+      --muted: #657080;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #eee;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, var(--gold), #b8941f);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--dark);
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: var(--dark);
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .verse-display {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      padding: 40px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .verse-text {
+      font-size: 24px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-style: italic;
+      text-align: center;
+    }
+    .verse-reference {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gold);
+      text-align: right;
+      margin-top: 16px;
+    }
+    .timestamp-info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--gold);
+    }
+    .timestamp-label {
+      font-size: 12px;
+      color: var(--gold);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .timestamp-value {
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    button {
+      background: linear-gradient(135deg, var(--gold), #b8941f);
+      color: var(--dark);
+      border: none;
+      padding: 16px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+    button:hover {
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .history {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 24px;
+      border-radius: 12px;
+      border: 2px solid rgba(212, 175, 55, 0.2);
+    }
+    .history-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 3px solid var(--gold);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .history-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .history-time {
+      font-size: 11px;
+      color: var(--gold);
+      font-family: 'Courier New', monospace;
+    }
+    .message-display {
+      background: rgba(212, 175, 55, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 16px;
+      border: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    .message-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .message-text {
+      line-height: 1.6;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✝️ Bible Verse • Infinity Style</h1>
+      <p class="subtitle">Divine Messages Through Time • Powered by Infinity</p>
+    </header>
+
+    <div class="verse-display">
+      <div class="verse-text" id="verseText">Click "Get Verse" to receive God's message for this moment...</div>
+      <div class="verse-reference" id="verseRef"></div>
+    </div>
+
+    <div class="timestamp-info">
+      <div class="timestamp-label">Current Infinity Timestamp</div>
+      <div class="timestamp-value" id="timestamp">Loading...</div>
+      <div class="message-display" id="messageDisplay" style="display: none;">
+        <div class="message-title">🕊️ Divine Message Analysis</div>
+        <div class="message-text" id="messageText"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="getVerse()">📖 Get Verse for Now</button>
+      <button onclick="getRandomVerse()">🎲 Random Verse</button>
+      <button onclick="searchVerse()">🔍 Search Topic</button>
+      <button onclick="toggleHistory()">📜 View History</button>
+    </div>
+
+    <div class="history" id="historySection" style="display: none;">
+      <h3 style="color: var(--gold); margin-bottom: 16px;">Recent Verses</h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
+  <script>
+    // Sample Bible verses (in production, this would be a comprehensive database)
+    const verses = [
+      { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16", topic: "love" },
+      { text: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13", topic: "strength" },
+      { text: "The LORD is my shepherd; I shall not want.", ref: "Psalm 23:1", topic: "guidance" },
+      { text: "Trust in the LORD with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5", topic: "trust" },
+      { text: "Be still, and know that I am God.", ref: "Psalm 46:10", topic: "peace" },
+      { text: "And we know that in all things God works for the good of those who love him.", ref: "Romans 8:28", topic: "hope" },
+      { text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", ref: "Philippians 4:6", topic: "peace" },
+      { text: "Your land is desolate; your cities are burned with fire. Your fields are being stripped by foreigners right before you, laid waste as when overthrown by strangers.", ref: "Isaiah 1:7", topic: "warning" },
+      { text: "The fear of the LORD is the beginning of wisdom, and knowledge of the Holy One is understanding.", ref: "Proverbs 9:10", topic: "wisdom" },
+      { text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud.", ref: "1 Corinthians 13:4", topic: "love" },
+      { text: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28", topic: "rest" },
+      { text: "But those who hope in the LORD will renew their strength. They will soar on wings like eagles.", ref: "Isaiah 40:31", topic: "strength" }
+    ];
+
+    let history = JSON.parse(localStorage.getItem('infinityBibleHistory') || '[]');
+
+    function updateTimestamp() {
+      const now = new Date();
+      const timestamp = now.getTime();
+      const formatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+      document.getElementById('timestamp').textContent = formatted;
+      return timestamp;
+    }
+
+    function getVerse() {
+      const timestamp = updateTimestamp();
+      const index = timestamp % verses.length;
+      const verse = verses[index];
+      
+      displayVerse(verse, timestamp);
+      analyzeMessage(verse, timestamp);
+    }
+
+    function getRandomVerse() {
+      const timestamp = updateTimestamp();
+      const verse = verses[Math.floor(Math.random() * verses.length)];
+      displayVerse(verse, timestamp);
+      analyzeMessage(verse, timestamp);
+    }
+
+    function searchVerse() {
+      const topic = prompt('Enter a topic (love, strength, peace, hope, wisdom, trust, guidance, warning, rest):');
+      if (!topic) return;
+      
+      const filtered = verses.filter(v => v.topic.toLowerCase().includes(topic.toLowerCase()));
+      if (filtered.length === 0) {
+        alert('No verses found for that topic. Try: love, strength, peace, hope, wisdom');
+        return;
+      }
+      
+      const verse = filtered[Math.floor(Math.random() * filtered.length)];
+      const timestamp = updateTimestamp();
+      displayVerse(verse, timestamp);
+      analyzeMessage(verse, timestamp);
+    }
+
+    function displayVerse(verse, timestamp) {
+      document.getElementById('verseText').textContent = `"${verse.text}"`;
+      document.getElementById('verseRef').textContent = `— ${verse.ref}`;
+      
+      // Add to history
+      history.unshift({
+        ...verse,
+        timestamp: new Date(timestamp).toLocaleString(),
+        timestampValue: timestamp
+      });
+      if (history.length > 20) history = history.slice(0, 20);
+      localStorage.setItem('infinityBibleHistory', JSON.stringify(history));
+    }
+
+    function analyzeMessage(verse, timestamp) {
+      const hour = new Date(timestamp).getHours();
+      const messageDisplay = document.getElementById('messageDisplay');
+      const messageText = document.getElementById('messageText');
+      
+      let message = '';
+      
+      // Time-based analysis
+      if (hour >= 5 && hour < 12) {
+        message = 'This morning verse brings a message of renewal and hope for the day ahead. ';
+      } else if (hour >= 12 && hour < 17) {
+        message = 'This afternoon verse provides strength and guidance for your current journey. ';
+      } else if (hour >= 17 && hour < 21) {
+        message = 'This evening verse offers reflection and peace as you contemplate the day. ';
+      } else {
+        message = 'This nighttime verse brings comfort and rest for your soul. ';
+      }
+      
+      // Topic-based analysis
+      const topicMessages = {
+        love: 'The theme of divine love reminds us of God\'s eternal compassion and grace.',
+        strength: 'This message of strength empowers you to face challenges with faith and courage.',
+        peace: 'The promise of peace offers tranquility in times of uncertainty.',
+        hope: 'This hope-filled message encourages perseverance and trust in God\'s plan.',
+        wisdom: 'This wisdom guides your understanding and discernment.',
+        trust: 'This call to trust reminds you to lean on God\'s perfect knowledge.',
+        guidance: 'This divine guidance shows the path forward in your journey.',
+        warning: 'This prophetic warning calls for reflection and repentance.',
+        rest: 'This invitation to rest offers respite from your burdens.'
+      };
+      
+      message += topicMessages[verse.topic] || 'May this verse bring you closer to God\'s love and truth.';
+      
+      messageText.textContent = message;
+      messageDisplay.style.display = 'block';
+    }
+
+    function toggleHistory() {
+      const section = document.getElementById('historySection');
+      section.style.display = section.style.display === 'none' ? 'block' : 'none';
+      
+      if (section.style.display === 'block') {
+        renderHistory();
+      }
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+      
+      if (history.length === 0) {
+        list.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 20px;">No history yet. Start reading verses!</div>';
+        return;
+      }
+      
+      history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+          <div class="history-time">${item.timestamp}</div>
+          <div style="margin-top: 4px; font-weight: 600;">${item.ref}</div>
+          <div style="font-size: 14px; margin-top: 4px; opacity: 0.8;">${item.text.substring(0, 80)}...</div>
+        `;
+        div.onclick = () => {
+          displayVerse(item, item.timestampValue);
+          analyzeMessage(item, item.timestampValue);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        list.appendChild(div);
+      });
+    }
+
+    // Update timestamp every second
+    setInterval(updateTimestamp, 1000);
+    updateTimestamp();
+  </script>
+</body>
+</html>
