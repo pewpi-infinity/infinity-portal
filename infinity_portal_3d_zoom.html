@@ -247,7 +247,13 @@
 // Baseball Diamond Navigation
 // ===========================
 
-const STORAGE = window.localStorage || {};
+const STORAGE = window.localStorage || {
+  data: {},
+  getItem(key) { return this.data[key] || null; },
+  setItem(key, value) { this.data[key] = value; },
+  removeItem(key) { delete this.data[key]; },
+  clear() { this.data = {}; }
+};
 
 // State
 let energy = Number(STORAGE.getItem('INFINITY_ENERGY') || 0);
@@ -359,6 +365,7 @@ function drawHydrogenCloud() {
     glowGradient.addColorStop(0, `hsla(${p.hue}, 70%, 60%, ${p.alpha * 0.3})`);
     glowGradient.addColorStop(1, 'transparent');
     ctx.fillStyle = glowGradient;
+    ctx.beginPath();
     ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
     ctx.fill();
   }
@@ -646,10 +653,10 @@ space.addEventListener('touchmove', (e) => {
     const deltaY = e.touches[0].clientY - touchStartY;
     
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
-      pan(deltaX > 0 ? 'left' : 'right');
+      pan(deltaX > 0 ? 'right' : 'left');
       touchStartX = e.touches[0].clientX;
     } else if (Math.abs(deltaY) > 30) {
-      pan(deltaY > 0 ? 'down' : 'up');
+      pan(deltaY > 0 ? 'up' : 'down');
       touchStartY = e.touches[0].clientY;
     }
   } else if (e.touches.length === 2) {
