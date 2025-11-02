@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Station App - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #dc2626; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #dc2626;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .player {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .station-display {
+      font-size: 2em;
+      font-weight: bold;
+      color: #dc2626;
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .control-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: #dc2626;
+      color: white;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .control-btn:hover {
+      background: #991b1b;
+      transform: scale(1.1);
+    }
+    .control-btn.play {
+      width: 80px;
+      height: 80px;
+      font-size: 2em;
+    }
+    .frequency-display {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.5em;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .band-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .band-btn {
+      padding: 10px 20px;
+      border: 2px solid #dc2626;
+      background: white;
+      color: #dc2626;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .band-btn.active {
+      background: #dc2626;
+      color: white;
+    }
+    .tuner {
+      width: 100%;
+      height: 50px;
+      margin: 20px 0;
+    }
+    .station-list {
+      margin-top: 30px;
+    }
+    .station-item {
+      background: #f9f9f9;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .station-item:hover {
+      background: #fee2e2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>📻 Radio Station App</h1>
+    <p>Shortwave, AM, FM and digital radio streaming platform</p>
+    
+    <div class="player">
+      <div class="station-display" id="stationName">Select a station</div>
+      <div class="frequency-display" id="frequency">---.-- MHz</div>
+      
+      <div class="band-selector">
+        <button class="band-btn active" onclick="selectBand('FM')">FM</button>
+        <button class="band-btn" onclick="selectBand('AM')">AM</button>
+        <button class="band-btn" onclick="selectBand('SW')">Shortwave</button>
+        <button class="band-btn" onclick="selectBand('Digital')">Digital</button>
+      </div>
+      
+      <input type="range" class="tuner" id="tuner" min="880" max="1080" value="1000" step="2" oninput="tune()">
+      
+      <div class="controls">
+        <button class="control-btn" onclick="prevStation()">⏮️</button>
+        <button class="control-btn play" onclick="togglePlay()">▶️</button>
+        <button class="control-btn" onclick="nextStation()">⏭️</button>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <label>Volume: <span id="volumeDisplay">50%</span></label>
+        <input type="range" style="width: 100%;" id="volume" min="0" max="100" value="50" oninput="updateVolume()">
+      </div>
+    </div>
+    
+    <div class="station-list">
+      <h3>📡 Saved Stations</h3>
+      
+      <div class="station-item" onclick="tuneToStation('Classic Rock FM', '98.5')">
+        <div>
+          <strong>Classic Rock FM</strong>
+          <div style="font-size: 0.9em; color: #666;">98.5 MHz</div>
+        </div>
+        <span>FM</span>
+      </div>
+      
+      <div class="station-item" onclick="tuneToStation('News Radio', '1010')">
+        <div>
+          <strong>News Radio</strong>
+          <div style="font-size: 0.9em; color: #666;">1010 kHz</div>
+        </div>
+        <span>AM</span>
+      </div>
+      
+      <div class="station-item" onclick="tuneToStation('Jazz Lounge', '101.1')">
+        <div>
+          <strong>Jazz Lounge</strong>
+          <div style="font-size: 0.9em; color: #666;">101.1 MHz</div>
+        </div>
+        <span>FM</span>
+      </div>
+      
+      <div class="station-item" onclick="tuneToStation('International SW', '9.715')">
+        <div>
+          <strong>International Shortwave</strong>
+          <div style="font-size: 0.9em; color: #666;">9.715 MHz</div>
+        </div>
+        <span>SW</span>
+      </div>
+      
+      <div class="station-item" onclick="tuneToStation('Digital Stream 1', 'Stream')">
+        <div>
+          <strong>Digital Music Stream</strong>
+          <div style="font-size: 0.9em; color: #666;">Internet Radio</div>
+        </div>
+        <span>Digital</span>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let isPlaying = false;
+    let currentBand = 'FM';
+    
+    function selectBand(band) {
+      currentBand = band;
+      document.querySelectorAll('.band-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Adjust tuner range based on band
+      const tuner = document.getElementById('tuner');
+      if (band === 'FM') {
+        tuner.min = 880;
+        tuner.max = 1080;
+        tuner.value = 1000;
+      } else if (band === 'AM') {
+        tuner.min = 530;
+        tuner.max = 1710;
+        tuner.value = 1010;
+      } else if (band === 'SW') {
+        tuner.min = 2300;
+        tuner.max = 26100;
+        tuner.value = 9715;
+      }
+      tune();
+    }
+    
+    function tune() {
+      const value = document.getElementById('tuner').value;
+      let display;
+      
+      if (currentBand === 'FM') {
+        display = (value / 10).toFixed(1) + ' MHz';
+      } else if (currentBand === 'AM') {
+        display = value + ' kHz';
+      } else if (currentBand === 'SW') {
+        display = (value / 1000).toFixed(3) + ' MHz';
+      } else {
+        display = 'Digital Stream';
+      }
+      
+      document.getElementById('frequency').textContent = display;
+    }
+    
+    function tuneToStation(name, freq) {
+      document.getElementById('stationName').textContent = name;
+      document.getElementById('frequency').textContent = freq + (freq.includes('Stream') ? '' : ' MHz');
+      if (!isPlaying) togglePlay();
+    }
+    
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      const btn = document.querySelector('.control-btn.play');
+      btn.textContent = isPlaying ? '⏸️' : '▶️';
+      
+      if (isPlaying) {
+        document.getElementById('stationName').style.animation = 'pulse 2s infinite';
+      } else {
+        document.getElementById('stationName').style.animation = '';
+      }
+    }
+    
+    function prevStation() {
+      alert('Tuning to previous station...');
+    }
+    
+    function nextStation() {
+      alert('Tuning to next station...');
+    }
+    
+    function updateVolume() {
+      const volume = document.getElementById('volume').value;
+      document.getElementById('volumeDisplay').textContent = volume + '%';
+    }
+  </script>
+</body>
+</html>
