@@ -129,6 +129,7 @@
 let audioCtx = null;
 let analyser = null;
 let microphone = null;
+let microphoneStream = null;
 let oscillator = null;
 let gainNode = null;
 let autopilotRunning = false;
@@ -211,6 +212,10 @@ function detectPitch(frequencyData, sampleRate) {
   }
   
   // Convert dB
+  if (maxValue <= 0) {
+    return null;
+  }
+  
   const dB = 20 * Math.log10(maxValue / 255);
   
   // Only return frequency if above threshold
@@ -341,6 +346,9 @@ async function startAutopilot() {
       } 
     });
     
+    // Store stream for cleanup
+    microphoneStream = stream;
+    
     // Create analyser for input
     microphone = audioCtx.createMediaStreamSource(stream);
     analyser = audioCtx.createAnalyser();
@@ -396,7 +404,11 @@ function stopAutopilot() {
   }
   
   if (oscillator) {
-    oscillator.stop();
+    try {
+      oscillator.stop();
+    } catch (e) {
+      // Oscillator may already be stopped
+    }
     oscillator.disconnect();
     oscillator = null;
   }
@@ -408,8 +420,12 @@ function stopAutopilot() {
   
   if (microphone) {
     microphone.disconnect();
-    microphone.mediaStream.getTracks().forEach(track => track.stop());
     microphone = null;
+  }
+  
+  if (microphoneStream) {
+    microphoneStream.getTracks().forEach(track => track.stop());
+    microphoneStream = null;
   }
   
   if (analyser) {

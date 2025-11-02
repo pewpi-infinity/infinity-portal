@@ -517,14 +517,16 @@ function autopilotLoop(){
   }
   
   // Check if signal is strong enough
-  const dB = 20 * Math.log10(maxVal / 255);
-  if(dB > -60){
+  if(maxVal > 0){
+    const dB = 20 * Math.log10(maxVal / 255);
+    if(dB > -60){
     // Convert bin to frequency
     const freq = (maxIdx * audioCtx.sampleRate / 2) / (freqDataArray.length / 2);
     
-    // Only use frequencies in human voice/music range
-    if(freq >= 50 && freq <= 4000){
-      oscillator.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.05);
+      // Only use frequencies in human voice/music range
+      if(freq >= 50 && freq <= 4000){
+        oscillator.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.05);
+      }
     }
   }
   
@@ -536,7 +538,11 @@ function stopAutopilot(){
   
   if(animFrame){ cancelAnimationFrame(animFrame); animFrame = null; }
   
-  if(oscillator){ oscillator.stop(); oscillator.disconnect(); oscillator = null; }
+  if(oscillator){ 
+    try{ oscillator.stop(); }catch(e){} 
+    oscillator.disconnect(); 
+    oscillator = null; 
+  }
   if(gainNode){ gainNode.disconnect(); gainNode = null; }
   if(analyser){ analyser.disconnect(); analyser = null; }
   
