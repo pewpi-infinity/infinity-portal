@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinity Portal - Main Hub</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      color: white;
+      padding: 30px 20px;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .tagline {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    .feature-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .category-header {
+      color: white;
+      font-size: 1.8rem;
+      margin: 40px 0 20px 0;
+      padding-left: 10px;
+      border-left: 5px solid rgba(255,255,255,0.8);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .status-live { background: #4caf50; color: white; }
+    .status-beta { background: #ff9800; color: white; }
+    .status-planned { background: #9e9e9e; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>♾️ INFINITY PORTAL</h1>
+      <p class="tagline">Your Gateway to Infinite Possibilities</p>
+    </header>
+
+    <h2 class="category-header">🎥 Live Media & Communications</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('live-video.html')">
+        <div class="feature-icon">📹</div>
+        <div class="feature-title">Live Video Hosting</div>
+        <div class="feature-desc">Stream live video, share to Twitter/social media, host live spaces and sales pitches</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('image-hosting.html')">
+        <div class="feature-icon">🖼️</div>
+        <div class="feature-title">Image Hosting</div>
+        <div class="feature-desc">Upload, store, and share images with secure cloud hosting</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('peer-messaging.html')">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Peer-to-Peer Messaging</div>
+        <div class="feature-desc">Secure messaging system for eBay-like transactions and private communications</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('phone-system.html')">
+        <div class="feature-icon">📞</div>
+        <div class="feature-title">Phone Number System</div>
+        <div class="feature-desc">Virtual phone number management and telecommunications</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">🎨 Social Spaces & Communities</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('zagonels-space.html')">
+        <div class="feature-icon">🎮</div>
+        <div class="feature-title">Zagonel's Space</div>
+        <div class="feature-desc">Hangout for Zagonel's friends - chat, build projects, collaborate</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('maze-spaces.html')">
+        <div class="feature-icon">🌀</div>
+        <div class="feature-title">Maze's Spaces</div>
+        <div class="feature-desc">10+ designed spaces for different purposes and communities</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('foreigners-lounge.html')">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Foreigner's Lounge</div>
+        <div class="feature-desc">Meet foreigners, exchange customs, share cultures</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('social-news.html')">
+        <div class="feature-icon">📰</div>
+        <div class="feature-title">Social News Platform</div>
+        <div class="feature-desc">Share news, group with like-minded people - 100+ categories</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">📻 Radio & Broadcasting</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('radio-electronics.html')">
+        <div class="feature-icon">📡</div>
+        <div class="feature-title">Radio Electronics Clubhouse</div>
+        <div class="feature-desc">For radio enthusiasts, electronics projects, and technical discussions</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('radio-station.html')">
+        <div class="feature-icon">📻</div>
+        <div class="feature-title">Radio Station App</div>
+        <div class="feature-desc">AM/FM/Shortwave radio streaming and broadcasting</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('scanner-app.html')">
+        <div class="feature-icon">📟</div>
+        <div class="feature-title">Bearcat Scanner</div>
+        <div class="feature-desc">Monitor emergency services, aviation, and more</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">🔬 Science & Technology</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('infinity-maps.html')">
+        <div class="feature-icon">🗺️</div>
+        <div class="feature-title">Infinity Maps</div>
+        <div class="feature-desc">Custom mapping using delta and vectors vs ground positions</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('signal-generator.html')">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Rare Earth Signal Generator</div>
+        <div class="feature-desc">Propagate waves and emissions of rare earth elements synthetically</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('wildlife-analyzer.html')">
+        <div class="feature-icon">🌳</div>
+        <div class="feature-title">Wildlife Photo Analyzer</div>
+        <div class="feature-desc">Analyze trees, wildlife, leaves, grass, bugs, and animals</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('brainwave-tech.html')">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Brain Wave Technology</div>
+        <div class="feature-desc">Advanced neural interface and mind-reading capabilities</div>
+        <span class="status-badge status-planned">PLANNED</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">💎 Commerce & Authentication</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('coin-grading.html')">
+        <div class="feature-icon">🪙</div>
+        <div class="feature-title">Coin Authentication Center</div>
+        <div class="feature-desc">Grade and authenticate coins with COA, serial numbers, photos</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('jewelry-design.html')">
+        <div class="feature-icon">💍</div>
+        <div class="feature-title">Jewelry Design App</div>
+        <div class="feature-desc">Design cards, generate images, create custom jewelry</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">🏛️ Government & Organization Tools</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('nwo-warroom.html')">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">NWO War Room</div>
+        <div class="feature-desc">Real data exchange, presidential discussions - no fake news</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('nonprofit-tools.html')">
+        <div class="feature-icon">🏢</div>
+        <div class="feature-title">501 Non-Profit Tools</div>
+        <div class="feature-desc">Laws, code enforcement, organizational needs</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+      
+      <div class="feature-card" onclick="navigate('vp-on-demand.html')">
+        <div class="feature-icon">🎤</div>
+        <div class="feature-title">VP On Demand</div>
+        <div class="feature-desc">Voice response for serious world needs</div>
+        <span class="status-badge status-beta">BETA</span>
+      </div>
+    </div>
+
+    <h2 class="category-header">✨ Creative & Personal</h2>
+    <div class="features-grid">
+      <div class="feature-card" onclick="navigate('dream-catcher.html')">
+        <div class="feature-icon">💫</div>
+        <div class="feature-title">Dream Catcher Network</div>
+        <div class="feature-desc">Network to make dreams come true through collaboration</div>
+        <span class="status-badge status-live">LIVE</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function navigate(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

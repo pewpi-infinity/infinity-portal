@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P2P Messaging - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 5px; }
+    .nav-back { 
+      position: absolute; 
+      top: 20px; 
+      left: 20px; 
+      color: white; 
+      text-decoration: none; 
+      font-size: 1.2rem;
+      transition: opacity 0.3s;
+    }
+    .nav-back:hover { opacity: 0.7; }
+    .container { 
+      display: flex; 
+      height: calc(100vh - 100px);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .sidebar {
+      width: 300px;
+      background: #16213e;
+      border-right: 1px solid #2a3f5f;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 20px;
+      background: rgba(102, 126, 234, 0.1);
+      border-bottom: 1px solid #2a3f5f;
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      background: #0f1419;
+      color: #eee;
+      font-size: 1rem;
+    }
+    .conversations {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .conversation-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #2a3f5f;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .conversation-item:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+    .conversation-item.active {
+      background: rgba(102, 126, 234, 0.2);
+      border-left: 4px solid #667eea;
+    }
+    .conversation-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .conversation-preview {
+      font-size: 0.9rem;
+      color: #95a5a6;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .conversation-time {
+      font-size: 0.8rem;
+      color: #7f8c8d;
+      margin-top: 5px;
+    }
+    .unread-badge {
+      display: inline-block;
+      background: #e74c3c;
+      color: white;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      float: right;
+    }
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0f1419;
+    }
+    .chat-header {
+      padding: 20px;
+      background: #16213e;
+      border-bottom: 1px solid #2a3f5f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-user-info h2 {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+    .chat-status {
+      color: #2ecc71;
+      font-size: 0.9rem;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .message {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.sent {
+      align-items: flex-end;
+    }
+    .message.received {
+      align-items: flex-start;
+    }
+    .message-bubble {
+      max-width: 60%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      word-wrap: break-word;
+    }
+    .message.sent .message-bubble {
+      background: #667eea;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .message.received .message-bubble {
+      background: #2a3f5f;
+      border-bottom-left-radius: 4px;
+    }
+    .message-time {
+      font-size: 0.75rem;
+      color: #7f8c8d;
+      margin-top: 5px;
+      padding: 0 5px;
+    }
+    .chat-input-area {
+      padding: 20px;
+      background: #16213e;
+      border-top: 1px solid #2a3f5f;
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      background: #0f1419;
+      color: #eee;
+      font-size: 1rem;
+      resize: none;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-send {
+      background: #667eea;
+      color: white;
+    }
+    .btn-send:hover {
+      background: #5568d3;
+    }
+    .btn-attach {
+      background: #95a5a6;
+      color: white;
+    }
+    .btn-attach:hover {
+      background: #7f8c8d;
+    }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: #7f8c8d;
+    }
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; }
+      .chat-area { display: none; }
+      .chat-area.active { display: flex; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="portal.html" class="nav-back">← Back to Portal</a>
+    <h1>💬 Peer-to-Peer Messaging</h1>
+    <p>Secure messaging for transactions and communications</p>
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <input type="text" class="search-box" placeholder="Search conversations..." id="searchBox" oninput="filterConversations()">
+      </div>
+      <div class="conversations" id="conversationsList">
+        <!-- Conversations will be dynamically added here -->
+      </div>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="empty-state">
+        <div class="empty-state-icon">💬</div>
+        <h2>Select a conversation to start messaging</h2>
+        <p>Your messages are encrypted end-to-end</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let conversations = [
+      {
+        id: 1,
+        name: 'Buyer - Electronics Sale',
+        preview: 'Is the laptop still available?',
+        time: '2 min ago',
+        unread: 2,
+        messages: [
+          { text: 'Hi, I saw your laptop listing', sent: false, time: '10:30 AM' },
+          { text: 'Yes, it\'s still available!', sent: true, time: '10:32 AM' },
+          { text: 'Is the laptop still available?', sent: false, time: '10:35 AM' },
+        ]
+      },
+      {
+        id: 2,
+        name: 'Seller - Vintage Coins',
+        preview: 'Shipping will take 3-5 days',
+        time: '1 hour ago',
+        unread: 0,
+        messages: [
+          { text: 'I\'m interested in your coin collection', sent: true, time: 'Yesterday' },
+          { text: 'Great! Which coins are you interested in?', sent: false, time: 'Yesterday' },
+          { text: 'The 1964 Kennedy half dollars', sent: true, time: 'Yesterday' },
+          { text: 'Perfect. Shipping will take 3-5 days', sent: false, time: '1 hour ago' },
+        ]
+      },
+      {
+        id: 3,
+        name: 'Trade Partner - Collectibles',
+        preview: 'Thanks for the trade!',
+        time: '3 hours ago',
+        unread: 0,
+        messages: [
+          { text: 'Want to trade my vintage cards for your coins?', sent: false, time: '5 hours ago' },
+          { text: 'Sure! Let me see what you have', sent: true, time: '4 hours ago' },
+          { text: 'I\'ll send you photos', sent: false, time: '4 hours ago' },
+          { text: 'Looks good! Let\'s do it', sent: true, time: '3 hours ago' },
+          { text: 'Thanks for the trade!', sent: false, time: '3 hours ago' },
+        ]
+      },
+      {
+        id: 4,
+        name: 'Project Collaborator',
+        preview: 'When can we meet to discuss?',
+        time: 'Yesterday',
+        unread: 1,
+        messages: [
+          { text: 'Hey! Working on the Infinity project?', sent: false, time: 'Yesterday' },
+          { text: 'Yes! Making great progress', sent: true, time: 'Yesterday' },
+          { text: 'When can we meet to discuss?', sent: false, time: 'Yesterday' },
+        ]
+      },
+    ];
+
+    let activeConversation = null;
+
+    function init() {
+      renderConversations();
+    }
+
+    function renderConversations() {
+      const list = document.getElementById('conversationsList');
+      list.innerHTML = '';
+      
+      conversations.forEach(conv => {
+        const item = document.createElement('div');
+        item.className = 'conversation-item' + (activeConversation?.id === conv.id ? ' active' : '');
+        item.onclick = () => openConversation(conv.id);
+        
+        item.innerHTML = `
+          <div class="conversation-name">
+            ${conv.name}
+            ${conv.unread > 0 ? `<span class="unread-badge">${conv.unread}</span>` : ''}
+          </div>
+          <div class="conversation-preview">${conv.preview}</div>
+          <div class="conversation-time">${conv.time}</div>
+        `;
+        
+        list.appendChild(item);
+      });
+    }
+
+    function openConversation(id) {
+      activeConversation = conversations.find(c => c.id === id);
+      if (!activeConversation) return;
+      
+      // Mark as read
+      activeConversation.unread = 0;
+      
+      const chatArea = document.getElementById('chatArea');
+      chatArea.innerHTML = `
+        <div class="chat-header">
+          <div class="chat-user-info">
+            <h2>${activeConversation.name}</h2>
+            <div class="chat-status">● Online</div>
+          </div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          ${activeConversation.messages.map(msg => `
+            <div class="message ${msg.sent ? 'sent' : 'received'}">
+              <div class="message-bubble">${msg.text}</div>
+              <div class="message-time">${msg.time}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="chat-input-area">
+          <button class="btn-attach">📎</button>
+          <textarea class="chat-input" id="messageInput" placeholder="Type a message..." rows="1" onkeypress="handleEnter(event)"></textarea>
+          <button class="btn-send" onclick="sendMessage()">Send</button>
+        </div>
+      `;
+      
+      renderConversations();
+      scrollToBottom();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      
+      if (text && activeConversation) {
+        const message = {
+          text: text,
+          sent: true,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        activeConversation.messages.push(message);
+        activeConversation.preview = text;
+        activeConversation.time = 'Just now';
+        
+        input.value = '';
+        openConversation(activeConversation.id);
+        
+        // Simulate response
+        setTimeout(() => {
+          simulateResponse();
+        }, 2000);
+      }
+    }
+
+    function simulateResponse() {
+      if (!activeConversation) return;
+      
+      const responses = [
+        'Thanks for your message!',
+        'I\'ll get back to you soon.',
+        'Sounds good to me!',
+        'Let me check on that.',
+        'Perfect, thank you!'
+      ];
+      
+      const response = {
+        text: responses[Math.floor(Math.random() * responses.length)],
+        sent: false,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      
+      activeConversation.messages.push(response);
+      activeConversation.preview = response.text;
+      activeConversation.time = 'Just now';
+      
+      openConversation(activeConversation.id);
+    }
+
+    function handleEnter(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function filterConversations() {
+      const search = document.getElementById('searchBox').value.toLowerCase();
+      const items = document.querySelectorAll('.conversation-item');
+      
+      items.forEach((item, index) => {
+        const conv = conversations[index];
+        if (conv.name.toLowerCase().includes(search) || conv.preview.toLowerCase().includes(search)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function scrollToBottom() {
+      const messages = document.getElementById('chatMessages');
+      if (messages) {
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

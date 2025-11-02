@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Video Hosting - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 5px; }
+    .nav-back { 
+      position: absolute; 
+      top: 20px; 
+      left: 20px; 
+      color: white; 
+      text-decoration: none; 
+      font-size: 1.2rem;
+      transition: opacity 0.3s;
+    }
+    .nav-back:hover { opacity: 0.7; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .video-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; }
+    .video-main {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .video-container {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    video {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+    .video-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-primary:hover { background: #5568d3; }
+    .btn-danger { background: #e74c3c; color: white; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-success { background: #2ecc71; color: white; }
+    .btn-success:hover { background: #27ae60; }
+    .btn-secondary { background: #95a5a6; color: white; }
+    .btn-secondary:hover { background: #7f8c8d; }
+    .chat-panel {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #0f1419;
+      border-radius: 8px;
+    }
+    .chat-message {
+      margin-bottom: 12px;
+      padding: 10px;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+    }
+    .chat-user { color: #667eea; font-weight: bold; margin-bottom: 5px; }
+    .chat-input-area {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      background: #0f1419;
+      color: #eee;
+      font-size: 1rem;
+    }
+    .stream-info {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 6px;
+    }
+    .label { color: #95a5a6; }
+    .value { color: #2ecc71; font-weight: bold; }
+    .share-section {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .social-btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.3s;
+    }
+    .social-btn:hover { opacity: 0.8; }
+    .twitter-btn { background: #1da1f2; }
+    .facebook-btn { background: #4267B2; }
+    .linkedin-btn { background: #0077b5; }
+    .reddit-btn { background: #ff4500; }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-live { background: #e74c3c; animation: pulse 1.5s infinite; }
+    .status-offline { background: #95a5a6; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @media (max-width: 968px) {
+      .video-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="portal.html" class="nav-back">← Back to Portal</a>
+    <h1>📹 Live Video Hosting Platform</h1>
+    <p>Stream live video, connect with your audience</p>
+  </div>
+
+  <div class="container">
+    <div class="stream-info">
+      <h2>Stream Information</h2>
+      <div class="info-row">
+        <span class="label">Status:</span>
+        <span class="value"><span class="status-indicator status-offline" id="statusDot"></span><span id="statusText">Offline</span></span>
+      </div>
+      <div class="info-row">
+        <span class="label">Viewers:</span>
+        <span class="value" id="viewerCount">0</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Stream Duration:</span>
+        <span class="value" id="duration">00:00:00</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Stream URL:</span>
+        <span class="value" id="streamUrl">Not streaming</span>
+      </div>
+    </div>
+
+    <div class="video-grid">
+      <div class="video-main">
+        <h2>Live Stream</h2>
+        <div class="video-container">
+          <video id="localVideo" autoplay muted playsinline></video>
+        </div>
+        <div class="video-controls">
+          <button class="btn-success" id="startBtn" onclick="startStream()">Start Stream</button>
+          <button class="btn-danger" id="stopBtn" onclick="stopStream()" disabled>Stop Stream</button>
+          <button class="btn-secondary" id="muteBtn" onclick="toggleMute()">Mute Audio</button>
+          <button class="btn-secondary" id="videoBtn" onclick="toggleVideo()">Disable Video</button>
+          <button class="btn-primary" onclick="shareScreen()">Share Screen</button>
+        </div>
+      </div>
+
+      <div class="chat-panel">
+        <h2>Live Chat</h2>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-message">
+            <div class="chat-user">System</div>
+            <div>Welcome to the live chat! Start streaming to begin.</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatEnter(event)">
+          <button class="btn-primary" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="share-section">
+      <h2>Share Your Stream</h2>
+      <p>Share your live stream to social media and other platforms</p>
+      <div class="share-buttons">
+        <button class="social-btn twitter-btn" onclick="shareToTwitter()">
+          Share to Twitter/X
+        </button>
+        <button class="social-btn facebook-btn" onclick="shareToFacebook()">
+          Share to Facebook
+        </button>
+        <button class="social-btn linkedin-btn" onclick="shareToLinkedIn()">
+          Share to LinkedIn
+        </button>
+        <button class="social-btn reddit-btn" onclick="shareToReddit()">
+          Share to Reddit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let localStream = null;
+    let isStreaming = false;
+    let isMuted = false;
+    let isVideoEnabled = true;
+    let startTime = null;
+    let timerInterval = null;
+
+    async function startStream() {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: true 
+        });
+        
+        const video = document.getElementById('localVideo');
+        video.srcObject = localStream;
+        
+        isStreaming = true;
+        startTime = Date.now();
+        updateStreamStatus(true);
+        startTimer();
+        
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('stopBtn').disabled = false;
+        
+        addChatMessage('System', 'Stream started successfully!');
+        simulateViewers();
+      } catch (err) {
+        console.error('Error accessing media devices:', err);
+        alert('Could not access camera/microphone. Please grant permissions.');
+      }
+    }
+
+    function stopStream() {
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      
+      const video = document.getElementById('localVideo');
+      video.srcObject = null;
+      
+      isStreaming = false;
+      updateStreamStatus(false);
+      stopTimer();
+      
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('stopBtn').disabled = true;
+      
+      addChatMessage('System', 'Stream ended.');
+    }
+
+    function toggleMute() {
+      if (!localStream) return;
+      
+      isMuted = !isMuted;
+      const audioTrack = localStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !isMuted;
+      }
+      
+      const btn = document.getElementById('muteBtn');
+      btn.textContent = isMuted ? 'Unmute Audio' : 'Mute Audio';
+      addChatMessage('System', isMuted ? 'Audio muted' : 'Audio unmuted');
+    }
+
+    function toggleVideo() {
+      if (!localStream) return;
+      
+      isVideoEnabled = !isVideoEnabled;
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = isVideoEnabled;
+      }
+      
+      const btn = document.getElementById('videoBtn');
+      btn.textContent = isVideoEnabled ? 'Disable Video' : 'Enable Video';
+      addChatMessage('System', isVideoEnabled ? 'Video enabled' : 'Video disabled');
+    }
+
+    async function shareScreen() {
+      try {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ 
+          video: true 
+        });
+        
+        const video = document.getElementById('localVideo');
+        video.srcObject = screenStream;
+        
+        if (localStream) {
+          localStream.getTracks().forEach(track => track.stop());
+        }
+        localStream = screenStream;
+        
+        addChatMessage('System', 'Screen sharing started');
+        
+        screenStream.getVideoTracks()[0].onended = () => {
+          addChatMessage('System', 'Screen sharing stopped');
+        };
+      } catch (err) {
+        console.error('Error sharing screen:', err);
+        alert('Could not share screen. Please try again.');
+      }
+    }
+
+    function updateStreamStatus(isLive) {
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const streamUrl = document.getElementById('streamUrl');
+      
+      if (isLive) {
+        statusDot.className = 'status-indicator status-live';
+        statusText.textContent = 'Live';
+        streamUrl.textContent = window.location.href + '?stream=' + Date.now();
+      } else {
+        statusDot.className = 'status-indicator status-offline';
+        statusText.textContent = 'Offline';
+        streamUrl.textContent = 'Not streaming';
+        document.getElementById('viewerCount').textContent = '0';
+      }
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const hours = Math.floor(elapsed / 3600000);
+        const minutes = Math.floor((elapsed % 3600000) / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        
+        document.getElementById('duration').textContent = 
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      document.getElementById('duration').textContent = '00:00:00';
+    }
+
+    function simulateViewers() {
+      if (!isStreaming) return;
+      
+      const viewers = Math.floor(Math.random() * 50) + 1;
+      document.getElementById('viewerCount').textContent = viewers;
+      
+      if (isStreaming) {
+        setTimeout(simulateViewers, 5000);
+      }
+    }
+
+    function addChatMessage(user, message) {
+      const chatMessages = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-message';
+      messageDiv.innerHTML = `
+        <div class="chat-user">${user}</div>
+        <div>${message}</div>
+      `;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (message) {
+        addChatMessage('You', message);
+        input.value = '';
+        
+        // Simulate responses
+        setTimeout(() => {
+          const responses = [
+            'Great stream!',
+            'This is awesome!',
+            'Keep it up!',
+            'Very interesting!',
+            'Thanks for sharing!'
+          ];
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          addChatMessage('Viewer ' + Math.floor(Math.random() * 100), randomResponse);
+        }, 2000);
+      }
+    }
+
+    function handleChatEnter(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    function shareToTwitter() {
+      const streamUrl = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent('Watch my live stream on Infinity Portal! 🎥');
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${streamUrl}`, '_blank');
+    }
+
+    function shareToFacebook() {
+      const streamUrl = encodeURIComponent(window.location.href);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${streamUrl}`, '_blank');
+    }
+
+    function shareToLinkedIn() {
+      const streamUrl = encodeURIComponent(window.location.href);
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${streamUrl}`, '_blank');
+    }
+
+    function shareToReddit() {
+      const streamUrl = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent('Live Stream on Infinity Portal');
+      window.open(`https://reddit.com/submit?url=${streamUrl}&title=${title}`, '_blank');
+    }
+  </script>
+</body>
+</html>
