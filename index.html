@@ -11,6 +11,7 @@
     .zoom-controls { display: flex; gap: 0.5rem; }
     .zoom-btn { background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; padding: 0.4rem 0.7rem; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
     .zoom-btn:hover { background: rgba(255,255,255,0.3); }
+    .header-spacer { width: 200px; }
     main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; transform-origin: center top; transition: transform 0.2s ease; }
     #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
     .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
@@ -26,11 +27,11 @@
   <header>
     <div class="zoom-controls">
       <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out (Ctrl + -)">−</button>
-      <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom (Ctrl + 0)">100%</button>
+      <button class="zoom-btn" id="reset-zoom-btn" onclick="resetZoom()" title="Reset Zoom (Ctrl + 0)">100%</button>
       <button class="zoom-btn" onclick="zoomIn()" title="Zoom In (Ctrl + +)">+</button>
     </div>
     <div class="header-title">🧠 Rogers AI — Infinity Portal</div>
-    <div style="width: 200px;"></div> <!-- Spacer for centering -->
+    <div class="header-spacer"></div>
   </header>
   <main>
     <div id="messages">
@@ -53,22 +54,18 @@
     function updateZoom() {
       const main = document.querySelector('main');
       main.style.transform = `scale(${zoomLevel})`;
-      const resetBtn = document.querySelector('.zoom-controls button:nth-child(2)');
+      const resetBtn = document.getElementById('reset-zoom-btn');
       resetBtn.textContent = Math.round(zoomLevel * 100) + '%';
     }
 
     function zoomIn() {
-      if (zoomLevel < maxZoom) {
-        zoomLevel = Math.min(maxZoom, zoomLevel + zoomStep);
-        updateZoom();
-      }
+      zoomLevel = Math.min(maxZoom, zoomLevel + zoomStep);
+      updateZoom();
     }
 
     function zoomOut() {
-      if (zoomLevel > minZoom) {
-        zoomLevel = Math.max(minZoom, zoomLevel - zoomStep);
-        updateZoom();
-      }
+      zoomLevel = Math.max(minZoom, zoomLevel - zoomStep);
+      updateZoom();
     }
 
     function resetZoom() {
