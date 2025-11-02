@@ -335,12 +335,15 @@
 
     function copyLink(index) {
       const image = images[index];
-      const link = `${window.location.origin}/image/${image.id}`;
+      // Use data URL directly since this is a static implementation
+      const link = image.data;
       
       navigator.clipboard.writeText(link).then(() => {
-        alert('Image link copied to clipboard!');
+        alert('Image data copied to clipboard! You can paste this directly into any application that accepts images.');
       }).catch(() => {
-        alert('Failed to copy link. Link: ' + link);
+        // Fallback: show the link in an alert
+        const shortLink = link.substring(0, 100) + '...';
+        alert('Could not copy automatically. Image data starts with: ' + shortLink);
       });
     }
 

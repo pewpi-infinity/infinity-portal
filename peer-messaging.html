@@ -417,14 +417,15 @@
 
     function filterConversations() {
       const search = document.getElementById('searchBox').value.toLowerCase();
-      const items = document.querySelectorAll('.conversation-item');
       
-      items.forEach((item, index) => {
-        const conv = conversations[index];
-        if (conv.name.toLowerCase().includes(search) || conv.preview.toLowerCase().includes(search)) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
+      conversations.forEach((conv, index) => {
+        const item = document.querySelectorAll('.conversation-item')[index];
+        if (item) {
+          if (conv.name.toLowerCase().includes(search) || conv.preview.toLowerCase().includes(search)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
         }
       });
     }
