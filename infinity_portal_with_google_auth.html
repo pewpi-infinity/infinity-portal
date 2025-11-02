@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Infinity Portal • Google Auth + Rogers Core</title>
+<meta name="color-scheme" content="light">
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+  :root{
+    --blue-1:#003087;
+    --blue-2:#0b5fd7;
+    --bg:#ffffff;
+    --muted:#657080;
+    --radius:12px;
+    --panel:#f8fafc;
+    font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#051426; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  .app{max-width:1100px;margin:0 auto;padding:14px;}
+  header{display:flex;align-items:center;justify-content:space-between;padding:12px 6px;background:linear-gradient(0deg,#ffffff,#fbfdff);border-radius:10px;box-shadow:0 6px 18px rgba(3,24,62,0.04);border:1px solid rgba(3,24,62,0.03)}
+  .logoText{font-weight:700;color:var(--blue-1);font-size:18px}
+  .sub{font-size:12px;color:var(--muted)}
+  /* top controls */
+  .controls{display:flex;gap:10px;align-items:center}
+  .iconBtn{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(3,24,62,0.06);cursor:pointer}
+  .menuIcon{font-size:22px;color:var(--blue-1)}
+  .userAvatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--blue-1)}
+  /* mobile-ready stage */
+  .stage{margin-top:18px;position:relative;height:64vh;max-height:760px;border-radius:14px;overflow:hidden;border:1px solid rgba(3,24,62,0.03);background:linear-gradient(180deg,#f7fbff, #eef6ff)}
+  /* hydrogen cloud canvas behind */
+  #hydroCanvas{position:absolute;inset:0;width:100%;height:100%}
+  /* diamond nav */
+  .diamondWrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .diamond{width:86%;max-width:760px;height:86%;max-height:640px;transform-style:preserve-3d;pointer-events:auto;display:grid;place-items:center}
+  .field{width:100%;height:100%;position:relative;display:grid;place-items:center;user-select:none}
+  .baseplate{position:absolute;inset:8% 8%;border-radius:18px;box-shadow:0 20px 60px rgba(11,95,215,0.06);display:grid;place-items:center;transform:translateZ(0)}
+  /* diamond geometry */
+  .diamond-grid{width:86%;height:86%;position:relative;display:grid;place-items:center;transform-origin:center;transition:transform .6s cubic-bezier(.2,.9,.25,1)}
+  .node{position:absolute;width:104px;height:104px;border-radius:18px;background:white;border:1px solid rgba(3,24,62,0.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 10px 30px rgba(11,95,215,0.06);cursor:pointer;transition:transform .18s,box-shadow .18s}
+  .node:active{transform:translateY(4px)}
+  .node .nTitle{font-weight:700;color:var(--blue-1);font-size:15px}
+  .node .nSub{font-size:12px;color:var(--muted)}
+  /* positions */
+  .homePlate{left:50%;top:82%;transform:translate(-50%,-50%)}
+  .firstBase{left:84%;top:50%;transform:translate(-50%,-50%)}
+  .thirdBase{left:16%;top:50%;transform:translate(-50%,-50%)}
+  .pitcher{left:50%;top:34%;transform:translate(-50%,-50%)}
+  .secondBase{left:50%;top:10%;transform:translate(-50%,-50%)}
+  /* info footer within stage */
+  .stageFooter{position:absolute;left:12px;bottom:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .chip{background:rgba(11,95,215,0.06);padding:8px 12px;border-radius:999px;color:var(--blue-1);font-weight:700;font-size:13px}
+  /* sidebar (hidden behind menu) */
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:82%;max-width:360px;background:white;box-shadow:20px 0 60px rgba(3,24,62,0.12);transform:translateX(-110%);transition:transform .28s;z-index:99999;padding:18px;overflow:auto}
+  .sidebar.open{transform:translateX(0)}
+  .sbHeader{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .sbItem{padding:12px;border-radius:10px;margin-top:10px;border:1px solid rgba(3,24,62,0.03);cursor:pointer}
+  .small{font-size:13px;color:var(--muted)}
+  /* app panel modal */
+  .panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);background:white;border-radius:12px;padding:12px;width:94%;max-width:980px;max-height:86vh;overflow:auto;box-shadow:0 30px 80px rgba(3,24,62,0.16);z-index:99998;display:none}
+  .panel.open{display:block;animation:pop .18s ease-out}
+  @keyframes pop{from{transform:translate(-50%,-50%) scale(.96)} to{transform:translate(-50%,-50%) scale(1)}}
+  .panelHeader{display:flex;justify-content:space-between;align-items:center}
+  .primary{background:var(--blue-1);color:white;border:0;padding:10px 12px;border-radius:10px;cursor:pointer}
+  /* rogers chat dock */
+  .rogersDock{position:fixed;right:16px;bottom:16px;z-index:99999}
+  .rogBtn{width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,var(--blue-1),var(--blue-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;box-shadow:0 12px 40px rgba(11,95,215,0.18);cursor:pointer}
+  .chatBox{position:fixed;right:16px;bottom:92px;width:360px;border-radius:12px;background:white;box-shadow:0 30px 80px rgba(3,24,62,0.12);display:none;flex-direction:column;z-index:99999;overflow:hidden}
+  .chatBox.open{display:flex}
+  .chatHeader{padding:10px;background:linear-gradient(90deg,var(--blue-1),var(--blue-2));color:white;display:flex;justify-content:space-between;align-items:center}
+  .chatBody{padding:12px;height:300px;overflow:auto;background:#fbfdff}
+  .chatInput{display:flex;padding:10px;border-top:1px solid rgba(3,24,62,0.04)}
+  .chatInput input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)}
+  /* Google Sign-In modal */
+  .authModal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:100000}
+  .authModal.open{display:flex}
+  .authContent{background:white;border-radius:12px;padding:24px;max-width:420px;width:90%;text-align:center}
+  .authTitle{font-size:20px;font-weight:700;color:var(--blue-1);margin-bottom:8px}
+  .authDesc{color:var(--muted);margin-bottom:20px}
+  #googleSignInButton{margin:20px auto;display:flex;justify-content:center}
+  /* responsive */
+  @media (max-width:600px){
+    .node{width:86px;height:86px}
+    .stage{height:68vh}
+    .chatBox{right:10px;left:10px;width:auto}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div style="display:flex;gap:12px;align-items:center">
+      <button class="iconBtn" id="menuBtn" title="Menu"><span class="menuIcon">☰</span></button>
+      <div>
+        <div class="logoText">∞ INFINITY PORTAL</div>
+        <div class="sub">Google Auth → Rogers Core → Realms</div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="small" id="userInfo">
+        <span id="signedUser">Not signed in</span>
+      </div>
+      <img id="userAvatar" class="userAvatar" style="display:none" alt="User avatar" />
+      <button class="iconBtn" id="authBtn" title="Sign in">
+        <span id="authIcon">🔐</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Stage with hydrogen cloud + diamond nav -->
+  <div class="stage" id="stage">
+    <canvas id="hydroCanvas"></canvas>
+    <div class="diamondWrap">
+      <div class="diamond" id="diamond">
+        <div class="field">
+          <div class="baseplate">
+            <div class="diamond-grid" id="grid" style="transform:scale(1)">
+              <!-- Nodes representing different realms -->
+              <div class="node homePlate" id="node-portal" onclick="openRealm('portal')">
+                <div class="nTitle">PORTAL</div><div class="nSub">Home Realm</div>
+              </div>
+              <div class="node firstBase" id="node-market" onclick="openRealm('marketplace')">
+                <div class="nTitle">MARKET</div><div class="nSub">Marketplace</div>
+              </div>
+              <div class="node thirdBase" id="node-social" onclick="openRealm('socializer')">
+                <div class="nTitle">SOCIAL</div><div class="nSub">Socializer</div>
+              </div>
+              <div class="node pitcher" id="node-builder" onclick="openRealm('builder')">
+                <div class="nTitle">BUILDER</div><div class="nSub">AI Builder</div>
+              </div>
+              <div class="node secondBase" id="node-future" onclick="openRealm('future')">
+                <div class="nTitle">FUTURE</div><div class="nSub">Coming Soon</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stageFooter">
+      <div class="chip" id="authStatus">🔐 Auth: None</div>
+      <div class="chip" id="coreStatus">🧠 Rogers Core: Ready</div>
+      <div class="small">Tap a realm to enter</div>
+    </div>
+  </div>
+
+  <!-- Sidebar (hidden) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sbHeader">
+      <div>
+        <div style="font-weight:800">Infinity Menu</div>
+        <div class="small">Powered by Rogers Core</div>
+      </div>
+      <div><button class="iconBtn" onclick="toggleSidebar()">✕</button></div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div style="font-weight:700">Realms</div>
+      <div class="sbItem" onclick="openRealm('portal')">Portal Realm — Home & Tools</div>
+      <div class="sbItem" onclick="openRealm('marketplace')">Marketplace Realm — Commerce</div>
+      <div class="sbItem" onclick="openRealm('socializer')">Socializer Realm — Community</div>
+      <div class="sbItem" onclick="openRealm('builder')">AI Builder Realm — Create</div>
+      <div class="sbItem" onclick="openRealm('future')">Future Realms — Coming Soon</div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div style="font-weight:700">Configuration</div>
+      <div class="small" style="margin-top:6px">Google Client ID (optional for testing)</div>
+      <div style="margin-top:8px">
+        <input id="clientIdInput" placeholder="Your Google Client ID" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)">
+      </div>
+      <div style="margin-top:8px">
+        <button class="primary" onclick="saveClientId()">Save Client ID</button>
+      </div>
+      <div id="clientIdSaved" class="small" style="margin-top:8px;color:var(--muted)"></div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div style="font-weight:700">Rogers Endpoint</div>
+      <div class="small" style="margin-top:6px">Optional API endpoint for Rogers Core</div>
+      <div style="margin-top:8px">
+        <input id="rogersInput" placeholder="Rogers API URL" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)">
+      </div>
+      <div style="margin-top:8px">
+        <button class="primary" onclick="saveRogers()">Save Endpoint</button>
+      </div>
+    </div>
+
+    <div style="margin-top:16px" class="small">Architecture: Google Auth → Rogers Core → Realms</div>
+  </aside>
+
+  <!-- App panels for different realms -->
+  <div class="panel" id="panelPortal" aria-hidden="true">
+    <div class="panelHeader">
+      <div>
+        <strong>Portal Realm</strong>
+        <div class="small">Home tools and utilities</div>
+      </div>
+      <div><button onclick="closePanel('panelPortal')">✕</button></div>
+    </div>
+    <div style="margin-top:12px">
+      <div style="background:var(--panel);padding:12px;border-radius:10px">
+        <div style="font-weight:700">Calculator</div>
+        <input id="calcA" placeholder="2+2" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)">
+        <div style="margin-top:8px"><button class="primary" onclick="calcRun()">Compute</button></div>
+        <div id="calcOut" class="small" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panelMarket">
+    <div class="panelHeader">
+      <div>
+        <strong>Marketplace Realm</strong>
+        <div class="small">Token-based commerce</div>
+      </div>
+      <div><button onclick="closePanel('panelMarket')">✕</button></div>
+    </div>
+    <div style="margin-top:12px">
+      <div style="background:var(--panel);padding:12px;border-radius:10px">
+        <div style="font-weight:700">Create Listing</div>
+        <input id="listTitle" placeholder="Item title" style="width:100%;padding:8px;margin-top:8px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)">
+        <textarea id="listDesc" placeholder="Description" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)"></textarea>
+        <div style="margin-top:8px"><button class="primary" onclick="createListing()">Create Listing</button></div>
+        <div id="listOut" class="small" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panelSocial">
+    <div class="panelHeader">
+      <div>
+        <strong>Socializer Realm</strong>
+        <div class="small">Community and local connections</div>
+      </div>
+      <div><button onclick="closePanel('panelSocial')">✕</button></div>
+    </div>
+    <div style="margin-top:12px">
+      <div style="background:var(--panel);padding:12px;border-radius:10px">
+        <div style="font-weight:700">Join Local Community</div>
+        <input id="zipLocal" placeholder="ZIP or postal code" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(3,24,62,0.06)">
+        <div style="margin-top:8px"><button class="primary" onclick="joinLocal()">Join Local Chat</button></div>
+        <div id="localOut" class="small" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rogers Chat dock -->
+  <div class="rogersDock">
+    <div class="rogBtn" id="rogBtn" title="Rogers AI Core" onclick="toggleChat()">R</div>
+  </div>
+  <div class="chatBox" id="chatBox">
+    <div class="chatHeader">
+      <div>Rogers Core AI</div>
+      <div class="small" id="chatCtx">Realm: None</div>
+    </div>
+    <div class="chatBody" id="chatBody">
+      <div class="small">Rogers Core ready. Authenticate with Google to unlock all features.</div>
+    </div>
+    <div class="chatInput">
+      <input id="chatIn" placeholder="Ask Rogers..." onkeydown="if(event.key==='Enter') sendChat()">
+      <button class="primary" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+
+  <!-- Google Auth Modal -->
+  <div class="authModal" id="authModal">
+    <div class="authContent">
+      <div class="authTitle">Sign in to Infinity Portal</div>
+      <div class="authDesc">Authenticate with Google to access all realms through Rogers Core</div>
+      <div id="googleSignInButton"></div>
+      <div style="margin-top:16px">
+        <button class="primary" onclick="closeAuthModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Infinity Core Auth Module -->
+<script src="infinity_core_auth.js"></script>
+
+<script>
+/* --------------------------
+   INFINITY PORTAL WITH GOOGLE AUTH
+   Architecture: Google Auth → Rogers Core → Realms
+   -------------------------- */
+
+const STORAGE = window.localStorage || {};
+const ROGERS_KEY = 'INFINITY_ROGERS_API';
+const CLIENT_ID_KEY = 'INFINITY_GOOGLE_CLIENT_ID';
+
+/* UI Elements */
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const authBtn = document.getElementById('authBtn');
+const authModal = document.getElementById('authModal');
+
+/* Initialize Infinity Core Auth */
+function initAuth() {
+  // Get saved client ID
+  const clientId = STORAGE.getItem(CLIENT_ID_KEY) || '';
+  
+  if (clientId) {
+    infinityCoreAuth.clientId = clientId;
+  }
+
+  // Initialize auth system
+  infinityCoreAuth.initialize().then(isAuthenticated => {
+    if (isAuthenticated) {
+      updateAuthUI();
+    }
+  });
+
+  // Listen for auth state changes
+  infinityCoreAuth.addListener((event, data) => {
+    if (event === 'login') {
+      updateAuthUI();
+      appendChat('Rogers', `Welcome ${data.user.name}! You're now connected through Rogers Core.`);
+      closeAuthModal();
+    } else if (event === 'logout') {
+      updateAuthUI();
+      appendChat('Rogers', 'You have been signed out.');
+    }
+  });
+}
+
+/* Update UI based on auth state */
+function updateAuthUI() {
+  const user = infinityCoreAuth.getUser();
+  const isAuth = infinityCoreAuth.isAuthenticated();
+  
+  if (isAuth && user) {
+    document.getElementById('signedUser').innerText = user.name || user.email;
+    document.getElementById('authIcon').innerText = '✓';
+    document.getElementById('authStatus').innerHTML = '🔐 Auth: Google';
+    
+    const avatar = document.getElementById('userAvatar');
+    if (user.picture) {
+      avatar.src = user.picture;
+      avatar.style.display = 'block';
+    }
+  } else {
+    document.getElementById('signedUser').innerText = 'Not signed in';
+    document.getElementById('authIcon').innerText = '🔐';
+    document.getElementById('authStatus').innerHTML = '🔐 Auth: None';
+    document.getElementById('userAvatar').style.display = 'none';
+  }
+}
+
+/* Handle auth button click */
+authBtn.addEventListener('click', () => {
+  if (infinityCoreAuth.isAuthenticated()) {
+    if (confirm('Sign out from Infinity Portal?')) {
+      infinityCoreAuth.signOut();
+    }
+  } else {
+    openAuthModal();
+  }
+});
+
+/* Auth modal functions */
+function openAuthModal() {
+  authModal.classList.add('open');
+  
+  // Check if we have a client ID
+  const clientId = STORAGE.getItem(CLIENT_ID_KEY) || '';
+  
+  if (clientId) {
+    infinityCoreAuth.clientId = clientId;
+    infinityCoreAuth.initGoogleAuth().then(() => {
+      infinityCoreAuth.renderGoogleButton();
+    });
+  } else {
+    // Show fallback message
+    const btnDiv = document.getElementById('googleSignInButton');
+    btnDiv.innerHTML = '<div class="small" style="padding:12px;background:var(--panel);border-radius:8px;">Configure Google Client ID in settings to enable Google Sign-In, or use the portal without authentication.</div>';
+  }
+}
+
+function closeAuthModal() {
+  authModal.classList.remove('open');
+}
+
+/* Save Google Client ID */
+function saveClientId() {
+  const val = document.getElementById('clientIdInput').value.trim();
+  if (!val) {
+    document.getElementById('clientIdSaved').innerText = 'Enter a Client ID first';
+    return;
+  }
+  STORAGE.setItem(CLIENT_ID_KEY, val);
+  infinityCoreAuth.clientId = val;
+  document.getElementById('clientIdSaved').innerText = 'Client ID saved';
+  setTimeout(() => document.getElementById('clientIdSaved').innerText = '', 2200);
+}
+
+/* Sidebar */
+menuBtn.addEventListener('click', () => toggleSidebar());
+
+function toggleSidebar() {
+  sidebar.classList.toggle('open');
+}
+
+function saveRogers() {
+  const val = document.getElementById('rogersInput').value.trim();
+  if (!val) {
+    alert('Enter a Rogers endpoint URL first');
+    return;
+  }
+  STORAGE.setItem(ROGERS_KEY, val);
+  alert('Rogers endpoint saved');
+}
+
+/* Stage hydrogen cloud canvas */
+const canvas = document.getElementById('hydroCanvas');
+const ctx = canvas.getContext('2d');
+let w, h, particles = [];
+
+function resizeCanvas() {
+  w = canvas.width = canvas.offsetWidth;
+  h = canvas.height = canvas.offsetHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2 + 0.4,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      alpha: Math.random() * 0.6 + 0.2
+    });
+  }
+}
+initParticles();
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  const g = ctx.createRadialGradient(w * 0.5, h * 0.3, 80, w * 0.5, h * 0.3, Math.max(w, h));
+  g.addColorStop(0, 'rgba(240,248,255,0.35)');
+  g.addColorStop(1, 'rgba(232,242,255,0.08)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  
+  for (const p of particles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0) p.x = w;
+    if (p.x > w) p.x = 0;
+    if (p.y < 0) p.y = h;
+    if (p.y > h) p.y = 0;
+    ctx.beginPath();
+    ctx.fillStyle = 'rgba(11,95,215,' + p.alpha + ')';
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* Realm navigation */
+function openRealm(name) {
+  const grid = document.getElementById('grid');
+  grid.style.transform = 'scale(1.12)';
+  setTimeout(() => grid.style.transform = 'scale(1)', 600);
+  
+  // Open appropriate panel
+  const panelMap = {
+    'portal': 'panelPortal',
+    'marketplace': 'panelMarket',
+    'socializer': 'panelSocial',
+    'builder': 'panelPortal',
+    'future': null
+  };
+  
+  const panelId = panelMap[name];
+  if (panelId) {
+    openPanel(panelId);
+  } else {
+    alert('Future realms coming soon!');
+  }
+  
+  openChatWithContext(name);
+}
+
+/* Panels */
+function openPanel(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closePanel(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* Portal tools */
+function calcRun() {
+  const v = document.getElementById('calcA').value || '';
+  try {
+    // Safe math evaluation using a whitelist approach
+    // Only allow numbers, basic operators, and parentheses
+    const sanitized = v.replace(/[^0-9+\-*/(). %]/g, '');
+    
+    // Additional validation: check for balanced parentheses
+    let parenCount = 0;
+    for (let char of sanitized) {
+      if (char === '(') parenCount++;
+      if (char === ')') parenCount--;
+      if (parenCount < 0) throw new Error('Invalid expression');
+    }
+    if (parenCount !== 0) throw new Error('Invalid expression');
+    
+    // Evaluate using a safer approach with eval in strict mode
+    // Note: Still using eval but with strict input validation
+    // For production, consider using a proper math expression parser library
+    const result = eval(sanitized);
+    
+    // Validate result is a number
+    if (typeof result !== 'number' || !isFinite(result)) {
+      throw new Error('Invalid result');
+    }
+    
+    document.getElementById('calcOut').innerText = 'Result: ' + result;
+  } catch (e) {
+    document.getElementById('calcOut').innerText = 'Error: Invalid expression';
+  }
+}
+
+/* Marketplace */
+function createListing() {
+  const t = document.getElementById('listTitle').value;
+  const d = document.getElementById('listDesc').value;
+  if (!t) {
+    document.getElementById('listOut').innerText = 'Title needed';
+    return;
+  }
+  const L = JSON.parse(STORAGE.getItem('INFINITY_LISTS') || '[]');
+  L.push({ title: t, desc: d, when: Date.now() });
+  STORAGE.setItem('INFINITY_LISTS', JSON.stringify(L));
+  document.getElementById('listOut').innerText = 'Listing stored locally';
+}
+
+/* Social */
+function joinLocal() {
+  const z = document.getElementById('zipLocal').value.trim();
+  if (!z) {
+    document.getElementById('localOut').innerText = 'Enter ZIP';
+    return;
+  }
+  document.getElementById('localOut').innerText = 'Joined local chat ' + z + ' (demo)';
+  openChatWithContext('local:' + z);
+}
+
+/* Rogers Chat */
+const chatBox = document.getElementById('chatBox');
+const chatBody = document.getElementById('chatBody');
+const chatCtx = document.getElementById('chatCtx');
+
+function toggleChat() {
+  chatBox.classList.toggle('open');
+}
+
+function sendChat() {
+  const inEl = document.getElementById('chatIn');
+  const txt = inEl.value.trim();
+  if (!txt) return;
+  
+  appendChat('You', txt);
+  inEl.value = '';
+  
+  const endpoint = STORAGE.getItem(ROGERS_KEY);
+  const auth = infinityCoreAuth.getAuth();
+  const ctx = chatCtx.innerText || 'Realm: none';
+  
+  if (!endpoint) {
+    setTimeout(() => {
+      appendChat('Rogers', '(Demo mode) Rogers Core running locally. Configure Rogers endpoint in settings for live API.');
+    }, 400);
+    return;
+  }
+  
+  // Call Rogers endpoint with auth
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: txt,
+      context: ctx,
+      auth: auth ? auth.token : null,
+      user: auth ? auth.user : null
+    })
+  }).then(r => r.json()).then(res => {
+    const text = (res && (res.reply || res.text || JSON.stringify(res))) || 'No reply';
+    appendChat('Rogers', text);
+  }).catch(err => {
+    appendChat('Rogers', '(error) ' + err.message);
+  });
+}
+
+function appendChat(who, txt) {
+  const d = document.createElement('div');
+  d.style.margin = '8px 0';
+  d.innerHTML = '<strong>' + who + ':</strong> ' + escapeHtml(txt);
+  chatBody.appendChild(d);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function openChatWithContext(name) {
+  chatCtx.innerText = 'Realm: ' + name;
+  if (!chatBox.classList.contains('open')) chatBox.classList.add('open');
+  appendChat('Rogers', 'Context switched to ' + name + ' realm');
+}
+
+/* Helpers */
+function escapeHtml(s) {
+  return (s || '').toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* Initialize */
+(function init() {
+  initAuth();
+  
+  // Close sidebar by clicking outside
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    }
+  });
+  
+  // Close auth modal by clicking outside
+  authModal.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+      closeAuthModal();
+    }
+  });
+})();
+</script>
+</body>
+</html>

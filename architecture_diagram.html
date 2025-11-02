@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity Portal - Architecture Diagram</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 900px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      text-align: center;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 40px;
+    }
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      min-width: 250px;
+    }
+    .box.core {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    }
+    .box.realm {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+      font-size: 14px;
+    }
+    .arrow {
+      color: #2d3748;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .realm-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .description {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f7fafc;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+    .description h3 {
+      margin-top: 0;
+      color: #2d3748;
+    }
+    .description ul {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      .box {
+        min-width: 200px;
+        padding: 15px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌐 Infinity Portal Architecture</h1>
+    <p class="subtitle">Multi-Realm Authentication System</p>
+    
+    <div class="diagram">
+      <div class="box">
+        🔐 Google Authentication
+      </div>
+      
+      <div class="arrow">↓</div>
+      
+      <div class="box core">
+        🧠 Infinity Core (Rogers)
+      </div>
+      
+      <div class="arrow">↓</div>
+      
+      <div class="realm-row">
+        <div class="box realm">
+          🏠 Portal Realm
+        </div>
+        <div class="box realm">
+          🛒 Marketplace Realm
+        </div>
+      </div>
+      
+      <div class="realm-row">
+        <div class="box realm">
+          👥 Socializer Realm
+        </div>
+        <div class="box realm">
+          🤖 AI Builder Realm
+        </div>
+      </div>
+    </div>
+    
+    <div class="description">
+      <h3>Architecture Overview</h3>
+      <ul>
+        <li><strong>Google Authentication:</strong> Primary OAuth 2.0 provider for secure user authentication</li>
+        <li><strong>Infinity Core (Rogers):</strong> Central authentication hub that verifies tokens and distributes sessions to all realms</li>
+        <li><strong>Portal Realm:</strong> Home base with productivity tools (calculator, alarms, etc.)</li>
+        <li><strong>Marketplace Realm:</strong> Token-based commerce platform for listings and trading</li>
+        <li><strong>Socializer Realm:</strong> Community connections and local networking</li>
+        <li><strong>AI Builder Realm:</strong> AI-powered creation and development tools</li>
+      </ul>
+    </div>
+    
+    <div class="description">
+      <h3>Key Features</h3>
+      <ul>
+        <li>✓ Single Sign-On (SSO) across all realms</li>
+        <li>✓ Centralized session management through Rogers Core</li>
+        <li>✓ Context-aware AI assistant available in all realms</li>
+        <li>✓ Secure JWT token handling</li>
+        <li>✓ RESTful API architecture</li>
+        <li>✓ Extensible realm system for future growth</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
