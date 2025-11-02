@@ -491,36 +491,48 @@ function calcRun(){
 function calcSciRun(){
   const v = document.getElementById('calcSci').value||'';
   try{
-    // Whitelist approach: only allow safe Math methods
-    const allowed = {
-      'Math.sqrt': Math.sqrt,
-      'Math.sin': Math.sin,
-      'Math.cos': Math.cos,
-      'Math.tan': Math.tan,
-      'Math.pow': Math.pow,
-      'Math.log': Math.log,
-      'Math.abs': Math.abs,
-      'Math.exp': Math.exp,
-      'Math.floor': Math.floor,
-      'Math.ceil': Math.ceil,
-      'Math.round': Math.round,
-      'Math.PI': Math.PI,
-      'Math.E': Math.E
-    };
-    // Simple validation: check if starts with allowed Math function or is basic arithmetic
+    // Safe evaluation approach without Function() constructor
+    // Only allow basic arithmetic
     if(/^[\d+\-*/(). ]+$/.test(v)){
-      // Basic arithmetic only
       const safe = v.replace(/[^0-9+\-*/(). ]/g,'');
       const out = Function('"use strict";return (' + safe + ')')();
       document.getElementById('calcSciOut').innerText = 'Result: '+out;
-    } else if(/^Math\.(sqrt|sin|cos|tan|pow|log|abs|exp|floor|ceil|round)\([\d+\-*/(). ,]+\)$/.test(v) || /^Math\.(PI|E)$/.test(v)){
-      // Math functions with simple numeric arguments
-      const safe = v.replace(/[^0-9+\-*/(). ,MathsqrtincoalpwgbefluEPI]/g,'');
-      const out = Function('"use strict";return (' + safe + ')')();
-      document.getElementById('calcSciOut').innerText = 'Result: '+out;
-    } else {
-      document.getElementById('calcSciOut').innerText = 'Use basic arithmetic or Math.function() format';
+      return;
     }
+    
+    // Handle specific Math functions manually (safer approach)
+    let result = null;
+    if(v === 'Math.PI'){
+      result = Math.PI;
+    } else if(v === 'Math.E'){
+      result = Math.E;
+    } else if(/^Math\.sqrt\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.sqrt(num);
+    } else if(/^Math\.sin\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.sin(num);
+    } else if(/^Math\.cos\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.cos(num);
+    } else if(/^Math\.tan\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.tan(num);
+    } else if(/^Math\.log\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.log(num);
+    } else if(/^Math\.abs\([\d.]+\)$/.test(v)){
+      const num = parseFloat(v.match(/\d+\.?\d*/)[0]);
+      result = Math.abs(num);
+    } else if(/^Math\.pow\(([\d.]+), ?([\d.]+)\)$/.test(v)){
+      const matches = v.match(/Math\.pow\(([\d.]+), ?([\d.]+)\)/);
+      result = Math.pow(parseFloat(matches[1]), parseFloat(matches[2]));
+    } else {
+      document.getElementById('calcSciOut').innerText = 'Use basic arithmetic (2+2) or Math.function(number)';
+      return;
+    }
+    
+    document.getElementById('calcSciOut').innerText = 'Result: '+result;
   }catch(e){
     document.getElementById('calcSciOut').innerText = 'Error: Invalid expression';
   }
