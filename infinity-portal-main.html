@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity Portal - All Features</title>
+  <style>
+    :root {
+      --primary-blue: #0070ba;
+      --secondary-blue: #005f9e;
+      --bg-light: #f9f9f9;
+      --bg-white: #ffffff;
+      --border-color: #e0e0e0;
+      --text-dark: #222;
+      --text-muted: #666;
+      --success-green: #22c55e;
+      --warning-orange: #f59e0b;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+    
+    nav {
+      background: var(--bg-light);
+      padding: 15px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    nav button {
+      padding: 10px 20px;
+      border: none;
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    nav button:hover {
+      background: var(--secondary-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    nav button.active {
+      background: var(--secondary-blue);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .content {
+      padding: 30px;
+      min-height: 500px;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .feature-card {
+      background: var(--bg-light);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary-blue);
+    }
+    
+    .feature-card h3 {
+      color: var(--primary-blue);
+      margin-bottom: 10px;
+      font-size: 1.3em;
+    }
+    
+    .feature-card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    
+    .feature-card .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    
+    .status.live { background: #d1fae5; color: #065f46; }
+    .status.beta { background: #fed7aa; color: #92400e; }
+    .status.coming-soon { background: #dbeafe; color: #1e40af; }
+    
+    .section {
+      display: none;
+    }
+    
+    .section.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feature-detail {
+      background: var(--bg-white);
+      border-left: 4px solid var(--primary-blue);
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    
+    .feature-detail h2 {
+      color: var(--primary-blue);
+      margin-bottom: 15px;
+    }
+    
+    .feature-detail ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    
+    .feature-detail li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    
+    .action-button {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s;
+    }
+    
+    .action-button:hover {
+      background: var(--secondary-blue);
+      transform: scale(1.05);
+    }
+    
+    .search-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 25px;
+      font-size: 1em;
+      margin: 20px auto;
+      display: block;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+    }
+    
+    footer {
+      background: var(--bg-light);
+      padding: 20px;
+      text-align: center;
+      border-top: 2px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.8em; }
+      .feature-grid { grid-template-columns: 1fr; }
+      nav { flex-direction: column; }
+      nav button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌌 Infinity Portal</h1>
+      <p>Your Gateway to Infinite Possibilities</p>
+    </header>
+    
+    <nav id="mainNav">
+      <button onclick="showSection('home')" class="active">🏠 Home</button>
+      <button onclick="showSection('media')">📹 Media & Hosting</button>
+      <button onclick="showSection('communication')">💬 Communication</button>
+      <button onclick="showSection('spaces')">🏛️ Themed Spaces</button>
+      <button onclick="showSection('tools')">🔧 Tools & Apps</button>
+      <button onclick="showSection('innovation')">🚀 Innovation</button>
+      <button onclick="showSection('government')">🏛️ Government & Civic</button>
+    </nav>
+    
+    <div class="content">
+      <!-- Home Section -->
+      <div id="home" class="section active">
+        <h2>Welcome to Infinity Portal</h2>
+        <input type="text" class="search-box" placeholder="Search features..." onkeyup="searchFeatures(this.value)">
+        
+        <div class="feature-detail">
+          <h2>Platform Overview</h2>
+          <p>Infinity Portal is a comprehensive platform integrating multiple innovative features for communication, collaboration, and community building.</p>
+          <ul>
+            <li><strong>Media & Hosting:</strong> Image hosting, video live streaming, Twitter Spaces integration</li>
+            <li><strong>Communication:</strong> Peer-to-peer messaging, eBay-style messaging system</li>
+            <li><strong>Themed Spaces:</strong> Custom community spaces for different interest groups</li>
+            <li><strong>Tools & Apps:</strong> Radio stations, scanners, mapping, authentication systems</li>
+            <li><strong>Innovation:</strong> Signal generators, AI analysis, rare earth element propagation</li>
+            <li><strong>Government & Civic:</strong> NWO war room, 501 non-profit tools, voice response systems</li>
+          </ul>
+          <button class="action-button" onclick="showSection('media')">Get Started →</button>
+        </div>
+      </div>
+      
+      <!-- Media & Hosting Section -->
+      <div id="media" class="section">
+        <h2>Media & Hosting Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('imageHosting')">
+            <h3>📸 Image Hosting</h3>
+            <p>Upload, store, and share images with advanced management features.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('videoLiveHosting')">
+            <h3>🎥 Video Live Hosting</h3>
+            <p>Live video streaming platform with multi-platform sharing capabilities.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('twitterSpaces')">
+            <h3>🐦 Twitter Spaces Integration</h3>
+            <p>Share live spaces to Twitter and other platforms simultaneously.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('tvChannel')">
+            <h3>📺 Digital TV Channel</h3>
+            <p>Digital channel broadcasting system for custom content delivery.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Communication Section -->
+      <div id="communication" class="section">
+        <h2>Communication Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('kikMessaging')">
+            <h3>💬 Kik-Style Messaging</h3>
+            <p>Instant messaging with distinct purposes for business and personal use.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('p2pMessaging')">
+            <h3>🔄 Peer-to-Peer Messaging</h3>
+            <p>eBay-style messaging system for secure transactions and communications.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('videoCallPitch')">
+            <h3>📞 Video Call & Sales Pitch</h3>
+            <p>In-app live video calls optimized for sales presentations and pitches.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Themed Spaces Section -->
+      <div id="spaces" class="section">
+        <h2>Themed Community Spaces</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('zagonelsSpace')">
+            <h3>🌟 Zagonels Space</h3>
+            <p>A hangout for Zagonels friends with collaborative project building and chat features.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('mazesSpaces')">
+            <h3>🏰 Mazes Spaces</h3>
+            <p>Multiple themed maze spaces for exploration and community engagement (10+ designs).</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('foreignersLounge')">
+            <h3>🌍 Foreigners Lounge</h3>
+            <p>A space where people from different cultures meet and exchange customs.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('radioClubhouse')">
+            <h3>📻 Radio Electronics Clubhouse</h3>
+            <p>Community space for radio and electronics enthusiasts to collaborate.</p>
+            <span class="status beta">BETA</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tools & Apps Section -->
+      <div id="tools" class="section">
+        <h2>Tools & Applications</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('socialMedia')">
+            <h3>📱 Social Media Platform</h3>
+            <p>Share news and connect with like-minded people. 100+ categories with 1000s of subcategories.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('radioStation')">
+            <h3>📻 Radio Station App</h3>
+            <p>Shortwave AM/FM radio streaming and broadcasting platform.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('bearcatScanner')">
+            <h3>📡 Bearcat Scanner App</h3>
+            <p>Digital scanner application for monitoring radio frequencies.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('mapping')">
+            <h3>🗺️ Custom Mapping</h3>
+            <p>Alternative to Google Maps using delta vectors vs ground positions.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('coinAuth')">
+            <h3>💰 Coin Authentication Center</h3>
+            <p>Professional coin grading with COA, serial numbers, and photo documentation.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('jewelryDesign')">
+            <h3>💎 Jewelry Design App</h3>
+            <p>CAD software for jewelry design with image generation capabilities.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('wildlifeAnalyzer')">
+            <h3>🌳 Tree & Wildlife Analyzer</h3>
+            <p>Photo analyzer for trees, wildlife, leaves, grass, bugs, and animals.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Innovation Section -->
+      <div id="innovation" class="section">
+        <h2>Innovation & Research</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('signalGenerator')">
+            <h3>⚡ Rare Earth Element Signal Generator</h3>
+            <p>Propagate waves and emissions of rare earth elements synthetically, bypassing physical form requirements.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('brainwave')">
+            <h3>🧠 Brainwave Technology</h3>
+            <p>Advanced neural interface for those ready to explore enhanced cognitive capabilities.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('cloudComputing')">
+            <h3>☁️ Cloud Computing Integration</h3>
+            <p>Integration with IBM, OpenAI, and Meta technologies for advanced computing.</p>
+            <span class="status beta">BETA</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Government & Civic Section -->
+      <div id="government" class="section">
+        <h2>Government & Civic Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card" onclick="openFeature('nwoWarRoom')">
+            <h3>🏛️ NWO War Room</h3>
+            <p>Chat room and data exchange for real news. Presidential and cabinet member discussions - no rumors, only verified information.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('nonprofit501')">
+            <h3>📋 Government 501 Non-Profit Portal</h3>
+            <p>Tools for non-profit needs, laws, code enforcement, and regulatory compliance.</p>
+            <span class="status beta">BETA</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('vpVoiceResponse')">
+            <h3>🎙️ VP On Demand Voice Response</h3>
+            <p>Voice response system for serious world needs and urgent communications.</p>
+            <span class="status coming-soon">COMING SOON</span>
+          </div>
+          
+          <div class="feature-card" onclick="openFeature('dreamCatcher')">
+            <h3>✨ Dream Catcher Networking</h3>
+            <p>Network to make dreams come true - connect with people and resources to achieve goals.</p>
+            <span class="status beta">BETA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>&copy; 2025 Infinity Portal. All rights reserved. | Built with innovation and purpose.</p>
+    </footer>
+  </div>
+  
+  <script>
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById(sectionId).classList.add('active');
+      
+      // Update nav buttons
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+    
+    function openFeature(featureId) {
+      // Navigate to dedicated feature pages
+      const featurePages = {
+        'imageHosting': 'features/imageHosting.html',
+        'videoLiveHosting': 'features/videoLiveHosting.html',
+        'kikMessaging': 'features/kikMessaging.html',
+        'p2pMessaging': 'features/p2pMessaging.html',
+        'zagonelsSpace': 'features/zagonelsSpace.html',
+        'foreignersLounge': 'features/foreignersLounge.html',
+        'coinAuth': 'features/coinAuth.html',
+        'nwoWarRoom': 'features/nwoWarRoom.html',
+        'socialMedia': 'features/socialMedia.html',
+        'dreamCatcher': 'features/dreamCatcher.html'
+      };
+      
+      if (featurePages[featureId]) {
+        window.location.href = featurePages[featureId];
+      } else {
+        alert(`Opening ${featureId}. This feature is under development and will be available soon.`);
+      }
+    }
+    
+    function searchFeatures(query) {
+      query = query.toLowerCase();
+      const cards = document.querySelectorAll('.feature-card');
+      
+      cards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        
+        if (title.includes(query) || description.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    
+    // Initialize
+    console.log('Infinity Portal initialized');
+  </script>
+</body>
+</html>

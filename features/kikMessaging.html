@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kik-Style Messaging - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #0070ba, #005f9e);
+      color: white;
+      padding: 20px;
+    }
+    .back-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    h1 { font-size: 1.5em; }
+    .sidebar {
+      background: #f9f9f9;
+      border-right: 1px solid #e0e0e0;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .chat-list {
+      list-style: none;
+    }
+    .chat-item {
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chat-item:hover { background: #e0e0e0; }
+    .chat-item.active { background: #0070ba; color: white; }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.sent {
+      align-items: flex-end;
+    }
+    .message.received {
+      align-items: flex-start;
+    }
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      word-wrap: break-word;
+    }
+    .sent .message-bubble {
+      background: #0070ba;
+      color: white;
+    }
+    .received .message-bubble {
+      background: white;
+      border: 1px solid #e0e0e0;
+    }
+    .message-time {
+      font-size: 0.75em;
+      color: #666;
+      margin-top: 5px;
+    }
+    .input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 10px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 1em;
+    }
+    .input-area button {
+      background: #0070ba;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .input-area button:hover { background: #005f9e; }
+    .purpose-selector {
+      padding: 10px;
+      background: #fff3cd;
+      border-bottom: 1px solid #ffc107;
+    }
+    .purpose-btn {
+      padding: 6px 12px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .purpose-btn.active { background: #0070ba; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="../infinity-portal-main.html" class="back-btn">← Back</a>
+      <h1>💬 Kik-Style Messaging</h1>
+      <p style="font-size: 0.9em; opacity: 0.9;">Distinct messaging for different purposes</p>
+    </div>
+    
+    <div class="purpose-selector">
+      <strong>Purpose:</strong>
+      <button class="purpose-btn active" onclick="setPurpose('personal')">Personal</button>
+      <button class="purpose-btn" onclick="setPurpose('business')">Business</button>
+      <button class="purpose-btn" onclick="setPurpose('sales')">Sales</button>
+    </div>
+    
+    <div class="main-content">
+      <div class="messages" id="messages">
+        <div class="message received">
+          <div class="message-bubble">Welcome to Infinity Messaging! Start a conversation.</div>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+      
+      <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentPurpose = 'personal';
+    
+    function setPurpose(purpose) {
+      currentPurpose = purpose;
+      document.querySelectorAll('.purpose-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      const messages = document.getElementById('messages');
+      messages.innerHTML += `
+        <div class="message received">
+          <div class="message-bubble">Switched to ${purpose} mode</div>
+          <div class="message-time">${new Date().toLocaleTimeString()}</div>
+        </div>
+      `;
+      messages.scrollTop = messages.scrollHeight;
+    }
+    
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const messages = document.getElementById('messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message sent';
+      messageDiv.innerHTML = `
+        <div class="message-bubble">${escapeHtml(text)}</div>
+        <div class="message-time">${new Date().toLocaleTimeString()}</div>
+      `;
+      
+      messages.appendChild(messageDiv);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+      
+      // Simulate response
+      setTimeout(() => {
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'message received';
+        responseDiv.innerHTML = `
+          <div class="message-bubble">Message received in ${currentPurpose} mode!</div>
+          <div class="message-time">${new Date().toLocaleTimeString()}</div>
+        `;
+        messages.appendChild(responseDiv);
+        messages.scrollTop = messages.scrollHeight;
+      }, 1000);
+    }
+    
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

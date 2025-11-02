@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foreigners Lounge - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #059669; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #059669;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 3px solid transparent;
+    }
+    .tab.active {
+      color: #059669;
+      border-bottom-color: #059669;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px 0;
+    }
+    .tab-content.active { display: block; }
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .culture-card {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .culture-card:hover {
+      border-color: #059669;
+      transform: translateY(-5px);
+    }
+    .culture-card h3 { color: #059669; margin-bottom: 10px; }
+    .flag {
+      font-size: 3em;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .chat-section {
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 400px;
+    }
+    .exchange-section {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .exchange-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #059669;
+    }
+    .btn {
+      background: #059669;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #047857; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🌍 Foreigners Lounge</h1>
+    <p>A space where people from different cultures meet and exchange customs, traditions, and experiences.</p>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('cultures')">Cultures</button>
+      <button class="tab" onclick="showTab('chat')">Community Chat</button>
+      <button class="tab" onclick="showTab('exchange')">Cultural Exchange</button>
+    </div>
+    
+    <div id="cultures" class="tab-content active">
+      <h2 style="margin-bottom: 20px;">Explore Different Cultures</h2>
+      <div class="culture-grid">
+        <div class="culture-card" onclick="exploreCulture('usa')">
+          <div class="flag">🇺🇸</div>
+          <h3>United States</h3>
+          <p>American culture, traditions, and customs</p>
+        </div>
+        <div class="culture-card" onclick="exploreCulture('japan')">
+          <div class="flag">🇯🇵</div>
+          <h3>Japan</h3>
+          <p>Japanese traditions and etiquette</p>
+        </div>
+        <div class="culture-card" onclick="exploreCulture('india')">
+          <div class="flag">🇮🇳</div>
+          <h3>India</h3>
+          <p>Rich Indian heritage and festivals</p>
+        </div>
+        <div class="culture-card" onclick="exploreCulture('mexico')">
+          <div class="flag">🇲🇽</div>
+          <h3>Mexico</h3>
+          <p>Mexican culture and celebrations</p>
+        </div>
+        <div class="culture-card" onclick="exploreCulture('germany')">
+          <div class="flag">🇩🇪</div>
+          <h3>Germany</h3>
+          <p>German traditions and customs</p>
+        </div>
+        <div class="culture-card" onclick="exploreCulture('brazil')">
+          <div class="flag">🇧🇷</div>
+          <h3>Brazil</h3>
+          <p>Brazilian carnival and culture</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="chat" class="tab-content">
+      <div class="chat-section">
+        <h3 style="margin-bottom: 15px;">💬 Community Discussion</h3>
+        <p>Connect with people from around the world and share your experiences!</p>
+        <button class="btn">Join Chat Room</button>
+      </div>
+    </div>
+    
+    <div id="exchange" class="tab-content">
+      <div class="exchange-section">
+        <h3 style="margin-bottom: 15px;">🤝 Cultural Exchange Posts</h3>
+        
+        <div class="exchange-item">
+          <h4>Tea Ceremony Experience - From Japan</h4>
+          <p>Join me to learn about the traditional Japanese tea ceremony and its significance.</p>
+          <small style="color: #666;">Posted by Yuki • 2 hours ago</small>
+        </div>
+        
+        <div class="exchange-item">
+          <h4>Diwali Celebration Tips - From India</h4>
+          <p>Sharing how we celebrate the Festival of Lights and what it means to us.</p>
+          <small style="color: #666;">Posted by Raj • 5 hours ago</small>
+        </div>
+        
+        <div class="exchange-item">
+          <h4>Oktoberfest Traditions - From Germany</h4>
+          <p>Everything you need to know about authentic Oktoberfest celebrations!</p>
+          <small style="color: #666;">Posted by Hans • 1 day ago</small>
+        </div>
+        
+        <button class="btn">Share Your Culture</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+    
+    function exploreCulture(culture) {
+      alert(`Exploring ${culture} culture. This will open detailed information about customs, traditions, and ways to connect with people from this culture.`);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zagonels Space - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #7c3aed; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #7c3aed;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 20px;
+    }
+    .sidebar {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .sidebar h3 { color: #7c3aed; margin-bottom: 15px; }
+    .friend-list {
+      list-style: none;
+    }
+    .friend-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .friend-item:hover {
+      background: #7c3aed;
+      color: white;
+    }
+    .main-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .chat-area {
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 10px;
+      max-width: 70%;
+    }
+    .message.me {
+      background: #7c3aed;
+      color: white;
+      margin-left: auto;
+    }
+    .message.other {
+      background: white;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    .btn {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover { background: #6d28d9; }
+    .projects-area {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .projects-area h3 { color: #7c3aed; margin-bottom: 15px; }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .project-card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .project-card:hover {
+      border-color: #7c3aed;
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🌟 Zagonels Space</h1>
+    <p>A hangout for Zagonels friends - Build projects together and chat!</p>
+    
+    <div class="layout">
+      <div class="sidebar">
+        <h3>Friends Online</h3>
+        <ul class="friend-list">
+          <li class="friend-item">🟢 Alice</li>
+          <li class="friend-item">🟢 Bob</li>
+          <li class="friend-item">🟡 Charlie (Away)</li>
+          <li class="friend-item">🔴 David (Offline)</li>
+          <li class="friend-item">🟢 Emma</li>
+        </ul>
+      </div>
+      
+      <div class="main-area">
+        <div class="chat-area">
+          <h3 style="color: #7c3aed; margin-bottom: 15px;">💬 Group Chat</h3>
+          <div class="messages" id="messages">
+            <div class="message other"><strong>Alice:</strong> Hey everyone! Working on the new feature.</div>
+            <div class="message other"><strong>Bob:</strong> Sounds great! Need any help?</div>
+            <div class="message me"><strong>You:</strong> I'm here to help too!</div>
+          </div>
+          <div class="input-area">
+            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button class="btn" onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+        
+        <div class="projects-area">
+          <h3>🚀 Active Projects</h3>
+          <div class="project-grid">
+            <div class="project-card" onclick="openProject('healthcare')">
+              <h4>Healthcare System</h4>
+              <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Building navigation for healthcare</p>
+            </div>
+            <div class="project-card" onclick="openProject('infinity-logic')">
+              <h4>Infinity Logic</h4>
+              <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Core logic development</p>
+            </div>
+            <div class="project-card" onclick="openProject('ui-design')">
+              <h4>UI Design</h4>
+              <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Interface improvements</p>
+            </div>
+            <div class="project-card" onclick="openProject('new')">
+              <h4>+ New Project</h4>
+              <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Start something new</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const messages = document.getElementById('messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message me';
+      msgDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(text)}`;
+      messages.appendChild(msgDiv);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+    }
+    
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') sendMessage();
+    }
+    
+    function openProject(projectId) {
+      alert(`Opening ${projectId} project. This will open the collaborative project workspace.`);
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
