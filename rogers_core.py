@@ -58,7 +58,11 @@ def require_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         auth_header = request.headers.get('Authorization')
-        auth_data = request.json.get('auth') if request.json else None
+        auth_data = None
+        
+        # Try to get auth from JSON body for POST requests
+        if request.method == 'POST' and request.is_json:
+            auth_data = request.json.get('auth') if request.json else None
         
         token = None
         if auth_header and auth_header.startswith('Bearer '):

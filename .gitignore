@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.pid
+nohup.out
+
+# Temporary files
+/tmp/
+*.tmp
+*.bak
+
+# Environment
+.env
+.env.local
+
+# Docker
+.dockerignore
+
+# Application specific
+infinity_app.log
+infinity_app.pid
+test_app.log
+test_app.pid
