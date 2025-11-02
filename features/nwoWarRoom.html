@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NWO War Room - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #dc2626; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #1e293b;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .warning-banner {
+      background: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .warning-banner h3 {
+      color: #dc2626;
+      margin-bottom: 10px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 3px solid transparent;
+    }
+    .tab.active {
+      color: #dc2626;
+      border-bottom-color: #dc2626;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px 0;
+    }
+    .tab-content.active { display: block; }
+    .news-feed {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .news-item {
+      background: white;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid #dc2626;
+    }
+    .news-item h4 {
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+    .verified-badge {
+      display: inline-block;
+      background: #059669;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.75em;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .chat-section {
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .message {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border-left: 3px solid #1e293b;
+    }
+    .message .author {
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 5px;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    .btn {
+      background: #1e293b;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover { background: #0f172a; }
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .data-card {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+    }
+    .data-card h4 {
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🏛️ NWO War Room</h1>
+    <p>Chat room and data exchange for verified information only - No false news, no rumors</p>
+    
+    <div class="warning-banner">
+      <h3>⚠️ Verified Information Only</h3>
+      <p>This is a serious platform for presidential and cabinet member level discussions. All information must be verified before posting. False information and rumors are strictly prohibited.</p>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('news')">Verified News</button>
+      <button class="tab" onclick="showTab('chat')">Discussion Room</button>
+      <button class="tab" onclick="showTab('data')">Data Exchange</button>
+    </div>
+    
+    <div id="news" class="tab-content active">
+      <div class="news-feed">
+        <h2 style="margin-bottom: 20px;">📰 Verified News Feed</h2>
+        
+        <div class="news-item">
+          <h4>International Summit Results <span class="verified-badge">✓ VERIFIED</span></h4>
+          <p>Official statement from the international economic summit held today. Multiple sources confirmed...</p>
+          <small style="color: #666;">Source: Official Government Channel | 2 hours ago</small>
+        </div>
+        
+        <div class="news-item">
+          <h4>Policy Update Announcement <span class="verified-badge">✓ VERIFIED</span></h4>
+          <p>New policy updates announced by cabinet members during press conference...</p>
+          <small style="color: #666;">Source: Presidential Office | 5 hours ago</small>
+        </div>
+        
+        <div class="news-item">
+          <h4>Global Security Briefing <span class="verified-badge">✓ VERIFIED</span></h4>
+          <p>Official security briefing released to authorized personnel. Key points include...</p>
+          <small style="color: #666;">Source: Security Council | 1 day ago</small>
+        </div>
+      </div>
+    </div>
+    
+    <div id="chat" class="tab-content">
+      <div class="chat-section">
+        <h2 style="margin-bottom: 20px;">💬 Secure Discussion Room</h2>
+        <div class="messages" id="messages">
+          <div class="message">
+            <div class="author">Official Representative <span class="verified-badge">✓ VERIFIED</span></div>
+            <div>Welcome to the secure discussion room. All participants are verified.</div>
+            <small style="color: #666;">10:30 AM</small>
+          </div>
+        </div>
+        <div class="input-area">
+          <input type="text" id="chatInput" placeholder="Type your message (verified users only)..." onkeypress="handleKeyPress(event)">
+          <button class="btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="data" class="tab-content">
+      <h2 style="margin-bottom: 20px;">📊 Data Exchange Center</h2>
+      <p style="margin-bottom: 20px;">Secure data sharing for verified information and intelligence</p>
+      
+      <div class="data-grid">
+        <div class="data-card">
+          <h4>Economic Reports</h4>
+          <p>Latest verified economic data and analysis</p>
+          <button class="btn" style="margin-top: 10px;">Access Reports</button>
+        </div>
+        
+        <div class="data-card">
+          <h4>Policy Documents</h4>
+          <p>Official policy documents and briefings</p>
+          <button class="btn" style="margin-top: 10px;">Access Documents</button>
+        </div>
+        
+        <div class="data-card">
+          <h4>Intelligence Briefings</h4>
+          <p>Verified intelligence updates (authorized access)</p>
+          <button class="btn" style="margin-top: 10px;">Request Access</button>
+        </div>
+        
+        <div class="data-card">
+          <h4>Communication Archives</h4>
+          <p>Historical records and communications</p>
+          <button class="btn" style="margin-top: 10px;">Browse Archives</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+    
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const messages = document.getElementById('messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message';
+      msgDiv.innerHTML = `
+        <div class="author">You <span class="verified-badge">✓ VERIFIED</span></div>
+        <div>${escapeHtml(text)}</div>
+        <small style="color: #666;">${new Date().toLocaleTimeString()}</small>
+      `;
+      messages.appendChild(msgDiv);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+    }
+    
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') sendMessage();
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

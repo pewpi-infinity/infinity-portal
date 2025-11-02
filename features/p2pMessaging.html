@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P2P Messaging - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #0070ba; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #0070ba;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .transaction-card {
+      background: #f9f9f9;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .messages-area {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .msg {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .msg.buyer { background: #e3f2fd; text-align: right; }
+    .msg.seller { background: #f3e5f5; text-align: left; }
+    .msg-input {
+      display: flex;
+      gap: 10px;
+    }
+    .msg-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+    .btn {
+      background: #0070ba;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #005f9e; }
+    .btn-success { background: #22c55e; }
+    .btn-success:hover { background: #16a34a; }
+    .status {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+    .status.active { background: #d1fae5; color: #065f46; }
+    .status.pending { background: #fed7aa; color: #92400e; }
+    .status.completed { background: #dbeafe; color: #1e40af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🔄 Peer-to-Peer Messaging</h1>
+    <p>eBay-style messaging system for secure transaction communications</p>
+    
+    <div class="transaction-card">
+      <div class="transaction-header">
+        <div>
+          <h3>Transaction #12345</h3>
+          <p style="color: #666; font-size: 0.9em;">Item: Vintage Watch</p>
+        </div>
+        <span class="status active">Active</span>
+      </div>
+      
+      <div class="messages-area" id="messages1">
+        <div class="msg seller">
+          <strong>Seller:</strong> Hello! This watch is in excellent condition.
+        </div>
+        <div class="msg buyer">
+          <strong>Buyer:</strong> Can you provide more photos?
+        </div>
+        <div class="msg seller">
+          <strong>Seller:</strong> Sure, I'll upload them shortly.
+        </div>
+      </div>
+      
+      <div class="msg-input">
+        <input type="text" id="input1" placeholder="Type your message...">
+        <button class="btn" onclick="sendMsg('messages1', 'input1', 'buyer')">Send</button>
+      </div>
+    </div>
+    
+    <div class="transaction-card">
+      <div class="transaction-header">
+        <div>
+          <h3>Transaction #12346</h3>
+          <p style="color: #666; font-size: 0.9em;">Item: Laptop Computer</p>
+        </div>
+        <span class="status pending">Pending</span>
+      </div>
+      
+      <div class="messages-area" id="messages2">
+        <div class="msg seller">
+          <strong>Seller:</strong> This laptop is like new, only 6 months old.
+        </div>
+        <div class="msg buyer">
+          <strong>Buyer:</strong> Does it come with the original box?
+        </div>
+      </div>
+      
+      <div class="msg-input">
+        <input type="text" id="input2" placeholder="Type your message...">
+        <button class="btn" onclick="sendMsg('messages2', 'input2', 'buyer')">Send</button>
+      </div>
+    </div>
+    
+    <div class="transaction-card">
+      <div class="transaction-header">
+        <div>
+          <h3>Transaction #12347</h3>
+          <p style="color: #666; font-size: 0.9em;">Item: Gaming Console</p>
+        </div>
+        <span class="status completed">Completed</span>
+      </div>
+      
+      <div class="messages-area" id="messages3">
+        <div class="msg seller">
+          <strong>Seller:</strong> Package has been shipped!
+        </div>
+        <div class="msg buyer">
+          <strong>Buyer:</strong> Great! Thank you!
+        </div>
+        <div class="msg buyer">
+          <strong>Buyer:</strong> Item received. Everything is perfect!
+        </div>
+      </div>
+      
+      <button class="btn btn-success" style="width: 100%;">Leave Feedback</button>
+    </div>
+  </div>
+  
+  <script>
+    function sendMsg(containerId, inputId, role) {
+      const input = document.getElementById(inputId);
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      const container = document.getElementById(containerId);
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${role}`;
+      msgDiv.innerHTML = `<strong>${role === 'buyer' ? 'Buyer' : 'Seller'}:</strong> ${escapeHtml(text)}`;
+      
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+      input.value = '';
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

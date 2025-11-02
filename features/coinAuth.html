@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Authentication Center - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #d97706; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #d97706;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .form-section {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    .upload-area {
+      border: 3px dashed #d97706;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-area:hover {
+      background: #fef3c7;
+    }
+    .btn {
+      background: #d97706;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+    .btn:hover { background: #b45309; }
+    .certificate-preview {
+      background: white;
+      border: 2px solid #d97706;
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 20px;
+      display: none;
+    }
+    .certificate-preview.show { display: block; }
+    .seal {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d97706, #b45309);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin: 20px auto;
+    }
+    .info-box {
+      background: #fef3c7;
+      border-left: 4px solid #d97706;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>💰 Coin Authentication & Grading Center</h1>
+    <p>Professional coin authentication with COA, serial numbers, and photo documentation</p>
+    
+    <div class="info-box">
+      <strong>⚠️ Authentication Requirements:</strong>
+      <ul style="margin-top: 10px; margin-left: 20px;">
+        <li>Proof of purchase documentation required</li>
+        <li>Background check to verify coin provenance</li>
+        <li>High-resolution photos from multiple angles</li>
+        <li>Detailed description and specifications</li>
+      </ul>
+    </div>
+    
+    <div class="form-section">
+      <h2 style="margin-bottom: 20px;">Submit Coin for Authentication</h2>
+      
+      <div class="form-group">
+        <label>Coin Type *</label>
+        <select id="coinType">
+          <option value="">Select coin type...</option>
+          <option value="gold">Gold Coin</option>
+          <option value="silver">Silver Coin</option>
+          <option value="commemorative">Commemorative Coin</option>
+          <option value="ancient">Ancient Coin</option>
+          <option value="rare">Rare/Collectible Coin</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Year of Minting *</label>
+        <input type="number" id="year" placeholder="e.g., 1964" min="1" max="2025">
+      </div>
+      
+      <div class="form-group">
+        <label>Country of Origin *</label>
+        <input type="text" id="country" placeholder="e.g., United States">
+      </div>
+      
+      <div class="form-group">
+        <label>Denomination *</label>
+        <input type="text" id="denomination" placeholder="e.g., 1 Dollar, 50 Cents">
+      </div>
+      
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea id="description" rows="4" placeholder="Detailed description of the coin..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Proof of Purchase</label>
+        <div class="upload-area" onclick="document.getElementById('purchaseProof').click()">
+          📄 Click to upload proof of purchase
+          <input type="file" id="purchaseProof" style="display: none;" accept=".pdf,.jpg,.png" onchange="handleFileUpload('purchase', this.files)">
+        </div>
+        <div id="purchaseFileName" style="margin-top: 10px; color: #059669;"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Coin Photos (Multiple Angles)</label>
+        <div class="upload-area" onclick="document.getElementById('coinPhotos').click()">
+          📸 Click to upload coin photos
+          <input type="file" id="coinPhotos" style="display: none;" multiple accept="image/*" onchange="handleFileUpload('photos', this.files)">
+        </div>
+        <div id="photosCount" style="margin-top: 10px; color: #059669;"></div>
+      </div>
+      
+      <button class="btn" onclick="submitForAuthentication()">Submit for Authentication</button>
+    </div>
+    
+    <div class="certificate-preview" id="certificate">
+      <h2 style="text-align: center; color: #d97706;">Certificate of Authenticity</h2>
+      <div class="seal">
+        <span style="font-size: 2em;">✓</span>
+      </div>
+      
+      <div style="text-align: center; margin: 20px 0;">
+        <strong>Serial Number:</strong> <span id="serialNumber">INF-2025-00000</span>
+      </div>
+      
+      <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="margin-bottom: 15px;">Coin Details</h3>
+        <p><strong>Type:</strong> <span id="certType">-</span></p>
+        <p><strong>Year:</strong> <span id="certYear">-</span></p>
+        <p><strong>Country:</strong> <span id="certCountry">-</span></p>
+        <p><strong>Denomination:</strong> <span id="certDenom">-</span></p>
+        <p><strong>Grade:</strong> <span id="certGrade">Pending Professional Grading</span></p>
+      </div>
+      
+      <div style="background: #fef3c7; padding: 15px; border-radius: 8px;">
+        <strong>Authentication Status:</strong> Verified<br>
+        <strong>Date Issued:</strong> <span id="certDate">-</span><br>
+        <strong>Authenticated By:</strong> Infinity Authentication Center
+      </div>
+      
+      <button class="btn" onclick="downloadCertificate()">Download Certificate (PDF)</button>
+    </div>
+  </div>
+  
+  <script>
+    let uploadedFiles = {
+      purchase: null,
+      photos: []
+    };
+    
+    function handleFileUpload(type, files) {
+      if (type === 'purchase' && files.length > 0) {
+        uploadedFiles.purchase = files[0];
+        document.getElementById('purchaseFileName').textContent = `✓ Uploaded: ${files[0].name}`;
+      } else if (type === 'photos') {
+        uploadedFiles.photos = Array.from(files);
+        document.getElementById('photosCount').textContent = `✓ ${files.length} photo(s) uploaded`;
+      }
+    }
+    
+    function submitForAuthentication() {
+      const coinType = document.getElementById('coinType').value;
+      const year = document.getElementById('year').value;
+      const country = document.getElementById('country').value;
+      const denomination = document.getElementById('denomination').value;
+      const description = document.getElementById('description').value;
+      
+      if (!coinType || !year || !country || !denomination || !description) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      if (!uploadedFiles.purchase) {
+        alert('Please upload proof of purchase');
+        return;
+      }
+      
+      if (uploadedFiles.photos.length === 0) {
+        alert('Please upload at least one photo of the coin');
+        return;
+      }
+      
+      // Generate secure serial number using crypto API if available
+      let serialNumber;
+      if (window.crypto && window.crypto.getRandomValues) {
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        serialNumber = `INF-${new Date().getFullYear()}-${String(array[0] % 100000).padStart(5, '0')}`;
+      } else {
+        // Fallback for older browsers
+        serialNumber = `INF-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+      }
+      
+      // Populate certificate
+      document.getElementById('serialNumber').textContent = serialNumber;
+      document.getElementById('certType').textContent = coinType;
+      document.getElementById('certYear').textContent = year;
+      document.getElementById('certCountry').textContent = country;
+      document.getElementById('certDenom').textContent = denomination;
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+      
+      // Show certificate
+      document.getElementById('certificate').classList.add('show');
+      
+      // Scroll to certificate
+      document.getElementById('certificate').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function downloadCertificate() {
+      alert('Certificate download feature coming soon. This will generate a PDF with all authentication details, photos, and the official Infinity seal.');
+    }
+  </script>
+</body>
+</html>

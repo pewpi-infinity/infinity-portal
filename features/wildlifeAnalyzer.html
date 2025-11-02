@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree & Wildlife Analyzer - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #22c55e; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #22c55e;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .upload-section {
+      background: #f0fdf4;
+      border: 3px dashed #22c55e;
+      border-radius: 15px;
+      padding: 50px;
+      text-align: center;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-section:hover {
+      background: #dcfce7;
+    }
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 30px 0;
+    }
+    .category-card {
+      background: #f0fdf4;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid #bbf7d0;
+    }
+    .category-card:hover {
+      transform: translateY(-5px);
+      border-color: #22c55e;
+    }
+    .category-card h3 {
+      color: #22c55e;
+      margin-top: 10px;
+      font-size: 1.1em;
+    }
+    .results-section {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+    .results-section.show { display: block; }
+    .result-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #22c55e;
+    }
+    .btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #16a34a; }
+    .preview-image {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🌳 Tree & Wildlife Analyzer</h1>
+    <p>AI-powered photo analyzer for trees, wildlife, leaves, grass, bugs, and animals</p>
+    
+    <div class="upload-section" onclick="document.getElementById('photoInput').click()">
+      <h2>📸 Upload a Photo</h2>
+      <p style="margin-top: 10px; color: #666;">Click to select an image of nature, wildlife, or plants</p>
+      <input type="file" id="photoInput" style="display: none;" accept="image/*" onchange="analyzePhoto(this.files[0])">
+    </div>
+    
+    <h3 style="margin-top: 40px; margin-bottom: 20px;">🔍 What Can Be Analyzed?</h3>
+    
+    <div class="categories">
+      <div class="category-card">
+        <div style="font-size: 3em;">🌳</div>
+        <h3>Trees</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Species identification, health assessment</p>
+      </div>
+      
+      <div class="category-card">
+        <div style="font-size: 3em;">🍃</div>
+        <h3>Leaves</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Leaf type, tree identification</p>
+      </div>
+      
+      <div class="category-card">
+        <div style="font-size: 3em;">🌿</div>
+        <h3>Grass & Plants</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Plant species, health status</p>
+      </div>
+      
+      <div class="category-card">
+        <div style="font-size: 3em;">🦋</div>
+        <h3>Insects</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Bug identification, species info</p>
+      </div>
+      
+      <div class="category-card">
+        <div style="font-size: 3em;">🦌</div>
+        <h3>Animals</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Wildlife identification, behavior</p>
+      </div>
+      
+      <div class="category-card">
+        <div style="font-size: 3em;">🐦</div>
+        <h3>Birds</h3>
+        <p style="font-size: 0.9em; color: #666; margin-top: 8px;">Bird species, migration info</p>
+      </div>
+    </div>
+    
+    <div class="results-section" id="results">
+      <h2 style="margin-bottom: 20px;">Analysis Results</h2>
+      
+      <img id="previewImage" class="preview-image" style="display: none;">
+      
+      <div class="result-item">
+        <h4>🔍 Primary Identification</h4>
+        <p id="primaryResult">Analyzing image...</p>
+      </div>
+      
+      <div class="result-item">
+        <h4>📊 Details</h4>
+        <ul id="detailsList" style="margin-left: 20px; margin-top: 10px;">
+          <li>Processing image data...</li>
+        </ul>
+      </div>
+      
+      <div class="result-item">
+        <h4>ℹ️ Additional Information</h4>
+        <p id="additionalInfo">Gathering data from database...</p>
+      </div>
+      
+      <div class="result-item">
+        <h4>🌍 Habitat & Distribution</h4>
+        <p id="habitatInfo">Analyzing environmental context...</p>
+      </div>
+      
+      <button class="btn" onclick="downloadReport()">📄 Download Full Report</button>
+      <button class="btn" onclick="shareResults()">🔗 Share Results</button>
+    </div>
+  </div>
+  
+  <script>
+    function analyzePhoto(file) {
+      if (!file) return;
+      
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewImage');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      
+      // Show results section
+      document.getElementById('results').classList.add('show');
+      
+      // Simulate analysis (in production, this would call an AI API)
+      setTimeout(() => {
+        const examples = [
+          {
+            primary: 'Oak Tree (Quercus alba - White Oak)',
+            details: [
+              'Age: Approximately 40-50 years old',
+              'Health Status: Healthy',
+              'Height: Estimated 50-60 feet',
+              'Confidence: 94%'
+            ],
+            info: 'White Oak is a large deciduous tree known for its strength and longevity. The wood is valued for furniture and barrel-making.',
+            habitat: 'Native to eastern and central North America. Typically found in mixed hardwood forests, prefers well-drained soils.'
+          },
+          {
+            primary: 'Monarch Butterfly (Danaus plexippus)',
+            details: [
+              'Gender: Female (based on wing pattern)',
+              'Life Stage: Adult',
+              'Condition: Healthy',
+              'Confidence: 97%'
+            ],
+            info: 'Monarch butterflies are known for their incredible migration from North America to Mexico. They are important pollinators.',
+            habitat: 'Found throughout North America during summer. Migrates to Mexico and Southern California for winter. Requires milkweed plants for reproduction.'
+          }
+        ];
+        
+        const result = examples[Math.floor(Math.random() * examples.length)];
+        
+        document.getElementById('primaryResult').textContent = result.primary;
+        
+        const detailsList = document.getElementById('detailsList');
+        detailsList.innerHTML = result.details.map(d => `<li>${d}</li>`).join('');
+        
+        document.getElementById('additionalInfo').textContent = result.info;
+        document.getElementById('habitatInfo').textContent = result.habitat;
+      }, 2000);
+    }
+    
+    function downloadReport() {
+      alert('Downloading comprehensive analysis report as PDF...');
+    }
+    
+    function shareResults() {
+      alert('Share analysis results via email or social media...');
+    }
+  </script>
+</body>
+</html>

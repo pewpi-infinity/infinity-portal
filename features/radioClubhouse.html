@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Electronics Clubhouse - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #f97316; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #f97316;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 3px solid transparent;
+    }
+    .tab.active { color: #f97316; border-bottom-color: #f97316; }
+    .tab-content { display: none; padding: 20px 0; }
+    .tab-content.active { display: block; }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .project-card {
+      background: #fff7ed;
+      border: 2px solid #fed7aa;
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: #f97316;
+      box-shadow: 0 8px 16px rgba(249, 115, 22, 0.2);
+    }
+    .project-card h3 { color: #f97316; margin-bottom: 10px; }
+    .btn {
+      background: #f97316;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #ea580c; }
+    .chat-area {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 400px;
+    }
+    .resource-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #f97316;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>📻 Radio Electronics Clubhouse</h1>
+    <p>Community space for radio and electronics enthusiasts to collaborate and share knowledge</p>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('projects')">Projects</button>
+      <button class="tab" onclick="showTab('discussions')">Discussions</button>
+      <button class="tab" onclick="showTab('resources')">Resources</button>
+      <button class="tab" onclick="showTab('events')">Events</button>
+    </div>
+    
+    <div id="projects" class="tab-content active">
+      <h2 style="margin-bottom: 20px;">🔧 Community Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <h3>Ham Radio Repeater Setup</h3>
+          <p>Building a community ham radio repeater for emergency communications.</p>
+          <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            👥 8 members | 🔨 In Progress
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>Software Defined Radio</h3>
+          <p>Experimenting with SDR technology and building custom receivers.</p>
+          <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            👥 15 members | 🔨 Active
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>Arduino RF Controllers</h3>
+          <p>Creating RF remote control systems using Arduino platforms.</p>
+          <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            👥 12 members | ✅ Completed
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>Antenna Design Workshop</h3>
+          <p>Collaborative antenna design and testing for various frequencies.</p>
+          <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            👥 20 members | 🔨 In Progress
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>Digital Modes Explorer</h3>
+          <p>Exploring FT8, RTTY, PSK31 and other digital radio modes.</p>
+          <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+            👥 10 members | 🔨 Active
+          </div>
+        </div>
+        
+        <div class="project-card" onclick="alert('Start a new project and invite community members to collaborate!')">
+          <h3>+ Start New Project</h3>
+          <p>Have an idea? Share it with the community!</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="discussions" class="tab-content">
+      <div class="chat-area">
+        <h3 style="margin-bottom: 15px;">💬 Community Discussions</h3>
+        <p>Connect with fellow radio and electronics enthusiasts, ask questions, and share your experiences.</p>
+        <button class="btn" style="margin-top: 15px;">Join Discussion Forum</button>
+      </div>
+    </div>
+    
+    <div id="resources" class="tab-content">
+      <h2 style="margin-bottom: 20px;">📚 Learning Resources</h2>
+      
+      <div class="resource-item">
+        <h4>Ham Radio License Study Guide</h4>
+        <p>Complete guide for Technician, General, and Extra class licenses.</p>
+        <button class="btn">View Resource</button>
+      </div>
+      
+      <div class="resource-item">
+        <h4>Electronics Basics Tutorial Series</h4>
+        <p>From Ohm's Law to complex circuit design - comprehensive tutorials.</p>
+        <button class="btn">Start Learning</button>
+      </div>
+      
+      <div class="resource-item">
+        <h4>Antenna Theory and Design</h4>
+        <p>Practical antenna design principles and calculators.</p>
+        <button class="btn">Access Tools</button>
+      </div>
+      
+      <div class="resource-item">
+        <h4>RF Safety Guidelines</h4>
+        <p>Important safety information for working with radio frequency equipment.</p>
+        <button class="btn">Read Guidelines</button>
+      </div>
+    </div>
+    
+    <div id="events" class="tab-content">
+      <h2 style="margin-bottom: 20px;">📅 Upcoming Events</h2>
+      
+      <div class="resource-item">
+        <h4>Weekend Field Day - June 2025</h4>
+        <p>Annual emergency communications exercise. All skill levels welcome!</p>
+        <small style="color: #666;">Saturday, June 28 - Sunday, June 29</small>
+      </div>
+      
+      <div class="resource-item">
+        <h4>Monthly Net - Every Tuesday</h4>
+        <p>Join our weekly on-air net to practice and connect with members.</p>
+        <small style="color: #666;">Every Tuesday at 7:00 PM local time</small>
+      </div>
+      
+      <div class="resource-item">
+        <h4>Electronics Workshop</h4>
+        <p>Hands-on soldering and circuit building workshop for beginners.</p>
+        <small style="color: #666;">Next session: November 15, 2025</small>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
