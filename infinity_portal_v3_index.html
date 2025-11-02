@@ -235,7 +235,7 @@
   </div>
 
   <!-- settings & mic UI -->
-  <button class="settingsBtn" title="Settings" onclick="openSettings()">⚙</button>
+  <button class="settingsBtn" id="settingsBtn" title="Settings" onclick="openSettings()">⚙</button>
 
 </div>
 
@@ -451,6 +451,11 @@ function toggleDev(){
   document.getElementById('devToggle').innerText = 'Developer Mode: ' + (DEV ? 'ON' : 'OFF');
 }
 
+/* settings */
+function openSettings(){
+  toggleSidebar();
+}
+
 /* mic autopilot (record only) */
 let recStream=null;
 let mediaRec=null;
@@ -486,8 +491,9 @@ function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(
   const ep = STORAGE.getItem(ROGERS_KEY) || '';
   if(ep) document.getElementById('rogersSaved').innerText = 'Rogers endpoint set';
   // interactions: close sidebar by clicking outside
+  const settingsBtn = document.getElementById('settingsBtn');
   document.addEventListener('click', (e)=>{
-    if(!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) sidebar.classList.remove('open');
+    if(!sidebar.contains(e.target) && !menuBtn.contains(e.target) && !settingsBtn.contains(e.target) && sidebar.classList.contains('open')) sidebar.classList.remove('open');
   });
 })();
 </script>
