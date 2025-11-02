@@ -6,7 +6,7 @@
 A javascript: URI containing a hardcoded OpenAI service account API key was exposed:
 
 ```
-javascript:setOpenAIKey('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')
+javascript:setOpenAIKey('sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKo...[REDACTED]')
 ```
 
 ## Immediate Actions Required
@@ -24,7 +24,7 @@ javascript:setOpenAIKey('sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKoFRrnHVOMsfVK
 
 Steps to revoke the key:
 1. Go to https://platform.openai.com/api-keys
-2. Find the service account key `sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKoFRrnHVOMsfVKe...`
+2. Find the service account key `sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKo...[REDACTED]`
 3. Click "Revoke" or "Delete"
 4. Generate a new key if needed
 5. Update any applications using the old key with the new key (via secure methods)
