@@ -301,22 +301,48 @@
       const container = document.getElementById('postsContainer');
       const post = document.createElement('div');
       post.className = 'post';
-      post.innerHTML = `
-        <div class="post-header">
-          <div class="avatar">ME</div>
-          <div>
-            <strong>You</strong>
-            <span class="category-badge">${category}</span>
-            <div style="font-size: 0.85em; color: #666;">Just now</div>
-          </div>
-        </div>
-        <p>${escapeHtml(content)}</p>
-        <div class="post-actions">
-          <span class="post-action">👍 Like (0)</span>
-          <span class="post-action">💬 Comment (0)</span>
-          <span class="post-action">🔄 Share (0)</span>
-        </div>
+      
+      const postHeader = document.createElement('div');
+      postHeader.className = 'post-header';
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = 'ME';
+      
+      const headerContent = document.createElement('div');
+      const userName = document.createElement('strong');
+      userName.textContent = 'You';
+      
+      const categoryBadge = document.createElement('span');
+      categoryBadge.className = 'category-badge';
+      categoryBadge.textContent = category;
+      
+      const timestamp = document.createElement('div');
+      timestamp.style.fontSize = '0.85em';
+      timestamp.style.color = '#666';
+      timestamp.textContent = 'Just now';
+      
+      headerContent.appendChild(userName);
+      headerContent.appendChild(categoryBadge);
+      headerContent.appendChild(timestamp);
+      
+      postHeader.appendChild(avatar);
+      postHeader.appendChild(headerContent);
+      
+      const contentP = document.createElement('p');
+      contentP.textContent = content;
+      
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'post-actions';
+      actionsDiv.innerHTML = `
+        <span class="post-action">👍 Like (0)</span>
+        <span class="post-action">💬 Comment (0)</span>
+        <span class="post-action">🔄 Share (0)</span>
       `;
+      
+      post.appendChild(postHeader);
+      post.appendChild(contentP);
+      post.appendChild(actionsDiv);
       
       container.insertBefore(post, container.firstChild);
       document.getElementById('postContent').value = '';

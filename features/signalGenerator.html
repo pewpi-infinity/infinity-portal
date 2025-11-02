@@ -219,11 +219,14 @@
     function selectElement(name, symbol) {
       selectedElement = { name, symbol };
       
-      // Update UI
-      document.querySelectorAll('.element-btn').forEach(btn => {
+      // Find clicked button through event delegation
+      const buttons = document.querySelectorAll('.element-btn');
+      buttons.forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.includes(symbol)) {
+          btn.classList.add('active');
+        }
       });
-      event.target.closest('.element-btn').classList.add('active');
       
       document.getElementById('selectedElement').textContent = `Selected: ${name} (${symbol})`;
     }
@@ -271,7 +274,10 @@
         <canvas id="waveCanvas" width="900" height="180"></canvas>
       `;
       
-      animateWave(frequency);
+      // Wait for DOM update before animating
+      setTimeout(() => {
+        animateWave(frequency);
+      }, 50);
     }
     
     function stopGeneration() {

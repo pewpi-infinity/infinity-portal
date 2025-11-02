@@ -178,6 +178,8 @@
         a.href = url;
         a.download = `snapshot-${Date.now()}.png`;
         a.click();
+        // Clean up to prevent memory leaks
+        setTimeout(() => URL.revokeObjectURL(url), 100);
       });
     }
     

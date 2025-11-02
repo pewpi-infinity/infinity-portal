@@ -244,8 +244,16 @@
         return;
       }
       
-      // Generate serial number
-      const serialNumber = `INF-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+      // Generate secure serial number using crypto API if available
+      let serialNumber;
+      if (window.crypto && window.crypto.getRandomValues) {
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        serialNumber = `INF-${new Date().getFullYear()}-${String(array[0] % 100000).padStart(5, '0')}`;
+      } else {
+        // Fallback for older browsers
+        serialNumber = `INF-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+      }
       
       // Populate certificate
       document.getElementById('serialNumber').textContent = serialNumber;

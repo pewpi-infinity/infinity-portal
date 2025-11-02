@@ -200,7 +200,13 @@
       const messages = document.getElementById('messages');
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message me';
-      msgDiv.innerHTML = `<strong>You:</strong> ${escapeHtml(text)}`;
+      
+      const strongEl = document.createElement('strong');
+      strongEl.textContent = 'You:';
+      const textNode = document.createTextNode(' ' + text);
+      
+      msgDiv.appendChild(strongEl);
+      msgDiv.appendChild(textNode);
       messages.appendChild(msgDiv);
       messages.scrollTop = messages.scrollHeight;
       input.value = '';
