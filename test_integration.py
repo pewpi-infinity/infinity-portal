@@ -105,6 +105,20 @@ def run_all_tests():
     print("Architecture: Google Auth → Rogers Core → Realms")
     print("=" * 60)
     
+    # Wait for server with retry mechanism
+    print("Waiting for server to be ready...")
+    max_retries = 10
+    for i in range(max_retries):
+        try:
+            response = requests.get(f"{BASE_URL}/health", timeout=1)
+            if response.status_code == 200:
+                print(f"✓ Server ready after {i+1} attempt(s)")
+                break
+        except requests.exceptions.RequestException:
+            if i == max_retries - 1:
+                raise
+            time.sleep(0.5 * (i + 1))  # Exponential backoff
+    
     tests = [
         test_health_check,
         test_chat_without_auth,
@@ -135,10 +149,6 @@ def run_all_tests():
 
 if __name__ == "__main__":
     try:
-        # Wait a moment for server to be ready
-        print("Waiting for server to be ready...")
-        time.sleep(2)
-        
         success = run_all_tests()
         sys.exit(0 if success else 1)
     except requests.exceptions.ConnectionError:

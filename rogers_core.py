@@ -33,7 +33,19 @@ if not SECRET_KEY:
     SECRET_KEY = 'dev-secret-key-change-in-production'
 
 app.secret_key = SECRET_KEY
-CORS(app, supports_credentials=True)
+
+# Configure CORS - restrict origins in production
+# For production, set ALLOWED_ORIGINS environment variable with comma-separated origins
+allowed_origins = os.getenv('ALLOWED_ORIGINS', '*')
+if allowed_origins == '*':
+    warnings.warn(
+        "CORS configured to allow all origins. For production, set ALLOWED_ORIGINS environment variable.",
+        RuntimeWarning
+    )
+    CORS(app, supports_credentials=True)
+else:
+    origins_list = [origin.strip() for origin in allowed_origins.split(',')]
+    CORS(app, supports_credentials=True, origins=origins_list)
 
 # In-memory storage for demo (use database in production)
 AUTH_SESSIONS = {}

@@ -30,9 +30,14 @@ fi
 echo "Activating virtual environment..."
 source venv/bin/activate
 
-# Install dependencies
-echo "Installing dependencies in virtual environment..."
-pip install -q -r requirements.txt
+# Check if dependencies need to be installed
+if [ ! -f "venv/.dependencies_installed" ] || [ "requirements.txt" -nt "venv/.dependencies_installed" ]; then
+    echo "Installing/updating dependencies in virtual environment..."
+    pip install -q -r requirements.txt
+    touch venv/.dependencies_installed
+else
+    echo "Dependencies already up to date."
+fi
 
 # Set default environment variables if not set
 export PORT=${PORT:-8080}

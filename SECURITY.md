@@ -68,6 +68,9 @@ export PRODUCTION_MODE=true
 export SECRET_KEY="your-secret-key-here"
 export GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
 
+# CORS Configuration (comma-separated list of allowed origins)
+export ALLOWED_ORIGINS="https://yourdomain.com,https://app.yourdomain.com"
+
 # Optional
 export PORT=8080
 export DEBUG=false
