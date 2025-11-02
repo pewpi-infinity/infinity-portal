@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  rogers-core:
+    build:
+      context: .
+      dockerfile: Dockerfile.rogers
+    container_name: infinity-rogers-core
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-changeme}
+    volumes:
+      - ./rogers_core.py:/app/rogers_core.py
+      - ./infinity_core_auth.js:/app/infinity_core_auth.js
+      - ./infinity_portal_with_google_auth.html:/app/infinity_portal_with_google_auth.html
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - infinity-network
+
+networks:
+  infinity-network:
+    driver: bridge
+
+volumes:
+  infinity-data:
