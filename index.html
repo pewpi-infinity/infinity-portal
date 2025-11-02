@@ -321,6 +321,8 @@
     const authBadge = document.getElementById('authBadge');
     
     // Token estimation (rough approximation: ~4 chars per token)
+    // Note: This is a simple estimate and may not match actual API token counts,
+    // which vary by language, content type, and tokenizer used
     function estimateTokens(text) {
       return Math.ceil(text.length / 4);
     }
@@ -479,7 +481,8 @@
     
     function handleCredentialResponse(response) {
       try {
-        // Decode JWT to get email
+        // Decode JWT to get email (client-side only for static GitHub Pages)
+        // Note: In production, JWT should be validated server-side
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
         currentUser = {
           email: payload.email,
