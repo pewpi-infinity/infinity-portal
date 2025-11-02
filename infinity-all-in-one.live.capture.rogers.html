@@ -625,7 +625,9 @@
     }
     
     // Warn about service account keys
-    if (k.startsWith('sk-svcacct-')) {
+    // Note: This checks for the current OpenAI service account key format (sk-svcacct-)
+    // Update this pattern if OpenAI introduces new service account key formats
+    if (k.toLowerCase().startsWith('sk-svcacct-')) {
       const confirmed = confirm(
         '⚠️ SECURITY WARNING ⚠️\n\n' +
         'You are using a SERVICE ACCOUNT key which has elevated permissions.\n\n' +
@@ -641,7 +643,9 @@
     }
     
     // Warn about any API key security
-    if (k.startsWith('sk-')) {
+    // Note: OpenAI keys currently start with 'sk-'. This may need updating if formats change.
+    // For additional security, warn about any string that looks like an API key
+    if (k.startsWith('sk-') || /^[a-zA-Z]{2,10}-[a-zA-Z0-9_-]{20,}/.test(k)) {
       console.warn(
         '🔒 SECURITY REMINDER:\n' +
         '- This key is stored locally in your browser only\n' +

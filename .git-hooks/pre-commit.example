@@ -10,9 +10,11 @@
 echo "🔍 Checking for potential API key leaks..."
 
 # Patterns to check for
+# Note: These patterns are based on common API key formats as of 2025
+# They may need updating as providers change their key formats
 patterns=(
-    "sk-[a-zA-Z0-9_-]{20,}"           # OpenAI keys
-    "sk-svcacct-[a-zA-Z0-9_-]{20,}"   # OpenAI service account keys
+    "sk-[a-zA-Z0-9_-]{20,}"           # OpenAI keys (current format)
+    "sk-svcacct-[a-zA-Z0-9_-]{20,}"   # OpenAI service account keys (current format)
     "AIza[0-9A-Za-z_-]{35}"           # Google API keys
     "AKIA[0-9A-Z]{16}"                # AWS Access Key IDs
     "[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com"  # Google OAuth

@@ -1,5 +1,10 @@
 # API Keys and Secrets (DO NOT commit new keys!)
 # Note: apikey.json and apikey_Version2.json are legacy files already in repo
+# IMPORTANT: Audit these legacy files to ensure they don't contain real production secrets
+# If they do contain real secrets, they should be:
+# 1. Removed from git history (using git filter-branch or BFG Repo-Cleaner)
+# 2. The secrets should be rotated/revoked
+# 3. The files should be added to .gitignore and deleted from the repo
 # All new API key files should follow naming pattern below and will be ignored
 *.key
 *.secret

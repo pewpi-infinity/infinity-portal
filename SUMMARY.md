@@ -92,14 +92,18 @@ echo "OPENAI_API_KEY=your-key-here" > .env
 ## Next Steps
 
 1. ✅ **REVOKE THE EXPOSED KEY** (most important!)
-2. Review the security documentation
-3. Install the pre-commit hook (optional but recommended):
+2. **Audit legacy API key files**:
+   - Check `apikey.json` and `apikey_Version2.json` to verify they don't contain real production secrets
+   - If they contain real secrets, rotate/revoke them immediately
+   - Consider removing these files from git history if they contain sensitive data
+3. Review the security documentation
+4. Install the pre-commit hook (optional but recommended):
    ```bash
    cp .git-hooks/pre-commit.example .git/hooks/pre-commit
    chmod +x .git/hooks/pre-commit
    ```
-4. Update any applications using the old key
-5. Educate team members about secure key management
+5. Update any applications using the old key
+6. Educate team members about secure key management
 
 ---
 
