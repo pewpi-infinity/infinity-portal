@@ -1,4 +1,6 @@
 # API Keys and Secrets
+# Note: apikey.json files already tracked in Git history will not be ignored
+# Use 'git rm --cached <file>' to stop tracking them if needed
 apikey*.json
 *.key
 *.pem

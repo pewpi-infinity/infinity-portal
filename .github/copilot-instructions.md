@@ -58,8 +58,14 @@ This is the Infinity Portal project, a web-based platform that integrates AI ser
 - **Dependencies**: Update requirements.txt and rebuild Docker image
 
 ## What to Avoid
-- Don't hardcode API keys or credentials
+- Don't hardcode API keys or credentials in code
 - Don't break existing single-file worker structure
 - Don't add unnecessary build complexity
-- Don't remove or modify apikey files (they should be gitignored but aren't)
+- Don't commit new API keys or secrets (use .gitignore and environment variables)
 - Don't introduce breaking changes to public APIs without discussion
+
+## Security Note
+Some API key files are already committed in the repository. For new development:
+- Always use environment variables for API keys and secrets
+- Never commit new apikey*.json files or similar sensitive data
+- Refer to existing keys only via environment variables in code
