@@ -45,7 +45,7 @@ All code is in a single file (`infinity-portal-unified.html`), making it easy to
 - No external API keys required for basic functionality
 - All data stored locally in your browser
 - No tracking or analytics
-- Works completely offline
+- Core features work offline (video streaming requires internet for CDN libraries)
 
 ## 📧 Contact
 

@@ -666,7 +666,7 @@
           <li>Use the sidebar (☰) to access all settings and tools</li>
           <li>Click the Rogers AI button (R) for instant chat assistance</li>
           <li>Enable live video streaming with the "Live" button</li>
-          <li>All features work offline - no external APIs required</li>
+          <li>Core features work offline - video streaming uses CDN libraries</li>
         </ul>
       </div>
 
@@ -737,7 +737,7 @@
   <!-- Rogers AI Dock -->
   <div class="rogers-dock">
     <button class="rogers-btn" id="rogers-btn" title="Rogers AI" aria-label="Open Rogers AI Chat">
-      <img src="einstein-avatar.png" alt="Rogers" onerror="this.remove(); this.closest('button').textContent='R';">
+      <img src="einstein-avatar.png" alt="Rogers" onerror="this.style.display='none'; var btn = this.parentElement; if(btn && btn.childNodes.length === 1) btn.textContent='R';">
     </button>
   </div>
 
@@ -806,7 +806,9 @@
     </div>
   </div>
 
-  <!-- HLS.js and Dash.js for video streaming -->
+  <!-- HLS.js and Dash.js for video streaming 
+       Note: These are loaded from CDN. For fully offline operation, download and host locally,
+       or remove the live streaming feature if not needed. -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8"></script>
   <script src="https://cdn.jsdelivr.net/npm/dashjs@4.7.4/dist/dash.all.min.js"></script>
 
@@ -951,11 +953,11 @@
 
     // ========== Live Video Streaming ==========
     (function() {
-      // Configuration
+      // Configuration - Replace these URLs with your own stream URLs
       const LIVE_CONFIG = {
-        hls: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        mp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        dash: ""
+        hls: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // Sample HLS stream
+        mp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Sample MP4
+        dash: "" // Add your DASH stream URL here
       };
 
       // UI Elements
@@ -1138,7 +1140,9 @@
 
       latencyBtn.onclick = () => {
         try {
-          video.currentTime = video.buffered.end(0) - 0.25;
+          if (video.buffered && video.buffered.length > 0) {
+            video.currentTime = video.buffered.end(0) - 0.25;
+          }
         } catch(e) {
           console.warn('Latency adjustment failed:', e);
         }
