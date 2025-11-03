@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity Apps Portal • All Applications</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --purple: #6b46c1;
+      --green: #10b981;
+      --gold: #d4af37;
+      --bg: #ffffff;
+      --muted: #657080;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    h1 {
+      background: linear-gradient(135deg, var(--blue-1), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 48px;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .tagline {
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .search-bar {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 32px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid rgba(3, 24, 62, 0.1);
+      border-radius: 12px;
+      font-size: 18px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--blue-2);
+    }
+    .category-section {
+      background: white;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 32px;
+    }
+    .category-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue-1);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .app-card {
+      background: linear-gradient(135deg, #f7fbff, #eef6ff);
+      border: 2px solid rgba(3, 24, 62, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .app-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(11, 95, 215, 0.2);
+      border-color: var(--blue-2);
+    }
+    .app-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .app-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--blue-1);
+      margin-bottom: 8px;
+    }
+    .app-description {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .app-badge {
+      display: inline-block;
+      background: var(--green);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+      text-transform: uppercase;
+    }
+    .app-badge.featured {
+      background: var(--gold);
+    }
+    .app-badge.new {
+      background: var(--purple);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--blue-1);
+    }
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>∞ INFINITY PORTAL</h1>
+      <p class="subtitle">Complete Application Ecosystem</p>
+      <p class="tagline">Token-Based • Community-Driven • Innovation-Focused</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="appCount">19</div>
+        <div class="stat-label">Total Apps</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Free & Open</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Token-Powered</div>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search apps..." oninput="searchApps()">
+    </div>
+
+    <!-- Core Apps -->
+    <div class="category-section" id="coreApps">
+      <h2 class="category-title">
+        <span>🏠</span>
+        <span>Core Applications</span>
+      </h2>
+      <div class="apps-grid">
+        <a href="locals-chat.html" class="app-card">
+          <div class="app-icon">🌍</div>
+          <div class="app-name">Locals Chat</div>
+          <div class="app-description">Connect with people in your local area via ZIP code-based community chats</div>
+          <span class="app-badge featured">Featured</span>
+        </a>
+
+        <a href="infinity-marketplace.html" class="app-card">
+          <div class="app-icon">🏪</div>
+          <div class="app-name">Infinity Marketplace</div>
+          <div class="app-description">Token-only commerce platform. No USD. Trade with Infinity Tokens exclusively</div>
+          <span class="app-badge featured">Featured</span>
+        </a>
+
+        <a href="bible-verse.html" class="app-card">
+          <div class="app-icon">✝️</div>
+          <div class="app-name">Bible Verse Infinity</div>
+          <div class="app-description">Divine messages through time with timestamp tracking and AI analysis</div>
+          <span class="app-badge new">New</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Productivity & Utility -->
+    <div class="category-section" id="productivity">
+      <h2 class="category-title">
+        <span>⚡</span>
+        <span>Productivity & Tools</span>
+      </h2>
+      <div class="apps-grid">
+        <a href="calculator.html" class="app-card">
+          <div class="app-icon">🔢</div>
+          <div class="app-name">Calculator</div>
+          <div class="app-description">Full-featured calculator with keyboard support and clean interface</div>
+        </a>
+
+        <a href="scientific-calculator.html" class="app-card">
+          <div class="app-icon">🧮</div>
+          <div class="app-name">Scientific Calculator</div>
+          <div class="app-description">Advanced scientific calculations, trigonometry, and more</div>
+          <span class="app-badge new">New</span>
+        </a>
+
+        <a href="alarm-clock.html" class="app-card">
+          <div class="app-icon">⏰</div>
+          <div class="app-name">Alarm Clock</div>
+          <div class="app-description">Set multiple alarms with custom labels and audio alerts</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Creative & Design -->
+    <div class="category-section" id="creative">
+      <h2 class="category-title">
+        <span>🎨</span>
+        <span>Creative & Design</span>
+      </h2>
+      <div class="apps-grid">
+        <a href="video-game-generator.html" class="app-card">
+          <div class="app-icon">🎮</div>
+          <div class="app-name">Video Game Generator</div>
+          <div class="app-description">AI-powered game concept creation with detailed features and storylines</div>
+          <span class="app-badge new">New</span>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('Clothing Design - Coming Soon!'); return false;">
+          <div class="app-icon">👕</div>
+          <div class="app-name">Clothing Design</div>
+          <div class="app-description">Design and visualize custom clothing and fashion items</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('Leather Craft - Coming Soon!'); return false;">
+          <div class="app-icon">🧳</div>
+          <div class="app-name">Leather Craft</div>
+          <div class="app-description">Design patterns and track leather crafting projects</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('DIY Modeling - Coming Soon!'); return false;">
+          <div class="app-icon">🔨</div>
+          <div class="app-name">DIY Modeling</div>
+          <div class="app-description">Create and share DIY project models and instructions</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Lifestyle & Wellness -->
+    <div class="category-section" id="lifestyle">
+      <h2 class="category-title">
+        <span>💚</span>
+        <span>Lifestyle & Wellness</span>
+      </h2>
+      <div class="apps-grid">
+        <a href="pet-care.html" class="app-card">
+          <div class="app-icon">🐾</div>
+          <div class="app-name">Pet Care Tracker</div>
+          <div class="app-description">Manage feeding schedules, vet visits, and pet health tracking</div>
+        </a>
+
+        <a href="gardening-seed-swap.html" class="app-card">
+          <div class="app-icon">🌱</div>
+          <div class="app-name">Gardening & Seed Swap</div>
+          <div class="app-description">Community seed exchange and personal garden tracking</div>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('Physical Therapy - Coming Soon!'); return false;">
+          <div class="app-icon">🏃</div>
+          <div class="app-name">Physical Therapy & Exercise</div>
+          <div class="app-description">Track exercises, rehab progress, and wellness goals</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('Food & Trade Platform - Coming Soon!'); return false;">
+          <div class="app-icon">🍽️</div>
+          <div class="app-name">Food & Trade Platform</div>
+          <div class="app-description">Network for food textiles and trade connections</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Educational & Information -->
+    <div class="category-section" id="educational">
+      <h2 class="category-title">
+        <span>📚</span>
+        <span>Educational & Information</span>
+      </h2>
+      <div class="apps-grid">
+        <a href="#" class="app-card" onclick="alert('School Tracker - Coming Soon!'); return false;">
+          <div class="app-icon">🎓</div>
+          <div class="app-name">School Life Tracker</div>
+          <div class="app-description">Educational journey tracking from newborn to elder years</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+
+        <a href="channel-generator.html" class="app-card">
+          <div class="app-icon">📺</div>
+          <div class="app-name">Channel Generator</div>
+          <div class="app-description">Merit-based group placement for educational entertainment programming</div>
+          <span class="app-badge new">New</span>
+        </a>
+
+        <a href="product-transparency.html" class="app-card">
+          <div class="app-icon">📋</div>
+          <div class="app-name">Product Transparency</div>
+          <div class="app-description">Track banned products, company facts, and consumer protection info</div>
+          <span class="app-badge new">New</span>
+        </a>
+
+        <a href="#" class="app-card" onclick="alert('Packaging Glass Standards - Coming Soon!'); return false;">
+          <div class="app-icon">🏺</div>
+          <div class="app-name">Packaging Standards</div>
+          <div class="app-description">Infinity standardized glass and packaging information system</div>
+          <span class="app-badge">Coming Soon</span>
+        </a>
+      </div>
+    </div>
+
+    <div style="background: white; padding: 32px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); text-align: center; margin-top: 40px;">
+      <h2 style="color: var(--blue-1); margin-bottom: 16px;">More Apps Coming Soon!</h2>
+      <p style="color: var(--muted); font-size: 16px;">The Infinity Portal is constantly growing with new applications and features.</p>
+      <p style="color: var(--gold); font-weight: 600; margin-top: 16px;">Powered by Infinity Token • Building the Future Together</p>
+    </div>
+  </div>
+
+  <script>
+    function searchApps() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.app-card');
+      
+      cards.forEach(card => {
+        const name = card.querySelector('.app-name').textContent.toLowerCase();
+        const description = card.querySelector('.app-description').textContent.toLowerCase();
+        
+        if (name.includes(query) || description.includes(query)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = query ? 'none' : 'block';
+        }
+      });
+    }
+
+    // Count total apps
+    window.addEventListener('DOMContentLoaded', () => {
+      const appCards = document.querySelectorAll('.app-card').length;
+      document.getElementById('appCount').textContent = appCards;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --purple: #6b46c1;
+      --bg: #ffffff;
+      --muted: #657080;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #051426;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .calculator {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 24px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: var(--purple);
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .display {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .display-previous {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      min-height: 20px;
+      margin-bottom: 4px;
+    }
+    .display-current {
+      font-size: 32px;
+      font-weight: 600;
+      color: white;
+      word-wrap: break-word;
+      text-align: right;
+    }
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--purple);
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--purple);
+      color: white;
+      border-color: var(--purple);
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .btn-number, .btn-decimal {
+      background: white;
+      color: var(--blue-1);
+      border: 2px solid rgba(3, 24, 62, 0.06);
+    }
+    .btn-number:hover, .btn-decimal:hover {
+      background: #f7fbff;
+    }
+    .btn-operator {
+      background: var(--blue-2);
+      color: white;
+    }
+    .btn-operator:hover {
+      background: #0a54c2;
+    }
+    .btn-function {
+      background: var(--purple);
+      color: white;
+      font-size: 14px;
+    }
+    .btn-function:hover {
+      opacity: 0.9;
+    }
+    .btn-clear {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-clear:hover {
+      background: #c82333;
+    }
+    .btn-equals {
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      color: white;
+      grid-column: span 2;
+    }
+    .btn-equals:hover {
+      opacity: 0.9;
+    }
+    .angle-mode {
+      font-size: 11px;
+      color: var(--purple);
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="header">
+      <h1>🧮 Scientific Calculator</h1>
+      <p class="subtitle">Powered by Infinity</p>
+    </div>
+    
+    <div class="display">
+      <div class="display-previous" id="previous"></div>
+      <div class="display-current" id="current">0</div>
+    </div>
+
+    <div class="angle-mode">
+      Angle Mode: <span id="angleMode">Degrees</span> • 
+      <a href="#" onclick="toggleAngleMode(); return false;" style="color: white; text-decoration: underline;">Toggle</a>
+    </div>
+    
+    <div class="buttons">
+      <!-- Row 1: Scientific functions -->
+      <button class="btn-function" onclick="scientificFunc('sin')">sin</button>
+      <button class="btn-function" onclick="scientificFunc('cos')">cos</button>
+      <button class="btn-function" onclick="scientificFunc('tan')">tan</button>
+      <button class="btn-function" onclick="scientificFunc('log')">log</button>
+      <button class="btn-function" onclick="scientificFunc('ln')">ln</button>
+      
+      <!-- Row 2: More functions -->
+      <button class="btn-function" onclick="scientificFunc('sqrt')">√</button>
+      <button class="btn-function" onclick="scientificFunc('pow2')">x²</button>
+      <button class="btn-function" onclick="scientificFunc('pow')">xʸ</button>
+      <button class="btn-function" onclick="insertConstant('pi')">π</button>
+      <button class="btn-function" onclick="insertConstant('e')">e</button>
+      
+      <!-- Row 3: Basic operations -->
+      <button class="btn-clear" onclick="clearAll()">C</button>
+      <button class="btn-clear" onclick="deleteLast()">⌫</button>
+      <button class="btn-function" onclick="appendOperator('(')">(</button>
+      <button class="btn-function" onclick="appendOperator(')')">)</button>
+      <button class="btn-operator" onclick="setOperation('/')">÷</button>
+      
+      <!-- Row 4: Numbers 7-9 -->
+      <button class="btn-number" onclick="appendNumber('7')">7</button>
+      <button class="btn-number" onclick="appendNumber('8')">8</button>
+      <button class="btn-number" onclick="appendNumber('9')">9</button>
+      <button class="btn-operator" onclick="setOperation('*')">×</button>
+      <button class="btn-function" onclick="scientificFunc('factorial')">n!</button>
+      
+      <!-- Row 5: Numbers 4-6 -->
+      <button class="btn-number" onclick="appendNumber('4')">4</button>
+      <button class="btn-number" onclick="appendNumber('5')">5</button>
+      <button class="btn-number" onclick="appendNumber('6')">6</button>
+      <button class="btn-operator" onclick="setOperation('-')">−</button>
+      <button class="btn-function" onclick="scientificFunc('inverse')">1/x</button>
+      
+      <!-- Row 6: Numbers 1-3 -->
+      <button class="btn-number" onclick="appendNumber('1')">1</button>
+      <button class="btn-number" onclick="appendNumber('2')">2</button>
+      <button class="btn-number" onclick="appendNumber('3')">3</button>
+      <button class="btn-operator" onclick="setOperation('+')">+</button>
+      <button class="btn-function" onclick="setOperation('%')">%</button>
+      
+      <!-- Row 7: 0 and equals -->
+      <button class="btn-number" onclick="appendNumber('0')">0</button>
+      <button class="btn-decimal" onclick="appendDecimal()">.</button>
+      <button class="btn-function" onclick="toggleSign()">±</button>
+      <button class="btn-equals" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentValue = '0';
+    let previousValue = '';
+    let operation = null;
+    let shouldResetDisplay = false;
+    let angleMode = 'deg'; // 'deg' or 'rad'
+
+    const currentDisplay = document.getElementById('current');
+    const previousDisplay = document.getElementById('previous');
+
+    function updateDisplay() {
+      currentDisplay.textContent = currentValue;
+      if (operation && previousValue) {
+        previousDisplay.textContent = `${previousValue} ${operation}`;
+      } else {
+        previousDisplay.textContent = '';
+      }
+    }
+
+    function appendNumber(number) {
+      if (shouldResetDisplay) {
+        currentValue = number;
+        shouldResetDisplay = false;
+      } else {
+        currentValue = currentValue === '0' ? number : currentValue + number;
+      }
+      updateDisplay();
+    }
+
+    function appendDecimal() {
+      if (shouldResetDisplay) {
+        currentValue = '0.';
+        shouldResetDisplay = false;
+      } else if (!currentValue.includes('.')) {
+        currentValue += '.';
+      }
+      updateDisplay();
+    }
+
+    function appendOperator(op) {
+      currentValue += op;
+      updateDisplay();
+    }
+
+    function setOperation(op) {
+      if (operation && !shouldResetDisplay) {
+        calculate();
+      }
+      operation = op;
+      previousValue = currentValue;
+      shouldResetDisplay = true;
+      updateDisplay();
+    }
+
+    function scientificFunc(func) {
+      const value = parseFloat(currentValue);
+      let result;
+
+      try {
+        switch(func) {
+          case 'sin':
+            result = angleMode === 'deg' ? Math.sin(value * Math.PI / 180) : Math.sin(value);
+            break;
+          case 'cos':
+            result = angleMode === 'deg' ? Math.cos(value * Math.PI / 180) : Math.cos(value);
+            break;
+          case 'tan':
+            result = angleMode === 'deg' ? Math.tan(value * Math.PI / 180) : Math.tan(value);
+            break;
+          case 'log':
+            result = Math.log10(value);
+            break;
+          case 'ln':
+            result = Math.log(value);
+            break;
+          case 'sqrt':
+            result = Math.sqrt(value);
+            break;
+          case 'pow2':
+            result = value * value;
+            break;
+          case 'factorial':
+            result = factorial(value);
+            break;
+          case 'inverse':
+            result = 1 / value;
+            break;
+          case 'pow':
+            operation = '^';
+            previousValue = currentValue;
+            shouldResetDisplay = true;
+            updateDisplay();
+            return;
+        }
+
+        if (isNaN(result) || !isFinite(result)) {
+          currentValue = 'Error';
+        } else {
+          currentValue = result.toString();
+        }
+      } catch(e) {
+        currentValue = 'Error';
+      }
+
+      shouldResetDisplay = true;
+      updateDisplay();
+    }
+
+    function factorial(n) {
+      if (n < 0 || n !== Math.floor(n)) return NaN;
+      if (n === 0 || n === 1) return 1;
+      let result = 1;
+      for (let i = 2; i <= n; i++) {
+        result *= i;
+      }
+      return result;
+    }
+
+    function insertConstant(constant) {
+      if (shouldResetDisplay) {
+        currentValue = constant === 'pi' ? Math.PI.toString() : Math.E.toString();
+        shouldResetDisplay = false;
+      } else {
+        const value = constant === 'pi' ? Math.PI : Math.E;
+        currentValue = currentValue === '0' ? value.toString() : currentValue + value.toString();
+      }
+      updateDisplay();
+    }
+
+    function toggleSign() {
+      if (currentValue !== '0' && currentValue !== 'Error') {
+        currentValue = currentValue.startsWith('-') ? currentValue.slice(1) : '-' + currentValue;
+        updateDisplay();
+      }
+    }
+
+    function toggleAngleMode() {
+      angleMode = angleMode === 'deg' ? 'rad' : 'deg';
+      document.getElementById('angleMode').textContent = angleMode === 'deg' ? 'Degrees' : 'Radians';
+    }
+
+    function calculate() {
+      if (!operation || !previousValue) return;
+      
+      const prev = parseFloat(previousValue);
+      const current = parseFloat(currentValue);
+      let result;
+
+      switch (operation) {
+        case '+':
+          result = prev + current;
+          break;
+        case '-':
+          result = prev - current;
+          break;
+        case '*':
+          result = prev * current;
+          break;
+        case '/':
+          result = current !== 0 ? prev / current : 'Error';
+          break;
+        case '%':
+          result = prev % current;
+          break;
+        case '^':
+          result = Math.pow(prev, current);
+          break;
+      }
+
+      currentValue = result.toString();
+      operation = null;
+      previousValue = '';
+      shouldResetDisplay = true;
+      updateDisplay();
+    }
+
+    function clearAll() {
+      currentValue = '0';
+      previousValue = '';
+      operation = null;
+      shouldResetDisplay = false;
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      currentValue = currentValue.length > 1 ? currentValue.slice(0, -1) : '0';
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>
