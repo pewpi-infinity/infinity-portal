@@ -11,7 +11,7 @@
     .zoom-controls { display: flex; gap: 0.5rem; }
     .zoom-btn { background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; padding: 0.4rem 0.7rem; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
     .zoom-btn:hover { background: rgba(255,255,255,0.3); }
-    .header-spacer { width: 200px; }
+    .header-spacer { width: 200px; } /* Matches zoom-controls width for centered title */
     main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; transform-origin: center top; transition: transform 0.2s ease; }
     #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
     .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
@@ -46,30 +46,31 @@
   <script>
     const msgBox = document.getElementById('messages');
     const input = document.getElementById('userInput');
-    let zoomLevel = 1.0;
-    const zoomStep = 0.1;
-    const minZoom = 0.5;
-    const maxZoom = 2.0;
+    const mainElem = document.querySelector('main');
+    const resetZoomBtn = document.getElementById('reset-zoom-btn');
+    
+    let zoomPercent = 100;
+    const zoomStep = 10; // 10%
+    const minZoom = 50;  // 50%
+    const maxZoom = 200; // 200%
 
     function updateZoom() {
-      const main = document.querySelector('main');
-      main.style.transform = `scale(${zoomLevel})`;
-      const resetBtn = document.getElementById('reset-zoom-btn');
-      resetBtn.textContent = Math.round(zoomLevel * 100) + '%';
+      mainElem.style.transform = `scale(${zoomPercent / 100})`;
+      resetZoomBtn.textContent = zoomPercent + '%';
     }
 
     function zoomIn() {
-      zoomLevel = Math.min(maxZoom, zoomLevel + zoomStep);
+      zoomPercent = Math.min(maxZoom, zoomPercent + zoomStep);
       updateZoom();
     }
 
     function zoomOut() {
-      zoomLevel = Math.max(minZoom, zoomLevel - zoomStep);
+      zoomPercent = Math.max(minZoom, zoomPercent - zoomStep);
       updateZoom();
     }
 
     function resetZoom() {
-      zoomLevel = 1.0;
+      zoomPercent = 100;
       updateZoom();
     }
 
