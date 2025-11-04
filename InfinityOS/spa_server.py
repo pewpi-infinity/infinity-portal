@@ -135,7 +135,6 @@ def index():
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Infinity Portal — SPA with Google Auth</title>
-<meta name="google-signin-client_id" content="16937806382-leqbaginj3igrhei58nsab7tb4hsb435.apps.googleusercontent.com">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -227,9 +226,17 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
       <div id="g_id_onload"
            data-client_id="16937806382-leqbaginj3igrhei58nsab7tb4hsb435.apps.googleusercontent.com"
            data-callback="handleCredentialResponse"
-           data-auto_prompt="false">
+           data-auto_prompt="false"
+           data-context="signin">
       </div>
-      <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline"></div>
+      <div class="g_id_signin" 
+           data-type="standard" 
+           data-size="medium" 
+           data-theme="outline"
+           data-text="signin_with"
+           data-shape="rectangular"
+           data-logo_alignment="left">
+      </div>
     </div>
   </header>
 
@@ -258,8 +265,16 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
           <div class="auth-card">
             <h2 style="color:var(--blue-1);margin-top:0">Welcome to Infinity Portal</h2>
             <p class="small">Sign in with Google to access all features</p>
-            <div style="margin:30px 0">
-              <div id="g_id_signin2" class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-text="signin_with" data-shape="rectangular"></div>
+            <div style="margin:30px 0;display:flex;justify-content:center">
+              <div id="g_id_signin2" 
+                   class="g_id_signin" 
+                   data-type="standard" 
+                   data-size="large" 
+                   data-theme="filled_blue" 
+                   data-text="signin_with" 
+                   data-shape="rectangular"
+                   data-logo_alignment="left">
+              </div>
             </div>
             <p class="small">🔒 Secure authentication • 🪶 Earn Infinity tokens • 🤖 Access Rogers AI</p>
           </div>
@@ -400,16 +415,29 @@ document.getElementById('tokenCount').textContent = tokens;
 
 // Google Sign-In Callback
 function handleCredentialResponse(response) {
-  const token = response.credential;
-  const payload = parseJwt(token);
-  currentUser = {
-    email: payload.email,
-    name: payload.name,
-    picture: payload.picture
-  };
-  STORAGE.setItem('infinity_user', JSON.stringify(currentUser));
-  updateUIForAuth();
-  navigateTo('home');
+  console.log('Google Sign-In response received:', response);
+  try {
+    const token = response.credential;
+    const payload = parseJwt(token);
+    console.log('Parsed JWT payload:', payload);
+    currentUser = {
+      email: payload.email,
+      name: payload.name,
+      picture: payload.picture
+    };
+    STORAGE.setItem('infinity_user', JSON.stringify(currentUser));
+    updateUIForAuth();
+    
+    // Award tokens for signing in
+    tokens += 10;
+    STORAGE.setItem('infinity_tokens', tokens);
+    document.getElementById('tokenCount').textContent = tokens;
+    
+    navigateTo('home');
+  } catch(e) {
+    console.error('Error handling credential:', e);
+    alert('Sign-in error: ' + e.message);
+  }
 }
 
 function parseJwt(token) {
@@ -423,16 +451,36 @@ function updateUIForAuth() {
     document.getElementById('userSection').style.display = 'flex';
     document.getElementById('userName').textContent = currentUser.name;
     document.getElementById('userAvatar').src = currentUser.picture;
+    
+    // Hide the g_id_onload div to prevent auto-prompt
+    const gOnload = document.getElementById('g_id_onload');
+    if (gOnload) {
+      gOnload.style.display = 'none';
+    }
+    
+    console.log('UI updated for authenticated user:', currentUser.name);
   }
 }
 
 // Check for existing session
 const savedUser = STORAGE.getItem('infinity_user');
 if (savedUser) {
-  currentUser = JSON.parse(savedUser);
-  updateUIForAuth();
-  navigateTo('home');
+  try {
+    currentUser = JSON.parse(savedUser);
+    console.log('Restored user session:', currentUser);
+    updateUIForAuth();
+    navigateTo('home');
+  } catch(e) {
+    console.error('Error restoring session:', e);
+    STORAGE.removeItem('infinity_user');
+  }
 }
+
+// Log when Google Sign-In library loads
+window.onload = function() {
+  console.log('Page loaded. Google Sign-In library should be ready.');
+  console.log('Client ID configured: 16937806382-leqbaginj3igrhei58nsab7tb4hsb435.apps.googleusercontent.com');
+};
 
 // Vector Animation System
 function animateVector(fromEl, toPanel, callback) {
