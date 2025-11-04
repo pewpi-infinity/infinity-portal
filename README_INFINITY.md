@@ -1,5 +1,16 @@
 # Infinity Portal - Installation & Running Guide
 
+## ⚠️ IMPORTANT: Port 8080 Required for Google OAuth
+
+**All Infinity Portal servers MUST run on port 8080** for Google OAuth authentication to work. This is because the Google OAuth client is configured with `http://127.0.0.1:8080` as the authorized redirect URI. Running on any other port will cause authentication to fail.
+
+All servers in this repository are pre-configured to use port 8080:
+- ✅ InfinityOS/spa_server.py (Main SPA)
+- ✅ InfinityOS/portal/rogers_paypal_demo.py
+- ✅ InfinityOS/Rogers/rogers_white.py
+- ✅ InfinityOS/Rogers/rogers_white_nokeys.py
+- ✅ app.py (Root server)
+
 ## 🚀 Quick Start
 
 ### For Termux (Android)
@@ -34,6 +45,8 @@ python3 spa_server.py
 
 Once started, open your browser to:
 **http://127.0.0.1:8080**
+
+⚠️ **MUST use port 8080** - Other ports will not work with Google OAuth authentication!
 
 ## 🎯 Features
 
@@ -117,12 +130,15 @@ python3 spa_server.py
 
 ### Port 8080 already in use
 ```bash
-# Find and kill the process
+# Find and kill the process using port 8080
 lsof -ti:8080 | xargs kill -9
 
-# Or use a different port
-PORT=8081 python3 spa_server.py
+# Then restart the server on port 8080
+cd InfinityOS
+python3 spa_server.py
 ```
+
+⚠️ **DO NOT run on a different port!** Google OAuth is configured specifically for port 8080. Running on any other port will break authentication across all Infinity Portal applications.
 
 ### Missing dependencies
 ```bash
