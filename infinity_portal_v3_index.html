@@ -229,7 +229,7 @@
       <div style="margin-top:12px">
         <div style="background:var(--panel);padding:12px;border-radius:10px">
           <div style="font-weight:700">Autopilot Mic</div>
-          <div class="small" style="margin-top:6px">Record locally — later hook your analyzer.</div>
+          <div class="small" style="margin-top:6px">Listen and automatically repeat sounds with synthesizer — no human needed.</div>
           <div style="margin-top:8px;display:flex;gap:10px;align-items:center">
             <div class="mic" id="micBtn" onclick="toggleMic()" title="Autopilot"><span id="micIcon">🎤</span></div>
             <div class="small">Status: <span id="micStatus">idle</span></div>
@@ -758,29 +758,110 @@ function toggleDev(){
   document.getElementById('devToggle').innerText = 'Developer Mode: ' + (DEV ? 'ON' : 'OFF');
 }
 
-/* mic autopilot (record only) */
+/* mic autopilot (listen and repeat with synthesizer) */
 let recStream=null;
-let mediaRec=null;
-let chunks=[];
+let audioCtx=null;
+let analyser=null;
+let oscillator=null;
+let gainNode=null;
+let autopilotActive=false;
+let freqDataArray=null;
+let animFrame=null;
+
 async function toggleMic(){
-  if(mediaRec && mediaRec.state==='recording'){ mediaRec.stop(); return; }
+  if(autopilotActive){ stopAutopilot(); return; }
   try{
-    recStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-    mediaRec = new MediaRecorder(recStream);
-    chunks=[]; mediaRec.ondataavailable = e=>chunks.push(e.data);
-    mediaRec.onstop = async ()=>{
-      const blob = new Blob(chunks,{type:'audio/webm'});
-      const url = URL.createObjectURL(blob);
-      const entry = {when:Date.now(), url};
-      const arr = JSON.parse(STORAGE.getItem('INFINITY_AUDIO')||'[]'); arr.push(entry); STORAGE.setItem('INFINITY_AUDIO', JSON.stringify(arr));
-      document.getElementById('micStatus').innerText = 'saved';
-      setTimeout(()=>document.getElementById('micStatus').innerText='idle',1500);
-    };
-    mediaRec.start();
-    document.getElementById('micStatus').innerText='recording';
+    // Initialize audio context
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Get microphone input
+    recStream = await navigator.mediaDevices.getUserMedia({ 
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } 
+    });
+    
+    // Create analyser for pitch detection
+    const microphone = audioCtx.createMediaStreamSource(recStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.8;
+    microphone.connect(analyser);
+    
+    freqDataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    // Create synthesizer to repeat detected sounds
+    oscillator = audioCtx.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 440;
+    
+    gainNode = audioCtx.createGain();
+    gainNode.gain.value = 0.3;
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.start();
+    
+    autopilotActive = true;
+    document.getElementById('micStatus').innerText='autopilot active';
+    document.getElementById('micIcon').innerText='🔴';
+    
+    // Start autopilot loop
+    autopilotLoop();
+    
   }catch(e){
     alert('Mic access denied or not available');
+    stopAutopilot();
   }
+}
+
+function autopilotLoop(){
+  if(!autopilotActive) return;
+  
+  // Detect dominant frequency
+  analyser.getByteFrequencyData(freqDataArray);
+  let maxVal = 0, maxIdx = 0;
+  for(let i = 1; i < freqDataArray.length / 2; i++){
+    if(freqDataArray[i] > maxVal){ maxVal = freqDataArray[i]; maxIdx = i; }
+  }
+  
+  // Check if signal is strong enough
+  if(maxVal > 0){
+    const dB = 20 * Math.log10(maxVal / 255);
+    if(dB > -60){
+    // Convert bin to frequency
+    const freq = (maxIdx * audioCtx.sampleRate / 2) / (freqDataArray.length / 2);
+    
+      // Only use frequencies in human voice/music range
+      if(freq >= 50 && freq <= 4000){
+        oscillator.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.05);
+      }
+    }
+  }
+  
+  animFrame = requestAnimationFrame(autopilotLoop);
+}
+
+function stopAutopilot(){
+  autopilotActive = false;
+  
+  if(animFrame){ cancelAnimationFrame(animFrame); animFrame = null; }
+  
+  if(oscillator){ 
+    try{ oscillator.stop(); }catch(e){} 
+    oscillator.disconnect(); 
+    oscillator = null; 
+  }
+  if(gainNode){ gainNode.disconnect(); gainNode = null; }
+  if(analyser){ analyser.disconnect(); analyser = null; }
+  
+  if(recStream){
+    recStream.getTracks().forEach(track => track.stop());
+    recStream = null;
+  }
+  
+  if(audioCtx){ audioCtx.close(); audioCtx = null; }
+  
+  document.getElementById('micStatus').innerText='idle';
+  document.getElementById('micIcon').innerText='🎤';
 }
 
 /* helpers */
