@@ -385,15 +385,12 @@
     function aiAgent1Decode(encoded) {
       let decoded = '';
       for (let i = 0; i < encoded.length; i += 4) {
-        const hexValue = encoded.substr(i, 4);
+        const hexValue = encoded.substring(i, i + 4);
         const num = parseInt(hexValue, 16);
-        // Reverse the transformation
-        for (let c = 0; c < 65536; c++) {
-          if (((c * 137 + 42) % 65536) === num) {
-            decoded += String.fromCharCode(c);
-            break;
-          }
-        }
+        // Reverse the transformation using modular multiplicative inverse
+        // Inverse of 137 mod 65536 is 30137 (calculated via extended Euclidean algorithm)
+        const charCode = ((num - 42 + 65536) * 30137) % 65536;
+        decoded += String.fromCharCode(charCode);
       }
       return decoded;
     }
@@ -422,7 +419,7 @@
       const key = generateKey(salt);
       let decoded = '';
       for (let i = 0; i < encoded.length; i += 2) {
-        const hexValue = encoded.substr(i, 2);
+        const hexValue = encoded.substring(i, i + 2);
         const num = parseInt(hexValue, 16);
         const keyChar = key.charCodeAt((i / 2) % key.length);
         const original = num ^ keyChar;
