@@ -63,9 +63,19 @@
     </p>
   </div>
   <script>
-    // Redirect to the unified portal after 1.5 seconds
+    // Check if user is logged in
+    const currentUser = localStorage.getItem('infinity_current_user');
+    const sessionToken = localStorage.getItem('infinity_session_token');
+    
+    // Redirect based on login status
     setTimeout(() => {
-      window.location.href = 'infinity-portal-unified.html';
+      if (currentUser && sessionToken) {
+        // User is logged in, go to dashboard
+        window.location.href = 'dashboard.html';
+      } else {
+        // User is not logged in, go to login page
+        window.location.href = 'login.html';
+      }
     }, 1500);
   </script>
 </body>
