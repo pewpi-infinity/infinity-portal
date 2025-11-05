@@ -24,6 +24,11 @@ class AuthManager {
     script.onload = () => {
       this.setupGoogleSignIn();
     };
+    script.onerror = () => {
+      // Fallback if Google script fails to load
+      console.log('Google Sign-In script failed to load, using fallback');
+      this.setupFallbackAuth();
+    };
     document.head.appendChild(script);
   }
 

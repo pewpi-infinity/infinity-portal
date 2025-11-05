@@ -316,11 +316,76 @@
     </div>
   </div>
 
+  <!-- Initialize zone manager early -->
+  <script>
+    // Create zone manager before any zone scripts load
+    class ZoneManager {
+      constructor() {
+        this.zones = new Map();
+        this.currentZone = null;
+        this.zoneContainer = null;
+      }
+
+      registerZone(zone) {
+        if (zone && zone.id) {
+          this.zones.set(zone.id, zone);
+          console.log(`Zone registered: ${zone.name}`);
+        }
+      }
+
+      getZone(zoneId) {
+        return this.zones.get(zoneId);
+      }
+
+      getAllZones() {
+        return Array.from(this.zones.values());
+      }
+
+      enterZone(zoneId, container) {
+        const zone = this.zones.get(zoneId);
+        if (!zone) {
+          console.error(`Zone not found: ${zoneId}`);
+          return false;
+        }
+
+        // Exit current zone if any
+        if (this.currentZone) {
+          this.currentZone.onExit();
+        }
+
+        // Render the new zone
+        this.zoneContainer = container;
+        zone.render(container);
+        
+        // Enter the new zone
+        zone.onEnter();
+        this.currentZone = zone;
+
+        return true;
+      }
+
+      exitCurrentZone() {
+        if (this.currentZone) {
+          this.currentZone.onExit();
+          this.currentZone = null;
+        }
+        if (this.zoneContainer) {
+          this.zoneContainer.innerHTML = '';
+        }
+      }
+    }
+
+    window.zoneManager = new ZoneManager();
+  </script>
+
   <!-- Load core scripts -->
   <script src="auth.js"></script>
   <script src="core/ai.js"></script>
   <script src="core/vector-web.js"></script>
   
+  <!-- Main application script - load before zones so zone manager exists -->
+  <script src="assets/js/app.js"></script>
+
   <!-- Load zone modules -->
   <script src="zones/autopilot.js"></script>
   <script src="zones/news.js"></script>
@@ -328,8 +393,5 @@
   <script src="zones/starquest.js"></script>
   <script src="zones/live.js"></script>
   <script src="zones/economy.js"></script>
-
-  <!-- Main application script -->
-  <script src="assets/js/app.js"></script>
 </body>
 </html>

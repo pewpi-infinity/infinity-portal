@@ -3,62 +3,6 @@
  * Orchestrates the entire Infinity Portal experience
  */
 
-class ZoneManager {
-  constructor() {
-    this.zones = new Map();
-    this.currentZone = null;
-    this.zoneContainer = null;
-  }
-
-  registerZone(zone) {
-    if (zone && zone.id) {
-      this.zones.set(zone.id, zone);
-      console.log(`Zone registered: ${zone.name}`);
-    }
-  }
-
-  getZone(zoneId) {
-    return this.zones.get(zoneId);
-  }
-
-  getAllZones() {
-    return Array.from(this.zones.values());
-  }
-
-  enterZone(zoneId, container) {
-    const zone = this.zones.get(zoneId);
-    if (!zone) {
-      console.error(`Zone not found: ${zoneId}`);
-      return false;
-    }
-
-    // Exit current zone if any
-    if (this.currentZone) {
-      this.currentZone.onExit();
-    }
-
-    // Render the new zone
-    this.zoneContainer = container;
-    zone.render(container);
-    
-    // Enter the new zone
-    zone.onEnter();
-    this.currentZone = zone;
-
-    return true;
-  }
-
-  exitCurrentZone() {
-    if (this.currentZone) {
-      this.currentZone.onExit();
-      this.currentZone = null;
-    }
-    if (this.zoneContainer) {
-      this.zoneContainer.innerHTML = '';
-    }
-  }
-}
-
 class AppController {
   constructor() {
     this.vectorWeb = null;
@@ -68,6 +12,8 @@ class AppController {
 
   init() {
     if (this.initialized) return;
+
+    // Zone manager is already created in index.html
 
     // Wait for authentication
     window.addEventListener('auth-success', () => {
@@ -86,9 +32,6 @@ class AppController {
   onAuthSuccess() {
     // Initialize vector web visualization
     this.vectorWeb = new VectorWeb('canvas-layer');
-
-    // Create zone manager
-    window.zoneManager = new ZoneManager();
 
     console.log('App initialized successfully');
   }
