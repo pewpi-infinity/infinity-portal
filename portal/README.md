@@ -34,10 +34,20 @@ Each zone is a self-contained module:
 
 ## Configuration
 
-### API Keys
+### API Keys (Demo Configuration)
+
+**Note**: The following API keys are currently hardcoded for demo purposes as specified in the requirements. In a production deployment, these should be moved to environment variables or a secure configuration system.
 
 - **Google Client ID**: `16937806382-leqbaginj3igrhei58nsab7tb4hsb7435.apps.googleusercontent.com`
 - **Gemini API Key**: `AIzaSyDWKRhBjFEt752zC86X0aQOvRQHxM5XPlc`
+
+### Production Deployment Recommendations
+
+For production use:
+1. Store API keys in environment variables
+2. Use a secrets management service (e.g., AWS Secrets Manager, HashiCorp Vault)
+3. Implement proper key rotation policies
+4. Restrict API key permissions and set usage quotas
 
 ## Usage
 

@@ -1,6 +1,9 @@
 /**
  * AI Interface Module
  * Handles Gemini API integration for AI-driven navigation and suggestions
+ * 
+ * SECURITY NOTE: API key is hardcoded for demo purposes per requirements.
+ * For production, use environment variables or secure configuration management.
  */
 
 const AI_CONFIG = {

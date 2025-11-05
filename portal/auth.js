@@ -1,6 +1,9 @@
 /**
  * Authentication Module
  * Handles Google Sign-In authentication
+ * 
+ * SECURITY NOTE: Client ID is hardcoded for demo purposes per requirements.
+ * For production, use environment variables or secure configuration management.
  */
 
 const AUTH_CONFIG = {
