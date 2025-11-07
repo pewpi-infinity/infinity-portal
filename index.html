@@ -270,8 +270,14 @@
         regErr.textContent = 'Passwords do not match';
         regErr.style.display = 'block'; return false;
       }
-      if (p.length < 6) {
-        regErr.textContent = 'Password must be at least 6 characters';
+      if (p.length < 8) {
+        regErr.textContent = 'Password must be at least 8 characters';
+        regErr.style.display = 'block'; return false;
+      }
+      // Password complexity: at least one uppercase, one lowercase, one digit, one special character
+      const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
+      if (!complexityRegex.test(p)) {
+        regErr.textContent = 'Password must include uppercase, lowercase, number, and special character';
         regErr.style.display = 'block'; return false;
       }
       let users = JSON.parse(localStorage.getItem('infinity_users') || '{}');
