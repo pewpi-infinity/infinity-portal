@@ -238,7 +238,7 @@
         </div>
         <div class="form-group">
           <label>Year</label>
-          <input type="number" id="coinYear" placeholder="e.g., 1964" min="1000" max="2025">
+          <input type="number" id="coinYear" placeholder="e.g., 1964" min="1000">
         </div>
         <div class="form-group">
           <label>Mint Mark</label>
@@ -481,6 +481,12 @@
     }
 
     // Initialize
+    // Set dynamic max year for coin year input (allows future commemorative releases)
+    const coinYearInput = document.getElementById('coinYear');
+    if (coinYearInput) {
+      coinYearInput.max = new Date().getFullYear() + 5; // Allow up to 5 years in future for planned releases
+    }
+    
     displayGradedCoins();
   </script>
 </body>
