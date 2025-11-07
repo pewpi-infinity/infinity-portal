@@ -12,9 +12,12 @@ class AutopilotZone {
   }
 
   init() {
-    // Register this zone with the app
+    // Register this zone with the app, or defer registration if zoneManager is not yet available
     if (window.zoneManager) {
       window.zoneManager.registerZone(this);
+    } else {
+      window.pendingZones = window.pendingZones || [];
+      window.pendingZones.push(this);
     }
   }
 
