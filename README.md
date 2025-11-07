@@ -83,7 +83,7 @@ Configure authentication and backend in `auth.json`:
 ```json
 {
   "google_client_id": "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
-  "allowed_emails": ["marvaseater@gmail.com"],
+  "allowed_emails": ["user@example.com"],
   "chat_endpoint": "https://your-api.example.com/chat"
 }
 ```
