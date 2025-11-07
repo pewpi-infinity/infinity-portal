@@ -40,7 +40,7 @@ Some versions of the application may have a UI field to enter your API key direc
 If you're running the application locally or on a server:
 
 1. Create a `.env` file (this is git-ignored by default):
-```bash
+```dotenv
 OPENAI_API_KEY=your_key_here
 ```
 
