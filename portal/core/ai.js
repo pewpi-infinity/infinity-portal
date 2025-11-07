@@ -2,13 +2,13 @@
  * AI Interface Module
  * Handles Gemini API integration for AI-driven navigation and suggestions
  * 
- * SECURITY NOTE: API key is hardcoded for demo purposes per requirements.
- * For production, use environment variables or secure configuration management.
+ * SECURITY NOTE: API key must NOT be hardcoded or exposed in client-side code.
+ * For production, use a backend proxy endpoint to handle Gemini API requests and keep the key secure on the server side.
  */
 
 const AI_CONFIG = {
-  apiKey: 'AIzaSyDWKRhBjFEt752zC86X0aQOvRQHxM5XPlc',
-  apiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent'
+  // Do NOT include apiKey here. Use a backend proxy endpoint instead.
+  apiUrl: '/api/ai/query' // Backend endpoint that proxies Gemini API requests
 };
 
 class AIManager {
