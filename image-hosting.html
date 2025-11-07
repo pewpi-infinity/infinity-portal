@@ -339,7 +339,7 @@
       const link = image.data;
       
       navigator.clipboard.writeText(link).then(() => {
-        alert('Image data copied to clipboard! You can paste this directly into any application that accepts images.');
+        alert('Image data URL copied to clipboard. This can be used as an image source in HTML/CSS.');
       }).catch(() => {
         // Fallback: show the link in an alert
         const shortLink = link.substring(0, 100) + '...';
