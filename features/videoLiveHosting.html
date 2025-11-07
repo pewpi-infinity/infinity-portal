@@ -177,9 +177,11 @@
         const a = document.createElement('a');
         a.href = url;
         a.download = `snapshot-${Date.now()}.png`;
+        a.addEventListener('click', () => {
+          // Clean up to prevent memory leaks
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, { once: true });
         a.click();
-        // Clean up to prevent memory leaks
-        setTimeout(() => URL.revokeObjectURL(url), 100);
       });
     }
     
