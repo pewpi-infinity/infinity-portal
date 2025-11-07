@@ -200,7 +200,7 @@
 
     <div class="upload-section">
       <h2 style="margin-bottom: 20px;">Upload Images</h2>
-      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-area" id="uploadArea" role="button" tabindex="0" onclick="document.getElementById('fileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('fileInput').click();}">
         <div class="upload-icon">📤</div>
         <div class="upload-text">Click to upload or drag and drop</div>
         <div class="upload-hint">Supports: JPG, PNG, GIF, WebP (Max 10MB per file)</div>
@@ -299,7 +299,9 @@
         const card = document.createElement('div');
         card.className = 'image-card';
         card.innerHTML = `
-          <img src="${image.data}" alt="${image.name}" onclick="viewImage(${index})">
+          <button style="border:none;background:none;padding:0;cursor:pointer;width:100%;display:block;" onclick="viewImage(${index})" aria-label="View ${image.name}">
+            <img src="${image.data}" alt="${image.name}" style="pointer-events:none;">
+          </button>
           <div class="image-info">
             <div class="image-name">${image.name}</div>
             <div class="image-details">
