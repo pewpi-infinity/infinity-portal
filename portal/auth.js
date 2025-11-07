@@ -175,7 +175,22 @@ class AuthManager {
 
   onAuthFailure(error) {
     console.error('Authentication failed:', error);
-    alert('Authentication failed. Please try again.');
+    let message = 'Authentication failed. Please try again.';
+    if (error) {
+      // Check for common error scenarios
+      if (error.type === 'popup_closed_by_user' || error.error === 'popup_closed_by_user') {
+        message = 'Sign-in cancelled by user.';
+      } else if (error.type === 'network_error' || error.error === 'network_error') {
+        message = 'Network error during authentication. Please check your connection and try again.';
+      } else if (error.type === 'invalid_credentials' || error.error === 'invalid_credentials') {
+        message = 'Invalid credentials. Please check your login details and try again.';
+      } else if (typeof error === 'string') {
+        message = 'Authentication failed: ' + error;
+      } else if (error.message) {
+        message = 'Authentication failed: ' + error.message;
+      }
+    }
+    alert(message);
   }
 
   getUser() {
