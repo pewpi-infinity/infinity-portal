@@ -2,614 +2,320 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinity Portal - Secure Login</title>
+  <title>INFINITY Portal · Universal AI-to-AI Encrypted Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <style>
-    /* ========== Root Variables ========== */
     :root {
-      --bg-dark: #0a0e1a;
-      --bg-panel: #141827;
-      --bg-card: #1a1f35;
-      --accent-primary: #00d4ff;
-      --accent-secondary: #7b2cbf;
+      --bg1: #23263d;
+      --bg2: #191c2b;
+      --bg3: #161926;
+      --panel: #20243b;
+      --gradient: radial-gradient(ellipse at 60% 6%, #2556e7 0%, #23263d 60%, #191c2b 100%);
+      --accent1: #00d4ff;
+      --accent2: #7b2cbf;
+      --btn-gradient: linear-gradient(90deg,#00d4ff 0%,#4b49fe 53%,#7b2cbf 100%);
+      --card-border: #2955ec40;
       --text-primary: #e9ecef;
       --text-muted: #8b95a8;
-      --border-glow: rgba(0, 212, 255, 0.3);
-      --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
-      --shadow-glow-strong: 0 0 40px rgba(0, 212, 255, 0.3);
+      --input-bg: #15192a;
+      --input-border: #2b3142;
+      --error: #f87171;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+    html, body {
+      height: 100%; width: 100vw;
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: var(--gradient);
       color: var(--text-primary);
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+    body {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
       position: relative;
-      overflow: hidden;
+      background: var(--gradient);
     }
-
-    /* Animated background effect */
-    body::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-      background-size: 50px 50px;
-      animation: drift 20s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes drift {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(50px, 50px); }
-    }
-
     .container {
-      max-width: 450px;
-      width: 100%;
-      position: relative;
-      z-index: 1;
+      width: 100%; max-width: 420px; margin: auto;
+      display: flex; flex-direction: column; align-items: center;
+      z-index: 2; padding: 0 2vw;
     }
-
-    .logo-area {
+    .logo {
       text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .logo-text {
-      font-size: 48px;
+      font-size: 2.1rem;
       font-weight: 900;
-      letter-spacing: 4px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      background: linear-gradient(90deg,#00d4ff,#7b2cbf);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-      margin-bottom: 10px;
+      letter-spacing: .09em;
+      margin-top: 14px;
     }
-
-    .logo-subtext {
-      color: var(--text-muted);
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .card {
-      background: var(--bg-panel);
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: var(--shadow-glow), 0 10px 40px rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-glow);
-      position: relative;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-      opacity: 0.5;
-    }
-
-    h2 {
-      color: var(--text-primary);
-      margin-bottom: 10px;
-      font-size: 28px;
-      font-weight: 700;
-    }
-
     .subtitle {
+      text-align: center;
       color: var(--text-muted);
-      margin-bottom: 30px;
-      font-size: 14px;
+      font-size: 1em;
+      letter-spacing: .08em;
+      margin-bottom: 26px;
+      font-weight: 600;
+      margin-top: 3px;
     }
-
-    .pewpi-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0, 212, 255, 0.1);
-      padding: 6px 12px;
+    .panel {
+      background: var(--panel);
       border-radius: 20px;
-      font-size: 12px;
-      color: var(--accent-primary);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      margin-bottom: 20px;
-    }
-
-    .pewpi-badge::before {
-      content: '🔐';
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    input {
+      padding: 24px 18px 19px 18px;
+      box-shadow: 0 10px 36px #224c9837;
+      border: 1.5px solid var(--card-border);
+      margin-bottom: 25px;
       width: 100%;
-      padding: 14px 16px;
-      background: var(--bg-card);
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      border-radius: 10px;
-      color: var(--text-primary);
-      font-size: 15px;
-      transition: all 0.3s ease;
+      animation: fadein .4s ease;
+      position: relative;
+      display: flex; flex-direction: column;
     }
-
-    input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-    }
-
-    input::placeholder {
-      color: var(--text-muted);
-      opacity: 0.6;
-    }
-
-    button {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border: none;
-      border-radius: 10px;
-      color: white;
+    @keyframes fadein {from{opacity:0;} to{opacity:1;}}
+    .pewpi-badge {
+      display: inline-block;
+      font-size: 1em;
+      color: #00d4ff;
+      background: rgba(0,212,255,.1);
+      padding: 7px 14px 7px 10px;
+      border-radius: 16px 8px 16px 8px;
       font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: .04em;
+      margin-bottom: 19px;
+      border: 1.2px solid #00d4ff40;
+      box-shadow: 0 4px 25px #00d4ff14;
     }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-glow-strong);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    .toggle-mode {
-      text-align: center;
-      margin-top: 20px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .toggle-mode a {
-      color: var(--accent-primary);
-      text-decoration: none;
+    .pewpi-badge:before { content: '\1F512 '; font-size:1.1em; margin-right:.18em; }
+    .panel h2 { font-size: 1.16em; font-weight: 800; color: #fff; margin-bottom:.37em;}
+    .panel label {
+      font-size: .99em;
       font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: .25em;
+    }
+    .panel input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.6px solid var(--input-border);
+      color: var(--text-primary);
+      font-size: 1em;
+      border-radius: .7em;
+      padding: .84em .98em; margin-bottom:13px;
+      transition: border .16s;
+      outline: none;
+    }
+    .panel input:focus {
+      border-color: var(--accent1);
+      box-shadow: 0 0 8px #00d4ff34;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: .6em;
+      font-size: 1.07em;
+      font-weight: 800;
+      border: none;
+      border-radius: .8em;
+      background: var(--btn-gradient);
+      color: #fff;
+      padding: .85em 0;
       cursor: pointer;
+      transition: .15s;
+      letter-spacing: .03em;
+      margin-bottom: .36em;
+      box-shadow: 0 3px 26px #00d4ff30;
     }
-
-    .toggle-mode a:hover {
-      text-decoration: underline;
-    }
-
-    .error-msg {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .success-msg {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: #86efac;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .info-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .info-link a {
+    .btn:active {filter:brightness(1.09) saturate(1.3);}
+    .note {
       color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      font-size: .92em;
+      text-align: center;
+      margin: .3em 0 0 0;
     }
-
-    .info-link a:hover {
-      color: var(--accent-primary);
-    }
-
-    /* Loading spinner */
-    .spinner {
+    .error-msg {
+      color: var(--error);
+      font-size: 1em;
+      text-align: center;
+      margin-bottom: .5em;
       display: none;
-      border: 3px solid rgba(0, 212, 255, 0.1);
-      border-top-color: var(--accent-primary);
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .footer {
+      margin-top: 20px; text-align: center; width: 100%; padding: .7em .3em .3em;
+      font-size: .84em; color: #b5daf8; opacity: .98;
     }
-
-    /* Responsive */
-    @media (max-width: 480px) {
-      .card {
-        padding: 30px 20px;
-      }
-
-      .logo-text {
-        font-size: 36px;
-      }
-
-      h2 {
-        font-size: 24px;
-      }
-    }
+    .footer .verse { font-size: .86em; color: #8beecc; margin-bottom: 2px; }
+    .footer .powered { font-size: .83em; color: #676; opacity: .885; margin-top: 3px; }
+    @media(max-width:430px){.container{max-width:99vw;}.panel{border-radius:14px;padding:16px 7px 14px 7px;}}
+    @media(max-width:370px){.logo{font-size:1.5rem;}}
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="logo-area">
-      <div class="logo-text">INFINITY</div>
-      <div class="logo-subtext">Secure Portal Access</div>
-    </div>
-
-    <div class="card">
-      <div class="pewpi-badge">Infinity AI-to-AI Encryption Active</div>
-      
+    <div class="logo">INFINITY</div>
+    <div class="subtitle">SECURE PORTAL ACCESS</div>
+    <form class="panel" id="login-panel" onsubmit="return handleLogin(event)">
+      <div class="pewpi-badge">PewPi AI-to-AI Encryption Active</div>
+      <h2>Welcome Back</h2>
+      <div class="note">Sign in to access your secure portal</div>
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit" class="btn">SIGN IN SECURELY</button>
       <div id="error-msg" class="error-msg"></div>
-      <div id="success-msg" class="success-msg"></div>
-      
-      <!-- Login Form -->
-      <div id="login-form">
-        <h2>Welcome Back</h2>
-        <p class="subtitle">Sign in to access your secure portal</p>
-        
-        <form id="loginForm" onsubmit="return handleLogin(event)">
-          <div class="form-group">
-            <label for="login-username">Username</label>
-            <input type="text" id="login-username" placeholder="Enter your username" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" placeholder="Enter your password" required>
-          </div>
-          
-          <button type="submit">Sign In Securely</button>
-        </form>
-        
-        <div class="toggle-mode">
-          Don't have an account? <a onclick="showRegister()">Create one</a>
-        </div>
-      </div>
-
-      <!-- Register Form -->
-      <div id="register-form" style="display: none;">
-        <h2>Create Account</h2>
-        <p class="subtitle">Join the Infinity Portal with advanced AI security</p>
-        
-        <form id="registerForm" onsubmit="return handleRegister(event)">
-          <div class="form-group">
-            <label for="reg-username">Username</label>
-            <input type="text" id="reg-username" placeholder="Choose a username" required minlength="3">
-          </div>
-          
-          <div class="form-group">
-            <label for="reg-password">Password</label>
-            <input type="password" id="reg-password" placeholder="Choose a strong password" required minlength="6">
-          </div>
-          
-          <div class="form-group">
-            <label for="reg-password-confirm">Confirm Password</label>
-            <input type="password" id="reg-password-confirm" placeholder="Re-enter your password" required>
-          </div>
-          
-          <button type="submit">Create Account</button>
-        </form>
-        
-        <div class="toggle-mode">
-          Already have an account? <a onclick="showLogin()">Sign in</a>
-        </div>
-      </div>
-
-      <div class="info-link">
-        <a href="pewpi-about.html" target="_blank">
-          🛡️ Learn about Infinity Encryption
-        </a>
-      </div>
-    </div>
+      <div class="note">Don't have an account? <a href="#" style="color:#00d4ff;text-decoration:none;font-weight:700;" onclick="showRegister()">Create one</a></div>
+      <div class="note" style="margin-top:10px;font-size:.92em;display:flex;align-items:center;justify-content:center;"><span style="font-size:1.15em;margin-right:4px;">&#128736;</span>Learn about PewPi Encryption</div>
+    </form>
+    <form class="panel" id="register-panel" style="display:none;" onsubmit="return handleRegister(event)">
+      <div class="pewpi-badge">PewPi AI-to-AI Encryption Active</div>
+      <h2>Create Account</h2>
+      <div class="note">Join the Infinity Portal with advanced AI security</div>
+      <label for="reg-username">Username</label>
+      <input id="reg-username" name="reg-username" type="text" required>
+      <label for="reg-password">Password</label>
+      <input id="reg-password" name="reg-password" type="password" required>
+      <label for="reg-confirm">Confirm Password</label>
+      <input id="reg-confirm" name="reg-confirm" type="password" required>
+      <button type="submit" class="btn">Create Account</button>
+      <div id="reg-error-msg" class="error-msg"></div>
+      <div class="note">Already have an account? <a href="#" style="color:#00d4ff;font-weight:700;text-decoration:none;" onclick="showLogin()">Sign In</a></div>
+    </form>
   </div>
-
+  <div class="footer">
+    <div class="verse">John 4:36 – "Already the one who reaps draws a wage and harvests a crop for eternal life, so that the sower and the reaper may be glad together."</div>
+    <div class="powered">Powered by Infinity</div>
+  </div>
   <script>
-    // ========== Infinity AI-to-AI Encryption System ==========
-    
-    /**
-     * AI Agent 1: Transforms input using mathematical encoding
-     * Simulates first AI processing layer
-     */
-    function aiAgent1Encode(text) {
-      let encoded = '';
-      for (let i = 0; i < text.length; i++) {
-        const charCode = text.charCodeAt(i);
-        // Complex mathematical transformation
-        const transformed = ((charCode * 137 + 42) % 65536).toString(16).padStart(4, '0');
-        encoded += transformed;
+    // --- INFINITY Dual Encryption ---
+    // Modular multiplicative inverse of 137 (for decoding)
+    const MOD = 65536, MUL = 137, ADD = 42, INV = 30137;
+    function infinityEncrypt(password, username) {
+      // Layer 1: modular encoding
+      let enc1 = '';
+      for (let i = 0; i < password.length; i++) {
+        const code = password.charCodeAt(i);
+        enc1 += ((code * MUL + ADD) % MOD).toString(16).padStart(4, '0');
       }
-      return encoded;
-    }
-
-    /**
-     * AI Agent 1: Reverse transformation
-     */
-    function aiAgent1Decode(encoded) {
-      let decoded = '';
-      for (let i = 0; i < encoded.length; i += 4) {
-        const hexValue = encoded.substring(i, i + 4);
-        const num = parseInt(hexValue, 16);
-        // Reverse the transformation using modular multiplicative inverse
-        // Inverse of 137 mod 65536 is 30137 (calculated via extended Euclidean algorithm)
-        const charCode = ((num - 42 + 65536) * 30137) % 65536;
-        decoded += String.fromCharCode(charCode);
+      // Layer 2: XOR with salted key
+      let key = infinityKey(username + 'INFINITY_SALT');
+      let enc2 = '';
+      for (let i = 0; i < enc1.length; i++) {
+        const xored = enc1.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+        enc2 += xored.toString(16).padStart(2, '0');
       }
-      return decoded;
+      return 'INFINITY_V1:' + enc2;
     }
-
-    /**
-     * AI Agent 2: Applies quantum-inspired permutation
-     * Simulates second AI processing layer
-     */
-    function aiAgent2Encode(text, salt) {
-      const key = generateKey(salt);
-      let encoded = '';
-      for (let i = 0; i < text.length; i++) {
-        const charCode = text.charCodeAt(i);
-        const keyChar = key.charCodeAt(i % key.length);
-        // XOR with rotating key
-        const xored = charCode ^ keyChar;
-        encoded += xored.toString(16).padStart(2, '0');
+    function infinityDecrypt(encrypted, username) {
+      const enc2 = encrypted.replace('INFINITY_V1:', '');
+      let key = infinityKey(username + 'INFINITY_SALT');
+      let enc1 = '';
+      for (let i = 0; i < enc2.length; i += 2) {
+        const num = parseInt(enc2.substring(i, i+2), 16);
+        enc1 += String.fromCharCode(num ^ key.charCodeAt((i/2) % key.length));
       }
-      return encoded;
-    }
-
-    /**
-     * AI Agent 2: Reverse permutation
-     */
-    function aiAgent2Decode(encoded, salt) {
-      const key = generateKey(salt);
-      let decoded = '';
-      for (let i = 0; i < encoded.length; i += 2) {
-        const hexValue = encoded.substring(i, i + 2);
-        const num = parseInt(hexValue, 16);
-        const keyChar = key.charCodeAt((i / 2) % key.length);
-        const original = num ^ keyChar;
-        decoded += String.fromCharCode(original);
+      // Layer 1: modular decode (using INV)
+      let out = '', arr = [];
+      for (let i = 0; i < enc1.length; i += 4) {
+        arr.push(parseInt(enc1.substring(i, i+4), 16));
       }
-      return decoded;
+      for (let v of arr) {
+        let code = ((v - ADD + MOD) * INV) % MOD;
+        out += String.fromCharCode(code);
+      }
+      return out;
     }
-
-    /**
-     * Generate a deterministic key from salt
-     */
-    function generateKey(salt) {
+    function infinityKey(salt) {
       let key = '';
       for (let i = 0; i < 256; i++) {
         key += String.fromCharCode(((salt.charCodeAt(i % salt.length) * (i + 1)) % 94) + 33);
       }
       return key;
     }
-
-    /**
-     * Full Infinity Double Encoding: AI Agent 1 → AI Agent 2
-     */
-    function infinityEncrypt(password, username) {
-      // First AI layer
-      const layer1 = aiAgent1Encode(password);
-      // Second AI layer with username as salt
-      const layer2 = aiAgent2Encode(layer1, username + 'INFINITY_SALT');
-      // Add metadata
-      return 'INFINITY_V1:' + layer2;
-    }
-
-    /**
-     * Full Infinity Double Decoding: AI Agent 2 → AI Agent 1
-     */
-    function infinityDecrypt(encrypted, username) {
-      try {
-        // Remove metadata
-        const layer2 = encrypted.replace('INFINITY_V1:', '');
-        // Reverse second AI layer
-        const layer1 = aiAgent2Decode(layer2, username + 'INFINITY_SALT');
-        // Reverse first AI layer
-        const original = aiAgent1Decode(layer1);
-        return original;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    // ========== Activity Log System ==========
-    
-    function logActivity(action, details) {
-      const logs = JSON.parse(localStorage.getItem('infinity_activity_log') || '[]');
-      logs.push({
-        timestamp: new Date().toISOString(),
-        action: action,
-        details: details,
-        user: localStorage.getItem('infinity_current_user') || 'system'
-      });
-      localStorage.setItem('infinity_activity_log', JSON.stringify(logs));
-    }
-
-    // ========== Form Handlers ==========
-    
-    function handleRegister(event) {
-      event.preventDefault();
-      
-      const username = document.getElementById('reg-username').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const confirmPassword = document.getElementById('reg-password-confirm').value;
-      
-      // Validate
-      if (password !== confirmPassword) {
-        showError('Passwords do not match');
-        return false;
-      }
-      
-      if (password.length < 6) {
-        showError('Password must be at least 6 characters');
-        return false;
-      }
-      
-      // Check if user exists
-      const users = JSON.parse(localStorage.getItem('infinity_users') || '{}');
-      if (users[username]) {
-        showError('Username already exists');
-        return false;
-      }
-      
-      // Encrypt password using Infinity dual encoding
-      const encryptedPassword = infinityEncrypt(password, username);
-      
-      // Store user
-      users[username] = {
-        password: encryptedPassword,
-        createdAt: new Date().toISOString()
-      };
-      localStorage.setItem('infinity_users', JSON.stringify(users));
-      
-      // Log activity
-      logActivity('user_registered', `New user account created: ${username}`);
-      
-      showSuccess('Account created successfully! Please sign in.');
-      
-      setTimeout(() => {
-        showLogin();
-      }, 1500);
-      
-      return false;
-    }
-
-    function handleLogin(event) {
-      event.preventDefault();
-      
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value;
-      
-      // Get users
-      const users = JSON.parse(localStorage.getItem('infinity_users') || '{}');
-      
-      if (!users[username]) {
-        showError('Invalid username or password');
-        return false;
-      }
-      
-      // Decrypt stored password and verify
-      const storedEncrypted = users[username].password;
-      const decryptedPassword = infinityDecrypt(storedEncrypted, username);
-      
-      if (decryptedPassword !== password) {
-        showError('Invalid username or password');
-        logActivity('login_failed', `Failed login attempt for user: ${username}`);
-        return false;
-      }
-      
-      // Successful login - Store user state in both localStorage and sessionStorage
-      localStorage.setItem('infinity_current_user', username);
-      localStorage.setItem('infinity_session_token', 'SESSION_' + Date.now());
-      sessionStorage.setItem('infinity_current_user', username);
-      sessionStorage.setItem('infinity_session_token', 'SESSION_' + Date.now());
-      
-      logActivity('user_login', `User successfully logged in: ${username}`);
-      
-      showSuccess('Login successful! Redirecting...');
-      
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1000);
-      
-      return false;
-    }
-
-    // ========== UI Helpers ==========
-    
+    // --- UI State ---
     function showRegister() {
-      document.getElementById('login-form').style.display = 'none';
-      document.getElementById('register-form').style.display = 'block';
-      hideMessages();
+      document.getElementById('login-panel').style.display = 'none';
+      document.getElementById('register-panel').style.display = 'flex';
     }
-
     function showLogin() {
-      document.getElementById('register-form').style.display = 'none';
-      document.getElementById('login-form').style.display = 'block';
-      hideMessages();
+      document.getElementById('register-panel').style.display = 'none';
+      document.getElementById('login-panel').style.display = 'flex';
     }
-
-    function showError(message) {
-      const errorDiv = document.getElementById('error-msg');
-      errorDiv.textContent = message;
-      errorDiv.style.display = 'block';
-      document.getElementById('success-msg').style.display = 'none';
+    // --- Storage Helpers ---
+    function setUserState(username, sessionToken) {
+      localStorage.setItem('infinity_current_user', username);
+      sessionStorage.setItem('infinity_current_user', username);
+      localStorage.setItem('infinity_session_token', sessionToken);
+      sessionStorage.setItem('infinity_session_token', sessionToken);
     }
-
-    function showSuccess(message) {
-      const successDiv = document.getElementById('success-msg');
-      successDiv.textContent = message;
-      successDiv.style.display = 'block';
-      document.getElementById('error-msg').style.display = 'none';
+    // --- Activity Log ---
+    function logActivity(action, details, user) {
+      const logKey = 'infinity_activity_log';
+      const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
+      logs.push({timestamp: new Date().toISOString(), action, details, user});
+      localStorage.setItem(logKey, JSON.stringify(logs));
     }
-
-    function hideMessages() {
-      document.getElementById('error-msg').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'none';
+    // --- Registration Handler ---
+    function handleRegister(e) {
+      e.preventDefault();
+      const u = document.getElementById('reg-username').value.trim();
+      const p = document.getElementById('reg-password').value;
+      const c = document.getElementById('reg-confirm').value;
+      const regErr = document.getElementById('reg-error-msg');
+      regErr.style.display = 'none';
+      if (p !== c) {
+        regErr.textContent = 'Passwords do not match';
+        regErr.style.display = 'block'; return false;
+      }
+      if (p.length < 6) {
+        regErr.textContent = 'Password must be at least 6 characters';
+        regErr.style.display = 'block'; return false;
+      }
+      let users = JSON.parse(localStorage.getItem('infinity_users') || '{}');
+      if (users[u]) {
+        regErr.textContent = 'Username already exists';
+        regErr.style.display = 'block'; return false;
+      }
+      const encrypted = infinityEncrypt(p, u);
+      users[u] = { password: encrypted, createdAt: new Date().toISOString() };
+      localStorage.setItem('infinity_users', JSON.stringify(users));
+      sessionStorage.setItem('infinity_users', JSON.stringify(users));
+      logActivity('user_registered', `New account "${u}" registered`, u);
+      showLogin();
+      return false;
     }
-
-    // ========== Initialize ==========
-    
-    // Check if already logged in
-    if (localStorage.getItem('infinity_current_user') && localStorage.getItem('infinity_session_token')) {
+    // --- Login Handler ---
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value;
+      const errMsg = document.getElementById('error-msg');
+      errMsg.style.display = 'none';
+      let users = JSON.parse(localStorage.getItem('infinity_users') || '{}');
+      if (!users[u]) {
+        errMsg.textContent = 'Invalid username or password'; errMsg.style.display = 'block'; return false;
+      }
+      const storedEncrypted = users[u].password;
+      const plain = infinityDecrypt(storedEncrypted, u);
+      if (plain !== p) {
+        errMsg.textContent = 'Invalid username or password'; errMsg.style.display = 'block'; return false;
+      }
+      // Success: set user state, log activity, redirect
+      const sessionToken = 'SESSION_' + Date.now();
+      setUserState(u, sessionToken);
+      logActivity('user_login', `User "${u}" logged in`, u);
       window.location.href = 'dashboard.html';
+      return false;
     }
+    // --- Auto redirect if authenticated ---
+    window.onload = function() {
+      let user = localStorage.getItem('infinity_current_user');
+      let session = localStorage.getItem('infinity_session_token');
+      if (user && session) window.location.href = 'dashboard.html';
+    };
   </script>
 </body>
 </html>
