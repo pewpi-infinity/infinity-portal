@@ -4,66 +4,511 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Infinity • Rogers AI</title>
+  <meta name="google-signin-client_id" content="">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; }
-    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; }
-    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
-    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
-    .user { background: #d0ebff; align-self: flex-end; }
-    .ai { background: #e9ecef; align-self: flex-start; }
-    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
-    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
-    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
-    button:hover { background: #005f9e; }
+    * { box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f9f9f9; 
+      color: #222; 
+      margin: 0; 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+      overflow: hidden;
+    }
+    
+    /* Header with auth badge */
+    header { 
+      background: #0070ba; 
+      color: white; 
+      text-align: center; 
+      padding: 1rem; 
+      font-weight: bold; 
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+    }
+    
+    #hamburger {
+      position: absolute;
+      left: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    #hamburger:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    #authBadge {
+      position: absolute;
+      right: 1rem;
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    
+    #authBadge.owner {
+      background: #ffd700;
+      color: #000;
+      font-weight: bold;
+    }
+    
+    /* Drawer */
+    #drawer {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      width: 280px;
+      height: 100%;
+      background: #2c3e50;
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+      overflow-y: auto;
+    }
+    
+    #drawer.open {
+      left: 0;
+    }
+    
+    #drawer h3 {
+      margin: 0;
+      padding: 1rem;
+      background: #34495e;
+      font-size: 1rem;
+    }
+    
+    #drawer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #drawer li {
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid #34495e;
+      transition: background 0.2s;
+    }
+    
+    #drawer li:hover {
+      background: #34495e;
+    }
+    
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    
+    #overlay.show {
+      display: block;
+    }
+    
+    /* Main content area */
+    main { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden;
+    }
+    
+    #chatContainer {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    #messages { 
+      flex: 1; 
+      border: 1px solid #ccc; 
+      background: white; 
+      border-radius: 10px; 
+      padding: 1rem; 
+      overflow-y: auto; 
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .msg { 
+      margin-bottom: 0.75rem; 
+      padding: 0.5rem 0.75rem; 
+      border-radius: 10px; 
+      max-width: 80%; 
+      word-break: break-word;
+      position: relative;
+    }
+    
+    .user { 
+      background: #d0ebff; 
+      align-self: flex-end; 
+    }
+    
+    .ai { 
+      background: #e9ecef; 
+      align-self: flex-start; 
+    }
+    
+    .tokenCount {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 0.25rem;
+      font-style: italic;
+    }
+    
+    /* Stage area for embedded apps */
+    #stage {
+      display: none;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin: 1rem;
+      background: white;
+      overflow: hidden;
+      height: 400px;
+      position: relative;
+    }
+    
+    #stage.active {
+      display: block;
+    }
+    
+    #stageHeader {
+      background: #34495e;
+      color: white;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    #closeStage {
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0 0.5rem;
+    }
+    
+    #stageFrame {
+      width: 100%;
+      height: calc(100% - 40px);
+      border: none;
+    }
+    
+    /* Footer with input and token stats */
+    footer { 
+      display: flex; 
+      flex-direction: column;
+      background: #f0f0f0; 
+      border-top: 1px solid #ccc; 
+    }
+    
+    #inputArea {
+      display: flex; 
+      gap: 0.5rem; 
+      padding: 0.75rem;
+    }
+    
+    input { 
+      flex: 1; 
+      padding: 0.6rem; 
+      border-radius: 5px; 
+      border: 1px solid #bbb; 
+    }
+    
+    button { 
+      background: #0070ba; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      padding: 0.6rem 1rem; 
+      cursor: pointer; 
+    }
+    
+    button:hover { 
+      background: #005f9e; 
+    }
+    
+    /* Token counter bar */
+    #tokenStats {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem;
+      background: #e0e0e0;
+      border-top: 1px solid #ccc;
+      font-size: 0.85rem;
+    }
+    
+    #tokenStats span {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <header>🧠 Rogers AI — Infinity Portal</header>
+  <header>
+    <span id="hamburger" onclick="toggleDrawer()">☰</span>
+    🧠 Rogers AI — Infinity Portal
+    <span id="authBadge" onclick="handleAuth()">Sign In</span>
+  </header>
+  
+  <div id="overlay" onclick="toggleDrawer()"></div>
+  
+  <div id="drawer">
+    <h3>Apps</h3>
+    <ul id="appList"></ul>
+  </div>
+  
   <main>
-    <div id="messages">
-      <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
+    <div id="chatContainer">
+      <div id="messages">
+        <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
+      </div>
+    </div>
+    
+    <div id="stage">
+      <div id="stageHeader">
+        <span id="stageTitle">App</span>
+        <span id="closeStage" onclick="closeStage()">×</span>
+      </div>
+      <iframe id="stageFrame"></iframe>
     </div>
   </main>
+  
   <footer>
-    <input id="userInput" placeholder="Type your question..." />
-    <button onclick="ask()">Send</button>
+    <div id="inputArea">
+      <input id="userInput" placeholder="Type your question..." />
+      <button onclick="ask()">Send</button>
+    </div>
+    <div id="tokenStats">
+      <div>User: <span id="userTokens">0</span></div>
+      <div>Rogers: <span id="aiTokens">0</span></div>
+      <div>Total: <span id="totalTokens">0</span></div>
+    </div>
   </footer>
 
   <script>
+    // State
+    let authConfig = null;
+    let currentUser = null;
+    let userTokenTotal = 0;
+    let aiTokenTotal = 0;
+    
     const msgBox = document.getElementById('messages');
     const input = document.getElementById('userInput');
-
-    function add(role, text){
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const appList = document.getElementById('appList');
+    const stage = document.getElementById('stage');
+    const stageFrame = document.getElementById('stageFrame');
+    const stageTitle = document.getElementById('stageTitle');
+    const authBadge = document.getElementById('authBadge');
+    
+    // Token estimation (rough approximation: ~4 chars per token)
+    // Note: This is a simple estimate and may not match actual API token counts,
+    // which vary by language, content type, and tokenizer used
+    function estimateTokens(text) {
+      return Math.ceil(text.length / 4);
+    }
+    
+    function updateTokenStats(userTokens, aiTokens) {
+      userTokenTotal += userTokens;
+      aiTokenTotal += aiTokens;
+      const total = userTokenTotal + aiTokenTotal;
+      
+      document.getElementById('userTokens').textContent = userTokenTotal;
+      document.getElementById('aiTokens').textContent = aiTokenTotal;
+      document.getElementById('totalTokens').textContent = total;
+    }
+    
+    function add(role, text) {
       const div = document.createElement('div');
       div.className = 'msg ' + role;
       div.textContent = text;
+      
+      // Add token count
+      const tokens = estimateTokens(text);
+      const tokenSpan = document.createElement('div');
+      tokenSpan.className = 'tokenCount';
+      tokenSpan.textContent = `≈ ${tokens} tokens`;
+      div.appendChild(tokenSpan);
+      
       msgBox.appendChild(div);
       msgBox.scrollTop = msgBox.scrollHeight;
-    }
-
-    async function ask(){
-      const q = input.value.trim();
-      if(!q) return;
-      add('user', q);
-      input.value = '';
-      add('ai', 'Thinking...');
-      try {
-        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
-        const data = await res.json();
-        let answer = data.Answer || data.AbstractText || data.Definition || '';
-        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
-          answer = data.RelatedTopics[0].Text;
-        }
-        add('ai', answer || 'No clear result — try rephrasing your question.');
-      } catch(err) {
-        add('ai', '⚠️ Connection issue.');
+      
+      // Update totals
+      if (role === 'user') {
+        updateTokenStats(tokens, 0);
+      } else if (role === 'ai') {
+        updateTokenStats(0, tokens);
       }
     }
-
+    
+    async function ask() {
+      const q = input.value.trim();
+      if (!q) return;
+      add('user', q);
+      input.value = '';
+      
+      // Minimal Rogers brain - placeholder for future backend integration
+      const responses = [
+        "I'm here to help! This is a demo response from Rogers.",
+        "That's an interesting question. In the future, I'll be connected to a real backend.",
+        "Rogers AI is currently in demo mode. Your real implementation will wire this to your backend/worker.",
+        "I understand your question. Once integrated with your backend, I'll provide more detailed responses.",
+      ];
+      
+      const response = responses[Math.floor(Math.random() * responses.length)];
+      
+      setTimeout(() => {
+        add('ai', response);
+      }, 500);
+    }
+    
     input.addEventListener('keydown', e => {
-      if(e.key === 'Enter') ask();
+      if (e.key === 'Enter') ask();
     });
+    
+    // Drawer functions
+    function toggleDrawer() {
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+    
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('show');
+    }
+    
+    // Load apps.json
+    async function loadApps() {
+      try {
+        const res = await fetch('apps.json');
+        const apps = await res.json();
+        
+        appList.innerHTML = '';
+        apps.forEach(app => {
+          const li = document.createElement('li');
+          li.textContent = app.title;
+          li.onclick = () => {
+            openApp(app.title, app.path);
+            closeDrawer();
+          };
+          appList.appendChild(li);
+        });
+      } catch (err) {
+        console.log('apps.json not found or invalid - drawer will be empty');
+        appList.innerHTML = '<li style="opacity:0.6;cursor:default;">No apps configured</li>';
+      }
+    }
+    
+    // Open app in stage
+    function openApp(title, path) {
+      stageTitle.textContent = title;
+      stageFrame.src = path;
+      stage.classList.add('active');
+    }
+    
+    function closeStage() {
+      stage.classList.remove('active');
+      stageFrame.src = '';
+    }
+    
+    // Auth functions
+    async function loadAuthConfig() {
+      try {
+        const res = await fetch('auth.json');
+        authConfig = await res.json();
+        
+        if (authConfig.google_client_id) {
+          // Set the client ID in meta tag
+          document.querySelector('meta[name="google-signin-client_id"]').content = authConfig.google_client_id;
+          initGoogleSignIn();
+        } else {
+          authBadge.textContent = 'Auth: not configured';
+          authBadge.style.cursor = 'default';
+        }
+      } catch (err) {
+        console.log('auth.json not found - authentication disabled');
+        authBadge.textContent = 'Auth: not configured';
+        authBadge.style.cursor = 'default';
+      }
+    }
+    
+    function initGoogleSignIn() {
+      if (!window.google) {
+        setTimeout(initGoogleSignIn, 100);
+        return;
+      }
+      
+      google.accounts.id.initialize({
+        client_id: authConfig.google_client_id,
+        callback: handleCredentialResponse
+      });
+    }
+    
+    function handleAuth() {
+      if (!authConfig || !authConfig.google_client_id) {
+        return;
+      }
+      
+      if (currentUser) {
+        // Sign out
+        currentUser = null;
+        authBadge.textContent = 'Sign In';
+        authBadge.classList.remove('owner');
+      } else {
+        // Sign in
+        google.accounts.id.prompt();
+      }
+    }
+    
+    function handleCredentialResponse(response) {
+      try {
+        // Decode JWT to get email (client-side only for static GitHub Pages)
+        // Note: In production, JWT should be validated server-side
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        currentUser = {
+          email: payload.email,
+          name: payload.name
+        };
+        
+        // Check if owner
+        const isOwner = authConfig.allowed_emails && 
+                       authConfig.allowed_emails.includes(currentUser.email);
+        
+        if (isOwner) {
+          authBadge.textContent = `${currentUser.name || currentUser.email} (owner)`;
+          authBadge.classList.add('owner');
+        } else {
+          authBadge.textContent = currentUser.name || currentUser.email;
+          authBadge.classList.remove('owner');
+        }
+      } catch (err) {
+        console.error('Failed to parse credential:', err);
+        authBadge.textContent = 'Sign-in error';
+      }
+    }
+    
+    // Initialize
+    loadApps();
+    loadAuthConfig();
   </script>
 </body>
 </html>
