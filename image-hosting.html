@@ -262,7 +262,7 @@
     function handleFiles(files) {
       Array.from(files).forEach(file => {
         if (!file.type.startsWith('image/')) {
-          alert('Please upload only image files');
+          alert('Please upload only image files (JPG, PNG, GIF, WebP)');
           return;
         }
         
