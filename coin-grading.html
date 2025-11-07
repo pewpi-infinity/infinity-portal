@@ -450,10 +450,11 @@
     }
 
     function downloadCOA() {
-      alert('COA download functionality would generate a PDF certificate. Serial number copied to clipboard!');
+      alert('COA download functionality would generate a PDF certificate (not yet implemented).');
       const serialNumber = gradedCoins[0]?.serialNumber;
       if (serialNumber) {
         navigator.clipboard.writeText(serialNumber);
+        alert('Serial number copied to clipboard!');
       }
     }
 
