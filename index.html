@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Infinity Portal</title>
 </head>
 <body>
-    <h1>Welcome to the Infinity Portal</h1>
-    <p>Your content goes here.</p>
-    
-    <script src="infinity-auth.js"></script>
-    <script>const nameEl=document.getElementById("infinity-user-name");const user=window.infinityAuth&&window.infinityAuth.require(nameEl);const liveBtn=document.getElementById("live-btn");if(liveBtn){liveBtn.addEventListener("click",()=>{const u=window.infinityAuth.getUser();if(!u){alert("Infinity login required. Open your main Infinity login page first so we can store you.");return;}document.querySelector("section.live, #live-panel")?.classList?.add("open");});}</script>
+    <div class="sidebar">
+        <!-- Sidebar elements -->
+    </div>
+    <div class="chat">
+        <!-- Chat components -->
+    </div>
+    <div class="bot-farm">
+        <!-- Bot farm components -->
+    </div>
+    <div class="job-progress">
+        <!-- Job progress panel -->
+    </div>
+    <script src="botfarm.js"></script>
 </body>
 </html>
