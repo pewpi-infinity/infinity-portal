@@ -363,7 +363,7 @@
       if (isLive) {
         statusDot.className = 'status-indicator status-live';
         statusText.textContent = 'Live';
-        streamUrl.textContent = window.location.href + '?stream=' + Date.now();
+        streamUrl.textContent = window.location.href + '?stream=' + Date.now() + ' (simulated, not shareable)';
       } else {
         statusDot.className = 'status-indicator status-offline';
         statusText.textContent = 'Offline';
