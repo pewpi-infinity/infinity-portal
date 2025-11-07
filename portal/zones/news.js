@@ -121,17 +121,33 @@ class NewsZone {
     `;
   }
 
+  // Helper to escape HTML special characters
+  escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/\//g, '&#x2F;');
+  }
+
   renderArticle(article) {
+    const title = this.escapeHtml(article.title);
+    const category = this.escapeHtml(article.category);
+    const summary = this.escapeHtml(article.summary);
+    const date = this.escapeHtml(article.date);
+    const source = this.escapeHtml(article.source);
     return `
-      <div class="article-card" onclick="newsZone.openArticle('${article.title}')">
+      <div class="article-card" onclick="newsZone.openArticle('${title}')">
         <div style="display: flex; justify-content: space-between; align-items: start;">
-          <h3 style="margin: 0; color: #333;">${article.title}</h3>
-          <span class="category-tag">${article.category}</span>
+          <h3 style="margin: 0; color: #333;">${title}</h3>
+          <span class="category-tag">${category}</span>
         </div>
-        <p style="color: #666; margin: 15px 0; line-height: 1.6;">${article.summary}</p>
+        <p style="color: #666; margin: 15px 0; line-height: 1.6;">${summary}</p>
         <div class="article-meta">
-          <span>📅 ${article.date}</span>
-          <span>📰 ${article.source}</span>
+          <span>📅 ${date}</span>
+          <span>📰 ${source}</span>
         </div>
       </div>
     `;
