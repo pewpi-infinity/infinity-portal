@@ -28,7 +28,7 @@ This is the Infinity Portal project, a web-based platform that integrates AI ser
 - `*.html`: HTML pages with embedded CSS and JavaScript
 - `*_worker.js`: Cloudflare Workers (single-file deployments)
 - `requirements.txt`: Python dependencies
-- `dockerfile`: Docker configuration
+- `Dockerfile`: Docker configuration
 - Various SVG files for UI graphics
 
 ## Development Guidelines
