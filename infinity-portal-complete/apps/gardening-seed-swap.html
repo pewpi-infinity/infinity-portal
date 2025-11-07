@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gardening & Seed Swap • Infinity Portal</title>
+  <style>
+    :root {
+      --green-1: #059669;
+      --green-2: #10b981;
+      --brown: #92400e;
+      --bg: #ffffff;
+      --muted: #657080;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #d1fae5, #a7f3d0);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--green-1);
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: 2px solid rgba(5, 150, 105, 0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--green-1);
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--green-1);
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .seed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .seed-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .seed-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    .seed-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .seed-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-1);
+      margin-bottom: 8px;
+    }
+    .seed-details {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .seed-owner {
+      font-size: 12px;
+      color: var(--brown);
+      font-weight: 600;
+    }
+    .btn-swap {
+      background: var(--green-1);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .btn-swap:hover {
+      background: var(--green-2);
+    }
+    .add-seed-form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--green-1);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid rgba(5, 150, 105, 0.2);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .my-garden {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .plant-tracker {
+      display: grid;
+      gap: 12px;
+    }
+    .plant-item {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--green-1);
+    }
+    .plant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .plant-name {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--green-1);
+    }
+    .plant-stage {
+      font-size: 12px;
+      background: var(--green-1);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌱 Gardening & Seed Swap</h1>
+      <p class="subtitle">Community Seed Exchange & Garden Tracker • Powered by Infinity</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('browse')">Browse Seeds</button>
+      <button class="tab" onclick="switchTab('my-seeds')">My Seeds</button>
+      <button class="tab" onclick="switchTab('garden')">My Garden</button>
+      <button class="tab" onclick="switchTab('add')">Offer Seeds</button>
+    </div>
+
+    <div id="browse" class="tab-content active">
+      <div class="seed-grid" id="seedGrid"></div>
+    </div>
+
+    <div id="my-seeds" class="tab-content">
+      <div class="seed-grid" id="mySeedsGrid"></div>
+    </div>
+
+    <div id="garden" class="tab-content">
+      <div class="my-garden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="color: var(--green-1);">My Garden Tracker</h2>
+          <button class="btn-swap" style="width: auto;" onclick="addPlant()">+ Add Plant</button>
+        </div>
+        <div class="plant-tracker" id="gardenTracker"></div>
+      </div>
+    </div>
+
+    <div id="add" class="tab-content">
+      <div class="add-seed-form">
+        <h2 style="color: var(--green-1); margin-bottom: 20px;">Offer Seeds for Swap</h2>
+        
+        <div class="form-group">
+          <label for="seedType">Seed Type</label>
+          <select id="seedType">
+            <option value="vegetable">🥕 Vegetable</option>
+            <option value="herb">🌿 Herb</option>
+            <option value="flower">🌸 Flower</option>
+            <option value="fruit">🍎 Fruit</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="seedName">Plant Name</label>
+          <input type="text" id="seedName" placeholder="e.g., Heirloom Tomato, Basil, Sunflower">
+        </div>
+
+        <div class="form-group">
+          <label for="variety">Variety (Optional)</label>
+          <input type="text" id="variety" placeholder="e.g., Cherokee Purple, Genovese">
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity Available</label>
+          <input type="number" id="quantity" min="1" value="10" placeholder="Number of seeds">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" placeholder="Growing tips, seed source, special characteristics..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Your Location (ZIP)</label>
+          <input type="text" id="location" placeholder="For local swaps">
+        </div>
+
+        <button class="btn-swap" onclick="offerSeeds()">Offer Seeds for Swap</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const seedEmojis = {
+      vegetable: '🥕',
+      herb: '🌿',
+      flower: '🌸',
+      fruit: '🍎'
+    };
+
+    const sampleSeeds = [
+      { id: 1, type: 'vegetable', name: 'Heirloom Tomato', variety: 'Cherokee Purple', quantity: 20, owner: 'GreenThumb42', location: '90210' },
+      { id: 2, type: 'herb', name: 'Basil', variety: 'Genovese', quantity: 50, owner: 'HerbLover', location: '10001' },
+      { id: 3, type: 'flower', name: 'Sunflower', variety: 'Mammoth', quantity: 15, owner: 'SunnyDays', location: '60601' },
+      { id: 4, type: 'vegetable', name: 'Lettuce', variety: 'Buttercrunch', quantity: 30, owner: 'SaladFan', location: '90210' },
+      { id: 5, type: 'herb', name: 'Cilantro', variety: 'Santo', quantity: 40, owner: 'SpiceGarden', location: '78701' },
+      { id: 6, type: 'flower', name: 'Marigold', variety: 'French', quantity: 25, owner: 'FlowerPower', location: '33101' },
+      { id: 7, type: 'vegetable', name: 'Bell Pepper', variety: 'California Wonder', quantity: 12, owner: 'VeggieGrower', location: '94102' },
+      { id: 8, type: 'fruit', name: 'Strawberry', variety: 'Alpine', quantity: 8, owner: 'BerryPatch', location: '02101' }
+    ];
+
+    let mySeeds = JSON.parse(localStorage.getItem('infinityMySeeds') || '[]');
+    let myGarden = JSON.parse(localStorage.getItem('infinityMyGarden') || '[]');
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      
+      if (tabName === 'browse') renderSeeds(sampleSeeds, 'seedGrid', true);
+      if (tabName === 'my-seeds') renderSeeds(mySeeds, 'mySeedsGrid', false);
+      if (tabName === 'garden') renderGarden();
+    }
+
+    function renderSeeds(seeds, containerId, showSwap) {
+      const grid = document.getElementById(containerId);
+      grid.innerHTML = '';
+      
+      if (seeds.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">No seeds available yet.</div>';
+        return;
+      }
+
+      seeds.forEach(seed => {
+        const card = document.createElement('div');
+        card.className = 'seed-card';
+        card.innerHTML = `
+          <div class="seed-icon">${seedEmojis[seed.type]}</div>
+          <div class="seed-name">${seed.name}</div>
+          <div class="seed-details">
+            ${seed.variety ? `<strong>Variety:</strong> ${seed.variety}<br>` : ''}
+            <strong>Quantity:</strong> ${seed.quantity} seeds<br>
+            <strong>Location:</strong> ZIP ${seed.location}
+          </div>
+          <div class="seed-owner">Offered by: ${seed.owner}</div>
+          ${showSwap ? `<button class="btn-swap" onclick="requestSwap(${seed.id})">Request Swap</button>` : ''}
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function requestSwap(seedId) {
+      const seed = sampleSeeds.find(s => s.id === seedId);
+      if (seed) {
+        alert(`Swap request sent to ${seed.owner} for ${seed.name}!\n\nThey will be notified and can contact you to arrange the swap.`);
+      }
+    }
+
+    function offerSeeds() {
+      const type = document.getElementById('seedType').value;
+      const name = document.getElementById('seedName').value.trim();
+      const variety = document.getElementById('variety').value.trim();
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const description = document.getElementById('description').value.trim();
+      const location = document.getElementById('location').value.trim();
+
+      if (!name || !quantity || !location) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      const newSeed = {
+        id: Date.now(),
+        type,
+        name,
+        variety,
+        quantity,
+        description,
+        location,
+        owner: 'You'
+      };
+
+      mySeeds.push(newSeed);
+      localStorage.setItem('infinityMySeeds', JSON.stringify(mySeeds));
+
+      alert('✅ Seeds offered successfully! Other gardeners can now request swaps.');
+      
+      // Clear form
+      document.getElementById('seedName').value = '';
+      document.getElementById('variety').value = '';
+      document.getElementById('quantity').value = '10';
+      document.getElementById('description').value = '';
+      document.getElementById('location').value = '';
+
+      switchTab('my-seeds');
+    }
+
+    function addPlant() {
+      const name = prompt('Plant name:');
+      if (!name) return;
+      
+      const stages = ['Seed', 'Seedling', 'Growing', 'Flowering', 'Fruiting', 'Harvesting'];
+      const stageChoice = parseInt(prompt(`Current stage:\n${stages.map((s, i) => `${i}. ${s}`).join('\n')}`)) || 0;
+      
+      const newPlant = {
+        id: Date.now(),
+        name,
+        stage: stages[stageChoice] || 'Seed',
+        plantedDate: new Date().toISOString(),
+        notes: ''
+      };
+
+      myGarden.push(newPlant);
+      localStorage.setItem('infinityMyGarden', JSON.stringify(myGarden));
+      renderGarden();
+    }
+
+    function renderGarden() {
+      const tracker = document.getElementById('gardenTracker');
+      tracker.innerHTML = '';
+
+      if (myGarden.length === 0) {
+        tracker.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">No plants tracked yet. Start your garden!</div>';
+        return;
+      }
+
+      myGarden.forEach(plant => {
+        const item = document.createElement('div');
+        item.className = 'plant-item';
+        const planted = new Date(plant.plantedDate);
+        const daysAgo = Math.floor((Date.now() - planted.getTime()) / (1000 * 60 * 60 * 24));
+        
+        item.innerHTML = `
+          <div class="plant-header">
+            <div class="plant-name">🌱 ${plant.name}</div>
+            <div class="plant-stage">${plant.stage}</div>
+          </div>
+          <div style="font-size: 14px; color: var(--muted);">
+            Planted ${daysAgo} days ago • ${planted.toLocaleDateString()}
+          </div>
+        `;
+        tracker.appendChild(item);
+      });
+    }
+
+    // Initialize
+    renderSeeds(sampleSeeds, 'seedGrid', true);
+  </script>
+</body>
+</html>

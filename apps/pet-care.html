@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Care Tracker • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --bg: #ffffff;
+      --muted: #657080;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #fef3c7, #fde68a);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--blue-1);
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .pet-selector {
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .add-pet-btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+    }
+    .pet-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .pet-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-align: center;
+    }
+    .pet-card:hover {
+      transform: translateY(-4px);
+    }
+    .pet-card.active {
+      box-shadow: 0 0 0 3px var(--green);
+    }
+    .schedule-section {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: none;
+    }
+    .schedule-section.active {
+      display: block;
+    }
+    .schedule-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .schedule-item {
+      background: #f7fbff;
+      padding: 16px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--blue-2);
+    }
+    .schedule-item.completed {
+      border-left-color: var(--green);
+      opacity: 0.7;
+    }
+    .schedule-item.overdue {
+      border-left-color: #dc3545;
+    }
+    .btn-complete {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-complete.completed {
+      background: var(--muted);
+    }
+    .add-schedule-form {
+      background: #f7fbff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 16px;
+      display: none;
+    }
+    .add-schedule-form.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--blue-1);
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(3, 24, 62, 0.1);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .btn-submit {
+      background: var(--blue-1);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🐾 Pet Care Tracker</h1>
+      <p class="subtitle">Manage feeding schedules, vet visits, and more • Powered by Infinity</p>
+    </header>
+
+    <div class="pet-selector">
+      <h2 style="color: var(--blue-1); margin-bottom: 16px;">My Pets</h2>
+      <div class="pet-list" id="petList"></div>
+      <button class="add-pet-btn" onclick="addNewPet()">+ Add New Pet</button>
+    </div>
+
+    <div class="schedule-section" id="scheduleSection">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: var(--blue-1);">Care Schedule for <span id="currentPetName"></span></h2>
+        <button style="background: var(--blue-2); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;" onclick="toggleAddForm()">
+          + Add Activity
+        </button>
+      </div>
+
+      <div class="add-schedule-form" id="addForm">
+        <h3 style="color: var(--blue-1); margin-bottom: 16px;">Add Care Activity</h3>
+        <div class="form-group">
+          <label for="activityType">Activity Type</label>
+          <select id="activityType">
+            <option value="feeding">🍽️ Feeding</option>
+            <option value="walk">🚶 Walk</option>
+            <option value="medication">💊 Medication</option>
+            <option value="grooming">✂️ Grooming</option>
+            <option value="vet">🏥 Vet Visit</option>
+            <option value="play">🎾 Playtime</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="activityTime">Time</label>
+          <input type="time" id="activityTime">
+        </div>
+        <div class="form-group">
+          <label for="activityNotes">Notes (Optional)</label>
+          <input type="text" id="activityNotes" placeholder="e.g., 1 cup of food, 30 min walk">
+        </div>
+        <button class="btn-submit" onclick="addActivity()">Add Activity</button>
+      </div>
+
+      <div class="schedule-grid" id="scheduleGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    let pets = JSON.parse(localStorage.getItem('infinityPets') || '[]');
+    let currentPet = null;
+    let schedules = JSON.parse(localStorage.getItem('infinitySchedules') || '{}');
+
+    function savePets() {
+      localStorage.setItem('infinityPets', JSON.stringify(pets));
+    }
+
+    function saveSchedules() {
+      localStorage.setItem('infinitySchedules', JSON.stringify(schedules));
+    }
+
+    function renderPets() {
+      const petList = document.getElementById('petList');
+      petList.innerHTML = '';
+      
+      if (pets.length === 0) {
+        pets = [{id: '1', name: 'Buddy', type: '🐕 Dog', emoji: '🐕'}];
+        savePets();
+      }
+
+      pets.forEach(pet => {
+        const card = document.createElement('div');
+        card.className = 'pet-card' + (currentPet && currentPet.id === pet.id ? ' active' : '');
+        card.innerHTML = `
+          <div style="font-size: 40px; margin-bottom: 8px;">${pet.emoji}</div>
+          <div style="font-weight: 600; font-size: 18px;">${pet.name}</div>
+          <div style="font-size: 12px; opacity: 0.9;">${pet.type}</div>
+        `;
+        card.onclick = () => selectPet(pet);
+        petList.appendChild(card);
+      });
+
+      if (pets.length > 0 && !currentPet) {
+        selectPet(pets[0]);
+      }
+    }
+
+    function selectPet(pet) {
+      currentPet = pet;
+      document.getElementById('currentPetName').textContent = pet.name;
+      document.getElementById('scheduleSection').classList.add('active');
+      renderPets();
+      renderSchedule();
+    }
+
+    function addNewPet() {
+      const name = prompt('Pet name:');
+      if (!name) return;
+      
+      const emojis = ['🐕', '🐈', '🐦', '🐰', '🐹', '🐠'];
+      const types = ['Dog', 'Cat', 'Bird', 'Rabbit', 'Hamster', 'Fish'];
+      const choice = parseInt(prompt('Choose type:\n0-Dog 1-Cat 2-Bird 3-Rabbit 4-Hamster 5-Fish') || '0');
+      
+      const newPet = {
+        id: Date.now().toString(),
+        name,
+        emoji: emojis[choice] || emojis[0],
+        type: (emojis[choice] || emojis[0]) + ' ' + (types[choice] || types[0])
+      };
+      
+      pets.push(newPet);
+      savePets();
+      renderPets();
+    }
+
+    function renderSchedule() {
+      if (!currentPet) return;
+      
+      const grid = document.getElementById('scheduleGrid');
+      const petSchedule = schedules[currentPet.id] || [];
+      
+      if (petSchedule.length === 0) {
+        // Default schedule
+        schedules[currentPet.id] = [
+          {id: '1', type: 'feeding', time: '08:00', notes: '1 cup dry food', completed: false},
+          {id: '2', type: 'feeding', time: '18:00', notes: '1 cup dry food', completed: false},
+          {id: '3', type: 'walk', time: '09:00', notes: '30 minutes', completed: false}
+        ];
+        saveSchedules();
+      }
+
+      const schedule = schedules[currentPet.id] || [];
+      grid.innerHTML = '';
+
+      schedule.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'schedule-item' + (item.completed ? ' completed' : '');
+        
+        const typeIcons = {
+          feeding: '🍽️',
+          walk: '🚶',
+          medication: '💊',
+          grooming: '✂️',
+          vet: '🏥',
+          play: '🎾'
+        };
+
+        div.innerHTML = `
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">
+              ${typeIcons[item.type]} ${item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+            </div>
+            <div style="font-size: 14px; color: var(--muted);">
+              ${item.time} ${item.notes ? '• ' + item.notes : ''}
+            </div>
+          </div>
+          <button class="btn-complete ${item.completed ? 'completed' : ''}" onclick="toggleComplete('${item.id}')">
+            ${item.completed ? '✓ Done' : 'Mark Done'}
+          </button>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function toggleComplete(itemId) {
+      if (!currentPet) return;
+      const schedule = schedules[currentPet.id];
+      const item = schedule.find(i => i.id === itemId);
+      if (item) {
+        item.completed = !item.completed;
+        saveSchedules();
+        renderSchedule();
+      }
+    }
+
+    function toggleAddForm() {
+      const form = document.getElementById('addForm');
+      form.classList.toggle('active');
+    }
+
+    function addActivity() {
+      if (!currentPet) return;
+      
+      const type = document.getElementById('activityType').value;
+      const time = document.getElementById('activityTime').value;
+      const notes = document.getElementById('activityNotes').value;
+
+      if (!time) {
+        alert('Please select a time');
+        return;
+      }
+
+      if (!schedules[currentPet.id]) {
+        schedules[currentPet.id] = [];
+      }
+
+      schedules[currentPet.id].push({
+        id: Date.now().toString(),
+        type,
+        time,
+        notes,
+        completed: false
+      });
+
+      saveSchedules();
+      renderSchedule();
+      toggleAddForm();
+      
+      // Clear form
+      document.getElementById('activityTime').value = '';
+      document.getElementById('activityNotes').value = '';
+    }
+
+    // Initialize
+    renderPets();
+  </script>
+</body>
+</html>

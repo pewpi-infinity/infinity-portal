@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Transparency • Infinity Portal</title>
+  <style>
+    :root {
+      --red: #dc3545;
+      --yellow: #ffc107;
+      --green: #10b981;
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --muted: #657080;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #fff5f5, #ffe5e5);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      border-left: 6px solid var(--red);
+    }
+    h1 {
+      color: var(--red);
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .warning-banner {
+      background: linear-gradient(135deg, var(--red), #b02a37);
+      color: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid rgba(3, 24, 62, 0.1);
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: white;
+      border: 2px solid rgba(3, 24, 62, 0.1);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+    .reports-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .report-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid var(--red);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .report-card:hover {
+      transform: translateX(4px);
+    }
+    .report-card.warning {
+      border-left-color: var(--yellow);
+    }
+    .report-card.safe {
+      border-left-color: var(--green);
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    .report-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--blue-1);
+    }
+    .severity-badge {
+      background: var(--red);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .severity-badge.warning {
+      background: var(--yellow);
+      color: #000;
+    }
+    .severity-badge.safe {
+      background: var(--green);
+    }
+    .report-company {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .report-details {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .report-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(3, 24, 62, 0.1);
+    }
+    .report-form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--blue-1);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid rgba(3, 24, 62, 0.1);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn-submit {
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      width: 100%;
+    }
+    .btn-submit:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚨 Product Transparency Database</h1>
+      <p class="subtitle">Banned Products • Corrupt Companies • Consumer Protection</p>
+    </header>
+
+    <div class="warning-banner">
+      <span style="font-size: 32px;">⚠️</span>
+      <div>
+        <strong>Community-Driven Truth Platform</strong><br>
+        Report and discover information about banned products, corrupt practices, and consumer protection issues.
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search products, companies, or issues..." oninput="searchReports()">
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('all')">All Reports</button>
+      <button class="tab" onclick="switchTab('banned')">Banned Products</button>
+      <button class="tab" onclick="switchTab('warnings')">Warnings</button>
+      <button class="tab" onclick="switchTab('submit')">Submit Report</button>
+    </div>
+
+    <div id="reports-section">
+      <div class="reports-grid" id="reportsGrid"></div>
+    </div>
+
+    <div id="submit-section" style="display: none;">
+      <div class="report-form">
+        <h2 style="color: var(--red); margin-bottom: 20px;">Submit Product/Company Report</h2>
+        
+        <div class="form-group">
+          <label for="reportType">Report Type</label>
+          <select id="reportType">
+            <option value="banned">Banned Product</option>
+            <option value="warning">Consumer Warning</option>
+            <option value="corruption">Corporate Corruption</option>
+            <option value="safety">Safety Issue</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="productName">Product/Company Name</label>
+          <input type="text" id="productName" placeholder="e.g., Example Corp, Product XYZ">
+        </div>
+
+        <div class="form-group">
+          <label for="severity">Severity Level</label>
+          <select id="severity">
+            <option value="critical">Critical - Immediate Danger</option>
+            <option value="high">High - Serious Issue</option>
+            <option value="medium">Medium - Notable Concern</option>
+            <option value="low">Low - Minor Issue</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="details">Detailed Description</label>
+          <textarea id="details" placeholder="Provide detailed information about the issue, including sources and evidence..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="source">Source/Evidence</label>
+          <input type="text" id="source" placeholder="Links to articles, studies, or other evidence">
+        </div>
+
+        <button class="btn-submit" onclick="submitReport()">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sampleReports = [
+      {
+        id: 1,
+        type: 'banned',
+        severity: 'critical',
+        title: 'Lead-Contaminated Children\'s Toys',
+        company: 'ToyMaker Inc.',
+        details: 'Multiple products recalled due to lead levels exceeding safety standards by 300%. Affected children in 12 states.',
+        source: 'FDA Report 2024-089',
+        date: '2024-10-15',
+        verified: true
+      },
+      {
+        id: 2,
+        type: 'warning',
+        severity: 'high',
+        title: 'Misleading Health Claims in Supplements',
+        company: 'VitaBoost Corp',
+        details: 'Company making unsubstantiated claims about "miracle cure" properties. FTC investigation ongoing.',
+        source: 'FTC Case #45892',
+        date: '2024-10-20',
+        verified: true
+      },
+      {
+        id: 3,
+        type: 'corruption',
+        severity: 'critical',
+        title: 'Price Fixing Scandal',
+        company: 'Pharma Solutions LLC',
+        details: 'Evidence of collusion to artificially inflate drug prices by 400%. Class action lawsuit filed.',
+        source: 'DOJ Investigation',
+        date: '2024-10-25',
+        verified: true
+      },
+      {
+        id: 4,
+        type: 'safety',
+        severity: 'high',
+        title: 'Electrical Fire Hazard',
+        company: 'HomeAppliance Co.',
+        details: 'Model XR-500 space heaters causing fires. 15 incidents reported. Voluntary recall issued.',
+        source: 'CPSC Alert #2024-112',
+        date: '2024-10-28',
+        verified: true
+      },
+      {
+        id: 5,
+        type: 'banned',
+        severity: 'critical',
+        title: 'Toxic Chemicals in Cosmetics',
+        company: 'BeautyGlow Products',
+        details: 'Prohibited chemicals found in face creams. Linked to skin damage and allergic reactions.',
+        source: 'State Health Dept.',
+        date: '2024-10-30',
+        verified: false
+      },
+      {
+        id: 6,
+        type: 'warning',
+        severity: 'medium',
+        title: 'Data Privacy Violations',
+        company: 'TechConnect App',
+        details: 'App collecting and selling user data without proper consent. GDPR violations reported.',
+        source: 'Privacy Watchdog Org',
+        date: '2024-11-01',
+        verified: true
+      }
+    ];
+
+    let allReports = [...sampleReports];
+    let currentFilter = 'all';
+
+    function renderReports(reports) {
+      const grid = document.getElementById('reportsGrid');
+      grid.innerHTML = '';
+
+      if (reports.length === 0) {
+        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted);">No reports found.</div>';
+        return;
+      }
+
+      reports.forEach(report => {
+        const severityClass = report.severity === 'critical' || report.severity === 'high' ? '' : 
+                             report.severity === 'medium' ? 'warning' : 'safe';
+        
+        const card = document.createElement('div');
+        card.className = `report-card ${severityClass}`;
+        card.innerHTML = `
+          <div class="report-header">
+            <div class="report-title">${report.title}</div>
+            <div class="severity-badge ${severityClass}">${report.severity}</div>
+          </div>
+          <div class="report-company">🏢 ${report.company}</div>
+          <div class="report-details">${report.details}</div>
+          <div class="report-meta">
+            <span>📅 ${report.date}</span>
+            <span>📋 ${report.source}</span>
+            ${report.verified ? '<span style="color: var(--green);">✓ Verified</span>' : '<span style="color: var(--yellow);">⚠ Unverified</span>'}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      currentFilter = tab;
+      
+      if (tab === 'submit') {
+        document.getElementById('reports-section').style.display = 'none';
+        document.getElementById('submit-section').style.display = 'block';
+      } else {
+        document.getElementById('reports-section').style.display = 'block';
+        document.getElementById('submit-section').style.display = 'none';
+        
+        let filtered = allReports;
+        if (tab === 'banned') {
+          filtered = allReports.filter(r => r.type === 'banned');
+        } else if (tab === 'warnings') {
+          filtered = allReports.filter(r => r.type === 'warning');
+        }
+        
+        renderReports(filtered);
+      }
+    }
+
+    function searchReports() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allReports.filter(r => 
+        r.title.toLowerCase().includes(query) ||
+        r.company.toLowerCase().includes(query) ||
+        r.details.toLowerCase().includes(query)
+      );
+      
+      renderReports(filtered);
+    }
+
+    function submitReport() {
+      const type = document.getElementById('reportType').value;
+      const name = document.getElementById('productName').value.trim();
+      const severity = document.getElementById('severity').value;
+      const details = document.getElementById('details').value.trim();
+      const source = document.getElementById('source').value.trim();
+
+      if (!name || !details) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      const newReport = {
+        id: Date.now(),
+        type,
+        severity,
+        title: name,
+        company: name,
+        details,
+        source: source || 'User Report',
+        date: new Date().toISOString().split('T')[0],
+        verified: false
+      };
+
+      allReports.unshift(newReport);
+      
+      alert('✅ Report submitted successfully! It will be reviewed for verification.');
+      
+      // Clear form
+      document.getElementById('productName').value = '';
+      document.getElementById('details').value = '';
+      document.getElementById('source').value = '';
+      
+      // Switch to all reports
+      switchTab('all');
+    }
+
+    // Initialize
+    renderReports(allReports);
+  </script>
+</body>
+</html>

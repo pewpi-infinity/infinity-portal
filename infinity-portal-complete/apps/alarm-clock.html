@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alarm Clock • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --red: #dc3545;
+      --green: #10b981;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+    .clock-display {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .current-time {
+      font-size: 72px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(11, 95, 215, 0.5);
+    }
+    .current-date {
+      font-size: 20px;
+      opacity: 0.7;
+    }
+    .alarm-section {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: var(--blue-2);
+    }
+    .alarm-form {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    input[type="time"], input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .btn-set {
+      background: var(--green);
+      color: white;
+    }
+    .alarm-list {
+      display: grid;
+      gap: 12px;
+    }
+    .alarm-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--blue-2);
+    }
+    .alarm-item.active {
+      border-left-color: var(--green);
+    }
+    .alarm-time {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+    }
+    .alarm-label {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    .btn-delete {
+      background: var(--red);
+      color: white;
+      padding: 8px 16px;
+    }
+    .ringing {
+      position: fixed;
+      inset: 0;
+      background: rgba(220, 53, 69, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: pulse 1s infinite;
+    }
+    .ringing.active {
+      display: flex;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.95; }
+      50% { opacity: 1; }
+    }
+    .ringing-content {
+      text-align: center;
+    }
+    .ringing-time {
+      font-size: 96px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .ringing-label {
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+    .btn-stop {
+      background: white;
+      color: var(--red);
+      font-size: 24px;
+      padding: 20px 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="clock-display">
+      <div class="current-time" id="currentTime">00:00:00</div>
+      <div class="current-date" id="currentDate">Loading...</div>
+    </div>
+
+    <div class="alarm-section">
+      <h2>⏰ Set Alarm</h2>
+      
+      <div class="alarm-form">
+        <input type="time" id="alarmTime" required>
+        <input type="text" id="alarmLabel" placeholder="Label (optional, e.g., Wake Up, Meeting)">
+        <button class="btn-set" onclick="setAlarm()">Set Alarm</button>
+      </div>
+
+      <h3 style="margin-bottom: 16px; color: var(--blue-2);">Active Alarms</h3>
+      <div class="alarm-list" id="alarmList"></div>
+    </div>
+  </div>
+
+  <div class="ringing" id="ringing">
+    <div class="ringing-content">
+      <div class="ringing-time" id="ringingTime">00:00</div>
+      <div class="ringing-label" id="ringingLabel">⏰ ALARM!</div>
+      <button class="btn-stop" onclick="stopAlarm()">STOP ALARM</button>
+    </div>
+  </div>
+
+  <script>
+    let alarms = JSON.parse(localStorage.getItem('infinityAlarms') || '[]');
+    let alarmSound = null;
+
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // Check alarms
+      checkAlarms(`${hours}:${minutes}`);
+    }
+
+    function setAlarm() {
+      const time = document.getElementById('alarmTime').value;
+      const label = document.getElementById('alarmLabel').value || 'Alarm';
+
+      if (!time) {
+        alert('Please select a time');
+        return;
+      }
+
+      const newAlarm = {
+        id: Date.now(),
+        time,
+        label,
+        active: true
+      };
+
+      alarms.push(newAlarm);
+      localStorage.setItem('infinityAlarms', JSON.stringify(alarms));
+      
+      document.getElementById('alarmTime').value = '';
+      document.getElementById('alarmLabel').value = '';
+      
+      renderAlarms();
+      alert(`✅ Alarm set for ${time}`);
+    }
+
+    function deleteAlarm(id) {
+      alarms = alarms.filter(a => a.id !== id);
+      localStorage.setItem('infinityAlarms', JSON.stringify(alarms));
+      renderAlarms();
+    }
+
+    function renderAlarms() {
+      const list = document.getElementById('alarmList');
+      list.innerHTML = '';
+
+      if (alarms.length === 0) {
+        list.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.5;">No alarms set</div>';
+        return;
+      }
+
+      alarms.forEach(alarm => {
+        const item = document.createElement('div');
+        item.className = 'alarm-item' + (alarm.active ? ' active' : '');
+        item.innerHTML = `
+          <div>
+            <div class="alarm-time">${alarm.time}</div>
+            <div class="alarm-label">${alarm.label}</div>
+          </div>
+          <button class="btn-delete" onclick="deleteAlarm(${alarm.id})">Delete</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function checkAlarms(currentTime) {
+      alarms.forEach(alarm => {
+        if (alarm.active && alarm.time === currentTime) {
+          triggerAlarm(alarm);
+          alarm.active = false;
+          localStorage.setItem('infinityAlarms', JSON.stringify(alarms));
+        }
+      });
+    }
+
+    function triggerAlarm(alarm) {
+      document.getElementById('ringingTime').textContent = alarm.time;
+      document.getElementById('ringingLabel').textContent = `⏰ ${alarm.label}`;
+      document.getElementById('ringing').classList.add('active');
+      
+      // Play alarm sound (beep using Web Audio API)
+      playAlarmSound();
+    }
+
+    function playAlarmSound() {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      function beep() {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      }
+      
+      alarmSound = setInterval(beep, 1000);
+    }
+
+    function stopAlarm() {
+      document.getElementById('ringing').classList.remove('active');
+      if (alarmSound) {
+        clearInterval(alarmSound);
+        alarmSound = null;
+      }
+      renderAlarms();
+    }
+
+    // Initialize
+    updateClock();
+    setInterval(updateClock, 1000);
+    renderAlarms();
+  </script>
+</body>
+</html>
