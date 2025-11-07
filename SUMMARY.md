@@ -12,7 +12,7 @@ javascript:setOpenAIKey('sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKo...[REDACTED
 **YOU MUST REVOKE THIS API KEY IMMEDIATELY:**
 
 1. Go to: https://platform.openai.com/api-keys
-2. Find the service account key starting with `sk-svcacct-6HCwiLwx589zapEXnoK8x8ZTkpGNDjKo...`
+2. Find the service account key starting with `sk-svcacct-XXXXX...`
 3. Click "Revoke" or "Delete" to disable it
 4. Check usage logs at https://platform.openai.com/usage for any unauthorized activity
 5. Generate a new key if you still need one (and keep it secure!)
