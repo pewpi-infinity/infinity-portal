@@ -65,7 +65,21 @@ class AppController {
         }
       } catch (error) {
         console.error('AI query failed:', error);
-        alert('Sorry, I encountered an error. Please try again.');
+        let userMessage = 'Sorry, I encountered an error. Please try again.';
+        if (error) {
+          if (error.message) {
+            if (error.message.includes('Network')) {
+              userMessage = 'Network error: Please check your internet connection and try again.';
+            } else if (error.message.includes('Authentication') || error.message.includes('401')) {
+              userMessage = 'Authentication error: Please log in again.';
+            } else if (error.message.includes('rate limit') || error.message.includes('429')) {
+              userMessage = 'Rate limit exceeded: Please wait a moment before trying again.';
+            } else {
+              userMessage = `Error: ${error.message}`;
+            }
+          }
+        }
+        alert(userMessage);
       } finally {
         // Reset input
         aiInput.value = '';
