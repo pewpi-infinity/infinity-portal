@@ -369,7 +369,7 @@
       const grades = ['MS-70', 'MS-69', 'MS-68', 'MS-67', 'MS-66', 'MS-65', 'AU-58', 'AU-55', 'XF-45', 'VF-30'];
       const grade = grades[Math.floor(Math.random() * grades.length)];
       
-      const serialNumber = 'INF-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+      const serialNumber = 'INF-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
       
       const coin = {
         id: Date.now(),
