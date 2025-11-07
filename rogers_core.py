@@ -350,7 +350,6 @@ def upload_file():
             return jsonify({"status": "error", "message": "Missing file field"}), 400
         
         file = request.files["file"]
-        metadata = request.form
         fname = secure_filename(file.filename or "upload.zip")
         tmp_path = os.path.join("/tmp", fname)
         file.save(tmp_path)
