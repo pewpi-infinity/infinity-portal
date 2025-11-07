@@ -30,9 +30,9 @@ setOpenAIKey('your-api-key-here')
 For server-side usage:
 ```bash
 # Create .env file (git-ignored)
-export OPENAI_API_KEY=your-api-key-here
-export DISCOVERY_API_KEY=your-watson-key-here
-export NLU_API_KEY=your-nlu-key-here
+echo "OPENAI_API_KEY=your-api-key-here" >> .env
+echo "DISCOVERY_API_KEY=your-watson-key-here" >> .env
+echo "NLU_API_KEY=your-nlu-key-here" >> .env
 ```
 
 See [API_KEY_USAGE.md](API_KEY_USAGE.md) for detailed instructions.
