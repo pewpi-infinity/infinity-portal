@@ -3,67 +3,739 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity • Rogers AI</title>
+  <title>Rogers Portal - Drawer+mic</title>
+  
+  <!-- Inline favicon to prevent 404 -->
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzAwNzBiYSIvPjx0ZXh0IHg9IjUwIiB5PSI3MCIgZm9udC1zaXplPSI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPuKInjwvdGV4dD48L3N2Zz4=" />
+  
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; }
-    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; }
-    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
-    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
-    .user { background: #d0ebff; align-self: flex-end; }
-    .ai { background: #e9ecef; align-self: flex-start; }
-    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
-    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
-    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
-    button:hover { background: #005f9e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --brand-color: #0070ba;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      background: var(--brand-color);
+      color: white;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      z-index: 100;
+    }
+    #menuBtn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+    }
+    header h1 {
+      flex: 1;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    #userAvatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    #userAvatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Drawer */
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: white;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      transition: left 0.3s ease;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+    }
+    #drawer.open { left: 0; }
+    #drawer-header {
+      background: var(--brand-color);
+      color: white;
+      padding: 1rem;
+      font-weight: bold;
+    }
+    #drawer-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem 0;
+    }
+    .drawer-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: background 0.2s;
+    }
+    .drawer-item:hover {
+      background: #f0f0f0;
+    }
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 150;
+    }
+    #overlay.show { display: block; }
+
+    /* Main stage */
+    #stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #appFrame {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #appFrame.show { display: block; }
+
+    /* Chat area */
+    #chatContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #chatContainer.hide { display: none; }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background: white;
+      border-bottom: 1px solid #ddd;
+    }
+    .msg {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+    .msg.ai {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+    .msg-content {
+      padding: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.25rem;
+    }
+    .msg.user .msg-content {
+      background: #d0ebff;
+      color: #222;
+    }
+    .msg.ai .msg-content {
+      background: #e9ecef;
+      color: #222;
+    }
+    .msg-tokens {
+      font-size: 0.7rem;
+      color: #888;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .token-chip {
+      background: #f0f0f0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    /* Composer */
+    #composer {
+      background: #fff;
+      border-top: 1px solid #ddd;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    #attachments {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+    .thumb {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #ccc;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumb-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #inputRow {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    #userInput {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      font-family: inherit;
+      font-size: 1rem;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: #555;
+    }
+    .icon-btn:hover {
+      color: var(--brand-color);
+    }
+    #sendBtn {
+      background: var(--brand-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #sendBtn:hover {
+      opacity: 0.9;
+    }
+    #colorPicker {
+      width: 32px;
+      height: 32px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #fileInput {
+      display: none;
+    }
+    
+    /* Footer */
+    footer {
+      background: #f0f0f0;
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #666;
+      border-top: 1px solid #ddd;
+    }
+    footer strong {
+      color: var(--brand-color);
+    }
+
+    /* Auth panel */
+    #authPanel {
+      padding: 0.5rem;
+      background: #f9f9f9;
+      border-bottom: 1px solid #ddd;
+      display: none;
+      text-align: center;
+    }
+    #authPanel.show { display: block; }
+    #googleSignInBtn {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    #googleSignInBtn:hover {
+      background: #f9f9f9;
+    }
+    #userEmail {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .msg { max-width: 90%; }
+    }
   </style>
 </head>
 <body>
-  <header>🧠 Rogers AI — Infinity Portal</header>
-  <main>
-    <div id="messages">
-      <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
+  <!-- Drawer -->
+  <div id="drawer">
+    <div id="drawer-header">Apps</div>
+    <div id="drawer-list"></div>
+  </div>
+  <div id="overlay"></div>
+
+  <!-- Header -->
+  <header>
+    <button id="menuBtn">☰</button>
+    <h1>🧠 Rogers Portal – INFINITY</h1>
+    <div id="userAvatar"></div>
+  </header>
+
+  <!-- Auth panel -->
+  <div id="authPanel">
+    <button id="googleSignInBtn" style="display:none;">
+      <span>🔐</span>
+      <span>Sign in with Google</span>
+    </button>
+    <div id="userEmail"></div>
+  </div>
+
+  <!-- Stage -->
+  <div id="stage">
+    <iframe id="appFrame"></iframe>
+    
+    <div id="chatContainer">
+      <div id="messages">
+        <div class="msg ai">
+          <div class="msg-content">Hey Kris — Rogers is live. Ask me anything!</div>
+        </div>
+      </div>
+      
+      <div id="composer">
+        <div id="attachments"></div>
+        <div id="inputRow">
+          <input type="color" id="colorPicker" title="Theme color" />
+          <button class="icon-btn" id="attachBtn" title="Attach file">📎</button>
+          <button class="icon-btn" id="micBtn" title="Voice input">🎤</button>
+          <textarea id="userInput" placeholder="Type your question..." rows="1"></textarea>
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
     </div>
-  </main>
+  </div>
+
+  <!-- Footer -->
   <footer>
-    <input id="userInput" placeholder="Type your question..." />
-    <button onclick="ask()">Send</button>
+    Powered by <strong>INFINITY</strong>
   </footer>
 
+  <!-- Hidden file input -->
+  <input type="file" id="fileInput" multiple accept="image/*,application/pdf,text/*" />
+
   <script>
-    const msgBox = document.getElementById('messages');
-    const input = document.getElementById('userInput');
+    // ========== State ==========
+    let authConfig = null;
+    let appsConfig = [];
+    let userProfile = null;
+    let attachedFiles = [];
+    let totalTokens = 0;
 
-    function add(role, text){
-      const div = document.createElement('div');
-      div.className = 'msg ' + role;
-      div.textContent = text;
-      msgBox.appendChild(div);
-      msgBox.scrollTop = msgBox.scrollHeight;
-    }
+    // ========== Init ==========
+    (async function init() {
+      // Load configs
+      authConfig = await loadJSON('auth.json');
+      appsConfig = await loadJSON('apps.json');
 
-    async function ask(){
-      const q = input.value.trim();
-      if(!q) return;
-      add('user', q);
-      input.value = '';
-      add('ai', 'Thinking...');
-      try {
-        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
-        const data = await res.json();
-        let answer = data.Answer || data.AbstractText || data.Definition || '';
-        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
-          answer = data.RelatedTopics[0].Text;
+      // Restore theme color
+      const savedColor = localStorage.getItem('brandColor');
+      if (savedColor) {
+        setBrandColor(savedColor);
+        document.getElementById('colorPicker').value = savedColor;
+      }
+
+      // Build drawer
+      buildDrawer();
+
+      // Setup auth
+      if (authConfig && authConfig.google_client_id) {
+        document.getElementById('authPanel').classList.add('show');
+        document.getElementById('googleSignInBtn').style.display = 'inline-flex';
+        loadGoogleAuth();
+      }
+
+      // Event listeners
+      document.getElementById('menuBtn').addEventListener('click', toggleDrawer);
+      document.getElementById('overlay').addEventListener('click', closeDrawer);
+      document.getElementById('sendBtn').addEventListener('click', sendMessage);
+      document.getElementById('userInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
         }
-        add('ai', answer || 'No clear result — try rephrasing your question.');
-      } catch(err) {
-        add('ai', '⚠️ Connection issue.');
+      });
+      document.getElementById('attachBtn').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+      });
+      document.getElementById('fileInput').addEventListener('change', handleFiles);
+      document.getElementById('micBtn').addEventListener('click', startVoiceInput);
+      document.getElementById('colorPicker').addEventListener('change', e => {
+        setBrandColor(e.target.value);
+        localStorage.setItem('brandColor', e.target.value);
+      });
+      document.getElementById('userAvatar').addEventListener('click', () => {
+        if (userProfile) {
+          alert(`Signed in as: ${userProfile.email}`);
+        } else {
+          alert('Not signed in');
+        }
+      });
+
+      // Auto-resize textarea
+      const textarea = document.getElementById('userInput');
+      textarea.addEventListener('input', () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+      });
+
+      // Scroll composer into view on mobile when focused
+      textarea.addEventListener('focus', () => {
+        setTimeout(() => {
+          textarea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      });
+    })();
+
+    // ========== Helpers ==========
+    async function loadJSON(path) {
+      try {
+        const res = await fetch(path);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch {
+        return null;
       }
     }
 
-    input.addEventListener('keydown', e => {
-      if(e.key === 'Enter') ask();
-    });
+    function setBrandColor(color) {
+      document.documentElement.style.setProperty('--brand-color', color);
+    }
+
+    // ========== Drawer ==========
+    function buildDrawer() {
+      const list = document.getElementById('drawer-list');
+      list.innerHTML = '';
+      if (!appsConfig || appsConfig.length === 0) {
+        list.innerHTML = '<div style="padding:1rem;color:#999;">No apps configured</div>';
+        return;
+      }
+      appsConfig.forEach(app => {
+        const item = document.createElement('div');
+        item.className = 'drawer-item';
+        item.textContent = app.title || 'Untitled';
+        item.addEventListener('click', () => {
+          loadApp(app);
+          closeDrawer();
+        });
+        list.appendChild(item);
+      });
+    }
+
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('overlay');
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
+    }
+
+    function loadApp(app) {
+      const frame = document.getElementById('appFrame');
+      const chat = document.getElementById('chatContainer');
+      if (!app.path) return;
+
+      if (app.path.toLowerCase().endsWith('.pdf')) {
+        // Embed PDF
+        frame.src = app.path;
+        frame.classList.add('show');
+        chat.classList.add('hide');
+      } else {
+        // Load page
+        frame.src = app.path;
+        frame.classList.add('show');
+        chat.classList.add('hide');
+      }
+    }
+
+    // ========== Auth ==========
+    function loadGoogleAuth() {
+      // Load Google Identity Services
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        if (window.google) {
+          window.google.accounts.id.initialize({
+            client_id: authConfig.google_client_id,
+            callback: handleGoogleSignIn
+          });
+          window.google.accounts.id.renderButton(
+            document.getElementById('googleSignInBtn'),
+            { theme: 'outline', size: 'medium' }
+          );
+        }
+      };
+    }
+
+    function handleGoogleSignIn(response) {
+      // Decode JWT (simple base64 decode, no verification for demo)
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      userProfile = {
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture
+      };
+
+      // Check allowed emails
+      if (authConfig.allowed_emails && authConfig.allowed_emails.length > 0) {
+        if (!authConfig.allowed_emails.includes(userProfile.email)) {
+          alert('Your email is not in the allowed list.');
+          return;
+        }
+      }
+
+      // Update UI
+      document.getElementById('googleSignInBtn').style.display = 'none';
+      document.getElementById('userEmail').textContent = `Signed in as ${userProfile.email}`;
+      const avatar = document.getElementById('userAvatar');
+      if (userProfile.picture) {
+        avatar.innerHTML = `<img src="${userProfile.picture}" alt="Avatar" />`;
+      } else {
+        avatar.textContent = userProfile.email[0].toUpperCase();
+      }
+    }
+
+    // ========== Files ==========
+    function handleFiles(e) {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = evt => {
+            attachedFiles.push({ name: file.name, type: file.type, data: evt.target.result });
+            renderAttachments();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          attachedFiles.push({ name: file.name, type: file.type, data: null });
+          renderAttachments();
+        }
+      });
+      e.target.value = '';
+    }
+
+    function renderAttachments() {
+      const container = document.getElementById('attachments');
+      container.innerHTML = '';
+      attachedFiles.forEach((file, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+        if (file.data && file.type.startsWith('image/')) {
+          thumb.innerHTML = `
+            <img src="${file.data}" alt="${file.name}" />
+            <button class="thumb-remove" onclick="removeAttachment(${idx})">×</button>
+          `;
+        } else {
+          thumb.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:0.7rem;padding:0.25rem;text-align:center;background:#f0f0f0;">
+              ${file.name}
+            </div>
+            <button class="thumb-remove" onclick="removeAttachment(${idx})">×</button>
+          `;
+        }
+        container.appendChild(thumb);
+      });
+    }
+
+    function removeAttachment(idx) {
+      attachedFiles.splice(idx, 1);
+      renderAttachments();
+    }
+
+    // ========== Voice ==========
+    function startVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Speech recognition not supported in this browser. Use Chrome on Android or desktop.');
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = event => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('userInput').value = transcript;
+      };
+
+      recognition.onerror = event => {
+        console.error('Speech recognition error:', event.error);
+        alert('Voice input error: ' + event.error);
+      };
+
+      recognition.start();
+    }
+
+    // ========== Messaging ==========
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text && attachedFiles.length === 0) return;
+
+      // Build message
+      const userMsg = text || '[File attachment]';
+      const userTokens = estimateTokens(userMsg);
+      addMessage('user', userMsg, userTokens, 0, 0);
+
+      // Clear input
+      input.value = '';
+      input.style.height = 'auto';
+      attachedFiles = [];
+      renderAttachments();
+
+      // Send to backend or use stub
+      const messages = gatherMessages();
+      let reply = '';
+      if (authConfig && authConfig.chat_endpoint) {
+        try {
+          const res = await fetch(authConfig.chat_endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages })
+          });
+          const data = await res.json();
+          reply = data.reply || 'No response from server.';
+        } catch (err) {
+          reply = '⚠️ Connection error.';
+        }
+      } else {
+        // Watson-style stub
+        reply = watsonStub(userMsg);
+      }
+
+      const botTokens = estimateTokens(reply);
+      totalTokens += userTokens + botTokens;
+      addMessage('ai', reply, 0, botTokens, totalTokens);
+    }
+
+    function addMessage(role, text, userTok, botTok, totalTok) {
+      const msgBox = document.getElementById('messages');
+      const msg = document.createElement('div');
+      msg.className = 'msg ' + role;
+
+      const content = document.createElement('div');
+      content.className = 'msg-content';
+      content.textContent = text;
+      msg.appendChild(content);
+
+      if (userTok > 0 || botTok > 0 || totalTok > 0) {
+        const tokens = document.createElement('div');
+        tokens.className = 'msg-tokens';
+        if (userTok > 0) {
+          tokens.innerHTML += `<span class="token-chip">User: ${userTok}</span>`;
+        }
+        if (botTok > 0) {
+          tokens.innerHTML += `<span class="token-chip">Bot: ${botTok}</span>`;
+        }
+        if (totalTok > 0) {
+          tokens.innerHTML += `<span class="token-chip">Total: ${totalTok}</span>`;
+        }
+        msg.appendChild(tokens);
+      }
+
+      msgBox.appendChild(msg);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    function gatherMessages() {
+      // Simple: return the last user message for now
+      const input = document.getElementById('userInput');
+      return [{ role: 'user', content: input.value || '[File attachment]' }];
+    }
+
+    function estimateTokens(text) {
+      // Rough estimate: 1 token ≈ 4 characters
+      return Math.ceil((text || '').length / 4);
+    }
+
+    function watsonStub(userMsg) {
+      const lower = userMsg.toLowerCase();
+      if (lower.includes('hello') || lower.includes('hi')) {
+        return 'Hello! Rogers here. How can I assist you today?';
+      } else if (lower.includes('infinity')) {
+        return 'INFINITY is our unified AI platform - connecting energy, physics, and intelligence.';
+      } else if (lower.includes('thank')) {
+        return 'You\'re welcome! Let me know if you need anything else.';
+      } else {
+        return `I\'m processing your question: "${userMsg}". This is a local stub - connect a real backend in auth.json to get live responses.`;
+      }
+    }
   </script>
 </body>
 </html>
