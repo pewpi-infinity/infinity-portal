@@ -1,69 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity • Rogers AI</title>
+  <meta charset="UTF-8">
+  <title>INFINITY · Redirect Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; }
-    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; }
-    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
-    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
-    .user { background: #d0ebff; align-self: flex-end; }
-    .ai { background: #e9ecef; align-self: flex-start; }
-    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
-    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
-    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
-    button:hover { background: #005f9e; }
+    body {
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: radial-gradient(circle at top, #23263d 0%, #191c2b 60%, #161926 100%);
+      color: #e9ecef;
+      margin: 0; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+    .container {
+      text-align: center;
+      margin-top: 6vh;
+      padding: 0 1em;
+      max-width: 425px;
+      width: 100vw;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: .09em;
+      margin-bottom: 1.4em;
+      margin-top: .7em;
+    }
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 1em auto;
+      border: 3px dashed #00d4ff80;
+      border-top-color: #7b2cbf;
+      border-radius: 50%;
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .footer {
+      text-align: center;
+      font-size: .9em;
+      color: #b5daf8;
+      opacity: .93;
+      margin-top: 44px;
+    }
+    .verse {
+      font-size: .89em;
+      color: #8beecc;
+      margin-bottom: 2px;
+    }
+    .powered {
+      font-size: .86em; color: #676; opacity: .89;
+      margin-top: 3px;
+    }
   </style>
 </head>
 <body>
-  <header>🧠 Rogers AI — Infinity Portal</header>
-  <main>
-    <div id="messages">
-      <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
-    </div>
-  </main>
-  <footer>
-    <input id="userInput" placeholder="Type your question..." />
-    <button onclick="ask()">Send</button>
-  </footer>
-
+  <div class="container">
+    <h1>INFINITY</h1>
+    <p>Redirecting to <span style="color:#00d4ff;">AI-Augmented Vector Web Portal</span>...</p>
+    <div class="spinner"></div>
+    <p style="font-size:14px;margin-top:30px;">
+      If you're not redirected,
+      <a href="portal/index.html" style="color:#00d4ff;text-decoration:underline;">click here</a>
+    </p>
+  </div>
   <script>
-    const msgBox = document.getElementById('messages');
-    const input = document.getElementById('userInput');
-
-    function add(role, text){
-      const div = document.createElement('div');
-      div.className = 'msg ' + role;
-      div.textContent = text;
-      msgBox.appendChild(div);
-      msgBox.scrollTop = msgBox.scrollHeight;
-    }
-
-    async function ask(){
-      const q = input.value.trim();
-      if(!q) return;
-      add('user', q);
-      input.value = '';
-      add('ai', 'Thinking...');
-      try {
-        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
-        const data = await res.json();
-        let answer = data.Answer || data.AbstractText || data.Definition || '';
-        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
-          answer = data.RelatedTopics[0].Text;
-        }
-        add('ai', answer || 'No clear result — try rephrasing your question.');
-      } catch(err) {
-        add('ai', '⚠️ Connection issue.');
-      }
-    }
-
-    input.addEventListener('keydown', e => {
-      if(e.key === 'Enter') ask();
-    });
+    // Redirect to the new portal after 1.5 seconds
+    setTimeout(() => {
+      window.location.href = 'portal/index.html';
+    }, 1500);
   </script>
+  <div class="footer">
+    <div class="verse">John 4:36 – "Already the one who reaps draws a wage and harvests a crop for eternal life, so that the sower and the reaper may be glad together."</div>
+    <div class="powered">Powered by Infinity</div>
+  </div>
 </body>
 </html>
