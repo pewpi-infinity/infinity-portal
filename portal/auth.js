@@ -2,12 +2,16 @@
  * Authentication Module
  * Handles Google Sign-In authentication
  * 
- * SECURITY NOTE: Client ID is hardcoded for demo purposes per requirements.
- * For production, use environment variables or secure configuration management.
+ * SECURITY NOTE: Google OAuth client IDs are public and must be present in client-side code.
+ * For production, use environment variables or secure configuration management to allow rotation.
+ * The real security concern is ensuring proper domain and redirect URI restrictions in the Google Cloud Console.
  */
 
+// Use environment variable or global for client ID, fallback to hardcoded value for demo
+const GOOGLE_CLIENT_ID = window.GOOGLE_CLIENT_ID || '16937806382-leqbaginj3igrhei58nsab7tb4hsb7435.apps.googleusercontent.com';
+
 const AUTH_CONFIG = {
-  clientId: '16937806382-leqbaginj3igrhei58nsab7tb4hsb7435.apps.googleusercontent.com',
+  clientId: GOOGLE_CLIENT_ID,
   redirectUri: window.location.origin + window.location.pathname
 };
 
