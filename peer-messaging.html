@@ -309,7 +309,7 @@
       
       conversations.forEach(conv => {
         const item = document.createElement('div');
-        item.className = 'conversation-item' + (activeConversation?.id === conv.id ? ' active' : '');
+        item.className = 'conversation-item' + (activeConversation && activeConversation.id === conv.id ? ' active' : '');
         item.onclick = () => openConversation(conv.id);
         
         item.innerHTML = `
