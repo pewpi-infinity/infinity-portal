@@ -164,7 +164,7 @@ Keep responses concise and friendly. If a user wants to access a specific zone, 
     const input = userInput.toLowerCase();
     
     // Simple keyword matching for offline fallback
-    for (const [zoneId, zoneMeta] of Object.entries(this.zones)) {
+    for (const zoneMeta of Object.values(this.zones)) {
       for (const keyword of zoneMeta.keywords) {
         if (input.includes(keyword)) {
           return `It sounds like you're interested in ${zoneMeta.name}. ${zoneMeta.description}. Would you like to navigate there?`;
