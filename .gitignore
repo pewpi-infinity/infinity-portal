@@ -1,3 +1,28 @@
+# API Keys and Secrets (DO NOT commit new keys!)
+# Note: apikey.json and apikey_Version2.json are legacy files already in repo
+# IMPORTANT: Audit these legacy files to ensure they don't contain real production secrets
+# If they do contain real secrets, they should be:
+# 1. Removed from git history (using git filter-branch or BFG Repo-Cleaner)
+# 2. The secrets should be rotated/revoked
+# 3. The files should be added to .gitignore and deleted from the repo
+# All new API key files should follow naming pattern below and will be ignored
+*.key
+*.secret
+*.pem
+config/apikey*.json
+secret_*.json
+.env
+.env.*
+!.env.example
+secrets.json
+config/secrets.json
+**/openai_key*.json
+**/api_keys/*.json
+
+# Sensitive files
+*.log
+*.pid
+nohup.out
 # API Keys and Secrets
 # Note: apikey.json files already tracked in Git history will not be ignored
 # Use 'git rm --cached <file>' to stop tracking them if needed
@@ -13,6 +38,49 @@ __pycache__/
 *$py.class
 *.so
 .Python
+venv/
+env/
+ENV/
+.venv
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
 build/
 develop-eggs/
 dist/

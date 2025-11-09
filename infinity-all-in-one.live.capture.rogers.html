@@ -562,7 +562,9 @@
   }
 
   async function rogersBrain(prompt){
-    // If an endpoint is configured, use it; otherwise local demo reply.
+    // SECURITY: API keys are stored in localStorage (client-side only)
+    // NEVER hardcode API keys in this file or share them in bookmarklets
+    // See SECURITY.md for best practices
     const apiKey = localStorage.getItem('openai_api_key') || '';
     if (apiKey && window.fetch) {
       try {
@@ -615,7 +617,50 @@
   rogersInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') send(); });
 
   // Optional: allow user to paste an OpenAI key once (saved locally)
-  window.setOpenAIKey = function(k){ localStorage.setItem('openai_api_key', k); alert('Key saved locally.'); };
+  // SECURITY WARNING: Never hardcode API keys or share them in bookmarklets/URIs
+  window.setOpenAIKey = function(k){ 
+    if (!k || typeof k !== 'string') {
+      alert('Invalid API key format');
+      return;
+    }
+    
+    // Warn about service account keys
+    // Note: This checks for the current OpenAI service account key format (sk-svcacct-)
+    // Update this pattern if OpenAI introduces new service account key formats
+    if (k.toLowerCase().startsWith('sk-svcacct-')) {
+      const confirmed = confirm(
+        '⚠️ SECURITY WARNING ⚠️\n\n' +
+        'You are using a SERVICE ACCOUNT key which has elevated permissions.\n\n' +
+        'NEVER share service account keys or include them in:\n' +
+        '- Bookmarklets or javascript: URIs\n' +
+        '- Public code or repositories\n' +
+        '- Chat messages or emails\n\n' +
+        'If this key has been exposed, REVOKE it immediately at:\n' +
+        'https://platform.openai.com/api-keys\n\n' +
+        'Continue anyway?'
+      );
+      if (!confirmed) return;
+    }
+    
+    // Warn about any API key security
+    // Note: OpenAI keys currently start with 'sk-'. This may need updating if formats change.
+    // For additional security, warn about any string that looks like an API key
+    // Check for known API key prefixes to avoid false positives
+    const knownKeyPrefixes = ['sk-', 'pk-', 'rk-', 'sess-', 'api_'];
+    if (knownKeyPrefixes.some(prefix => k.startsWith(prefix))) {
+      console.warn(
+        '🔒 SECURITY REMINDER:\n' +
+        '- This key is stored locally in your browser only\n' +
+        '- Never share your API key with others\n' +
+        '- Never commit API keys to git repositories\n' +
+        '- Rotate your keys regularly\n' +
+        'See SECURITY.md for more information.'
+      );
+    }
+    
+    localStorage.setItem('openai_api_key', k); 
+    alert('✓ API key saved locally in your browser.\n\nRemember: Never share your API key!'); 
+  };
 })();
 </script>
 
