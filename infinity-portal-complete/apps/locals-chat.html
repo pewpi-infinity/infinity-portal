@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Locals Chat • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --bg: #ffffff;
+      --muted: #657080;
+      --radius: 12px;
+      --panel: #f8fafc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #f7fbff, #eef6ff);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(3, 24, 62, 0.04);
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: var(--blue-1);
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .search-section {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(3, 24, 62, 0.04);
+      margin-bottom: 20px;
+    }
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid rgba(3, 24, 62, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: var(--blue-1);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: var(--blue-2);
+    }
+    .chat-container {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(3, 24, 62, 0.04);
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(3, 24, 62, 0.06);
+      font-weight: 600;
+      color: var(--blue-1);
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+    .message.user {
+      background: #d0ebff;
+      margin-left: auto;
+    }
+    .message.other {
+      background: #e9ecef;
+    }
+    .message-author {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(3, 24, 62, 0.06);
+      display: flex;
+      gap: 12px;
+    }
+    .info-box {
+      background: rgba(11, 95, 215, 0.06);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      color: var(--blue-1);
+    }
+    .nearby-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .nearby-item {
+      background: var(--panel);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .nearby-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(3, 24, 62, 0.08);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌍 Locals Chat</h1>
+      <p class="subtitle">Connect with people in your local area • Powered by Infinity</p>
+    </header>
+
+    <div class="search-section">
+      <h2 style="color: var(--blue-1); margin-bottom: 16px;">Find Your Local Chat</h2>
+      <div class="input-group">
+        <input type="text" id="zipInput" placeholder="Enter your ZIP code (e.g., 90210)" maxlength="10">
+        <button onclick="searchLocalChats()">Search Nearby</button>
+      </div>
+      <div class="info-box" id="locationInfo" style="display: none;">
+        <strong>📍 Location:</strong> <span id="locationText"></span>
+      </div>
+      <div id="nearbyChats" style="display: none;">
+        <h3 style="color: var(--blue-1); margin-bottom: 12px;">Available Local Chats</h3>
+        <div class="nearby-list" id="chatList"></div>
+      </div>
+    </div>
+
+    <div class="chat-container" id="chatContainer" style="display: none;">
+      <div class="chat-header">
+        <span id="chatTitle">Local Chat</span>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="chat-input-area">
+        <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentZip = '';
+    let currentChat = null;
+
+    function searchLocalChats() {
+      const zip = document.getElementById('zipInput').value.trim();
+      if (!zip) {
+        alert('Please enter a ZIP code');
+        return;
+      }
+
+      currentZip = zip;
+      document.getElementById('locationInfo').style.display = 'block';
+      document.getElementById('locationText').textContent = `ZIP Code: ${zip}`;
+      document.getElementById('nearbyChats').style.display = 'block';
+
+      // Simulate finding nearby chats
+      const chatList = document.getElementById('chatList');
+      chatList.innerHTML = '';
+      
+      const sampleChats = [
+        { name: `${zip} General Chat`, users: Math.floor(Math.random() * 50) + 10, distance: '0 mi' },
+        { name: `${zip} Community Events`, users: Math.floor(Math.random() * 30) + 5, distance: '0.2 mi' },
+        { name: `${zip} Local Help`, users: Math.floor(Math.random() * 20) + 3, distance: '0.5 mi' },
+        { name: `Nearby ${parseInt(zip) + 1}`, users: Math.floor(Math.random() * 15) + 2, distance: '1.2 mi' }
+      ];
+
+      sampleChats.forEach((chat, idx) => {
+        const item = document.createElement('div');
+        item.className = 'nearby-item';
+        item.innerHTML = `
+          <strong>${chat.name}</strong><br>
+          <small style="color: var(--muted);">${chat.users} users • ${chat.distance} away</small>
+        `;
+        item.onclick = () => joinChat(chat.name);
+        chatList.appendChild(item);
+      });
+    }
+
+    function joinChat(chatName) {
+      currentChat = chatName;
+      document.getElementById('chatContainer').style.display = 'flex';
+      document.getElementById('chatTitle').textContent = chatName;
+      
+      // Add welcome message
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML = '';
+      addMessage('System', 'Welcome to ' + chatName + '! Start chatting with your neighbors.', 'other');
+      
+      // Scroll to chat
+      document.getElementById('chatContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      addMessage('You', message, 'user');
+      input.value = '';
+      
+      // Simulate response
+      setTimeout(() => {
+        const responses = [
+          'Hey there! How are things in the neighborhood?',
+          'Thanks for sharing!',
+          'Great to connect with local folks!',
+          'Anyone up for a community meetup?'
+        ];
+        addMessage('Neighbor', responses[Math.floor(Math.random() * responses.length)], 'other');
+      }, 1000 + Math.random() * 2000);
+    }
+
+    function addMessage(author, text, type) {
+      const messagesDiv = document.getElementById('messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${type}`;
+      msgDiv.innerHTML = `
+        <div class="message-author">${author}</div>
+        <div>${text}</div>
+      `;
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+  </script>
+</body>
+</html>

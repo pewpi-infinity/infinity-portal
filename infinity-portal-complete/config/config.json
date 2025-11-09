@@ -1,0 +1,20 @@
+{
+  "google": {
+    "apiKey": "AIzaSyDWKRhBjFEt752zC86X0aQOvRQHxM5XPlc",
+    "clientId": "16937806382-leqbaginj3igrhei58nsab7tb4hsb435.apps.googleusercontent.com"
+  },
+  "watson": {
+    "enabled": true,
+    "services": ["discovery", "nlu", "assistant"]
+  },
+  "infinity": {
+    "tokenSystem": true,
+    "marketplace": true,
+    "localChat": true
+  },
+  "deployment": {
+    "mode": "production",
+    "port": 8080,
+    "host": "0.0.0.0"
+  }
+}

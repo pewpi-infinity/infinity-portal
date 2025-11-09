@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clothing Design Studio • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --purple: #6b46c1;
+      --pink: #ec4899;
+      --muted: #657080;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    h1 {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+    .design-area {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 20px;
+    }
+    .panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .panel h3 {
+      color: var(--pink);
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+    .canvas-area {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .mannequin {
+      width: 200px;
+      height: 400px;
+      background: linear-gradient(180deg, #f3f4f6, #e5e7eb);
+      border-radius: 100px 100px 0 0;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    .color-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      display: inline-block;
+      margin: 4px;
+    }
+    .color-swatch.active {
+      border-color: var(--pink);
+      transform: scale(1.1);
+    }
+    .style-option {
+      background: #f7f7f7;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    .style-option:hover {
+      background: #f0f0f0;
+    }
+    .style-option.selected {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-color: var(--pink);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--purple);
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid rgba(236, 72, 153, 0.2);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .btn-save {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .design-info {
+      text-align: center;
+      margin-top: 20px;
+    }
+    @media (max-width: 1024px) {
+      .design-area {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>👕 Clothing Design Studio</h1>
+      <p style="color: var(--muted); margin-top: 8px;">Create and visualize custom clothing designs • Powered by Infinity</p>
+    </header>
+
+    <div class="design-area">
+      <!-- Left Panel: Colors & Patterns -->
+      <div class="panel">
+        <h3>Colors</h3>
+        <div id="colorPalette">
+          <div class="color-swatch active" style="background: #000000;" onclick="selectColor('#000000')"></div>
+          <div class="color-swatch" style="background: #ffffff; border: 1px solid #ccc;" onclick="selectColor('#ffffff')"></div>
+          <div class="color-swatch" style="background: #ef4444;" onclick="selectColor('#ef4444')"></div>
+          <div class="color-swatch" style="background: #3b82f6;" onclick="selectColor('#3b82f6')"></div>
+          <div class="color-swatch" style="background: #10b981;" onclick="selectColor('#10b981')"></div>
+          <div class="color-swatch" style="background: #f59e0b;" onclick="selectColor('#f59e0b')"></div>
+          <div class="color-swatch" style="background: #8b5cf6;" onclick="selectColor('#8b5cf6')"></div>
+          <div class="color-swatch" style="background: #ec4899;" onclick="selectColor('#ec4899')"></div>
+        </div>
+
+        <h3 style="margin-top: 24px;">Clothing Type</h3>
+        <div id="clothingTypes">
+          <div class="style-option selected" onclick="selectType(this, 'T-Shirt')">👕 T-Shirt</div>
+          <div class="style-option" onclick="selectType(this, 'Dress')">👗 Dress</div>
+          <div class="style-option" onclick="selectType(this, 'Jacket')">🧥 Jacket</div>
+          <div class="style-option" onclick="selectType(this, 'Pants')">👖 Pants</div>
+          <div class="style-option" onclick="selectType(this, 'Skirt')">👘 Skirt</div>
+          <div class="style-option" onclick="selectType(this, 'Hoodie')">🧥 Hoodie</div>
+        </div>
+      </div>
+
+      <!-- Center: Canvas -->
+      <div class="canvas-area">
+        <div class="mannequin" id="mannequin">
+          <div id="garmentOverlay" style="position: absolute; inset: 0; transition: all 0.3s;"></div>
+        </div>
+        <div class="design-info">
+          <strong id="designName">Custom T-Shirt</strong><br>
+          <span style="color: var(--muted);" id="designColor">Color: Black</span>
+        </div>
+      </div>
+
+      <!-- Right Panel: Options -->
+      <div class="panel">
+        <h3>Design Details</h3>
+        
+        <div class="form-group">
+          <label for="designNameInput">Design Name</label>
+          <input type="text" id="designNameInput" placeholder="My Custom Design" value="Custom T-Shirt">
+        </div>
+
+        <div class="form-group">
+          <label for="size">Size</label>
+          <select id="size">
+            <option value="XS">Extra Small (XS)</option>
+            <option value="S">Small (S)</option>
+            <option value="M" selected>Medium (M)</option>
+            <option value="L">Large (L)</option>
+            <option value="XL">Extra Large (XL)</option>
+            <option value="XXL">2XL</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="material">Material</label>
+          <select id="material">
+            <option value="cotton">100% Cotton</option>
+            <option value="polyester">Polyester</option>
+            <option value="blend">Cotton/Polyester Blend</option>
+            <option value="silk">Silk</option>
+            <option value="denim">Denim</option>
+            <option value="wool">Wool</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="pattern">Pattern/Style</label>
+          <select id="pattern">
+            <option value="solid">Solid Color</option>
+            <option value="stripes">Stripes</option>
+            <option value="polka">Polka Dots</option>
+            <option value="floral">Floral</option>
+            <option value="geometric">Geometric</option>
+            <option value="abstract">Abstract</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Design Notes</label>
+          <input type="text" id="notes" placeholder="Special features, embroidery, etc.">
+        </div>
+
+        <button class="btn-save" onclick="saveDesign()">💾 Save Design</button>
+        <button class="btn-save" style="background: var(--blue-2); margin-top: 8px;" onclick="exportDesign()">📤 Export to Marketplace</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentColor = '#000000';
+    let currentType = 'T-Shirt';
+    let designs = JSON.parse(localStorage.getItem('infinityClothingDesigns') || '[]');
+
+    function selectColor(color) {
+      currentColor = color;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.getElementById('garmentOverlay').style.background = color;
+      document.getElementById('designColor').textContent = `Color: ${color}`;
+    }
+
+    function selectType(element, type) {
+      currentType = type;
+      document.querySelectorAll('.style-option').forEach(o => o.classList.remove('selected'));
+      element.classList.add('selected');
+      
+      const name = document.getElementById('designNameInput').value || `Custom ${type}`;
+      document.getElementById('designName').textContent = name;
+    }
+
+    function saveDesign() {
+      const design = {
+        id: Date.now(),
+        name: document.getElementById('designNameInput').value || 'Untitled Design',
+        type: currentType,
+        color: currentColor,
+        size: document.getElementById('size').value,
+        material: document.getElementById('material').value,
+        pattern: document.getElementById('pattern').value,
+        notes: document.getElementById('notes').value,
+        created: new Date().toISOString()
+      };
+
+      designs.push(design);
+      localStorage.setItem('infinityClothingDesigns', JSON.stringify(designs));
+      
+      alert('✅ Design saved successfully!\n\nYou now have ' + designs.length + ' saved design(s).');
+    }
+
+    function exportDesign() {
+      const design = {
+        name: document.getElementById('designNameInput').value || 'Untitled Design',
+        type: currentType,
+        color: currentColor,
+        size: document.getElementById('size').value,
+        material: document.getElementById('material').value
+      };
+
+      alert(`🎨 Design ready for export!\n\nName: ${design.name}\nType: ${design.type}\nColor: ${design.color}\n\nThis design can be listed on the Infinity Marketplace for token-based trade.`);
+    }
+
+    // Initialize
+    selectColor('#000000');
+  </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Game Generator • Infinity Portal</title>
+  <style>
+    :root {
+      --blue-1: #003087;
+      --blue-2: #0b5fd7;
+      --purple: #6b46c1;
+      --bg: #ffffff;
+      --muted: #657080;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #051426;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--purple);
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .generator-section {
+      background: white;
+      padding: 32px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--blue-1);
+      margin-bottom: 8px;
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(3, 24, 62, 0.1);
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn-generate {
+      background: linear-gradient(135deg, var(--purple), var(--blue-2));
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 18px;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+    .btn-generate:hover {
+      transform: scale(1.02);
+    }
+    .result-section {
+      background: white;
+      padding: 32px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+    .game-preview {
+      background: linear-gradient(180deg, #f7fbff, #eef6ff);
+      padding: 24px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    .feature-list li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+    .feature-list li:before {
+      content: "🎮";
+      position: absolute;
+      left: 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎮 Video Game Generator</h1>
+      <p class="subtitle">AI-Powered Game Concept Creation • Powered by Infinity</p>
+    </header>
+
+    <div class="generator-section">
+      <h2 style="color: var(--blue-1); margin-bottom: 24px;">Generate Your Game Concept</h2>
+      
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="genre">Game Genre</label>
+          <select id="genre">
+            <option value="action">Action</option>
+            <option value="adventure">Adventure</option>
+            <option value="rpg">RPG</option>
+            <option value="strategy">Strategy</option>
+            <option value="puzzle">Puzzle</option>
+            <option value="simulation">Simulation</option>
+            <option value="sports">Sports</option>
+            <option value="horror">Horror</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="setting">Game Setting</label>
+          <select id="setting">
+            <option value="fantasy">Fantasy</option>
+            <option value="scifi">Sci-Fi</option>
+            <option value="modern">Modern</option>
+            <option value="historical">Historical</option>
+            <option value="post-apocalyptic">Post-Apocalyptic</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="steampunk">Steampunk</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="theme">Main Theme/Concept</label>
+        <input type="text" id="theme" placeholder="e.g., 'Lost civilization', 'Time travel', 'Survival'">
+      </div>
+
+      <div class="form-group">
+        <label for="mechanics">Key Gameplay Mechanics (Optional)</label>
+        <textarea id="mechanics" placeholder="Describe special mechanics, features, or gameplay elements you'd like..."></textarea>
+      </div>
+
+      <button class="btn-generate" onclick="generateGame()">✨ Generate Game Concept</button>
+    </div>
+
+    <div class="result-section" id="resultSection">
+      <h2 style="color: var(--purple); margin-bottom: 16px;">🎮 Your Generated Game</h2>
+      
+      <div class="game-preview">
+        <h3 style="color: var(--blue-1); margin-bottom: 12px;" id="gameTitle"></h3>
+        <p style="margin-bottom: 16px; line-height: 1.6;" id="gameDescription"></p>
+        
+        <div style="margin-top: 24px;">
+          <h4 style="color: var(--blue-1); margin-bottom: 12px;">Core Features:</h4>
+          <ul class="feature-list" id="featureList"></ul>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <h4 style="color: var(--blue-1); margin-bottom: 12px;">Storyline:</h4>
+          <p style="line-height: 1.6;" id="storyline"></p>
+        </div>
+
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+            <strong style="color: var(--muted); font-size: 12px;">PLATFORM</strong>
+            <div style="color: var(--blue-1); font-weight: 600; margin-top: 4px;" id="platform"></div>
+          </div>
+          <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+            <strong style="color: var(--muted); font-size: 12px;">DIFFICULTY</strong>
+            <div style="color: var(--blue-1); font-weight: 600; margin-top: 4px;" id="difficulty"></div>
+          </div>
+          <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+            <strong style="color: var(--muted); font-size: 12px;">PLAYTIME</strong>
+            <div style="color: var(--blue-1); font-weight: 600; margin-top: 4px;" id="playtime"></div>
+          </div>
+        </div>
+      </div>
+
+      <button style="background: var(--blue-1); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%;" onclick="generateGame()">
+        🔄 Generate Another
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const gameTitles = {
+      action: ['Velocity Strike', 'Shadow Assault', 'Apex Combat'],
+      adventure: ['Lost Horizons', 'Mystic Journey', 'Wanderer\'s Path'],
+      rpg: ['Chronicles of', 'Legends of', 'Tales of'],
+      strategy: ['Empire Builder', 'War Council', 'Strategic Dominion'],
+      puzzle: ['Mind Maze', 'Logic Nexus', 'Enigma Chamber'],
+      simulation: ['Life Simulator', 'Reality Engine', 'Virtual World'],
+      sports: ['Ultimate Championship', 'Pro League', 'Arena Masters'],
+      horror: ['Nightmare Realm', 'Dark Whispers', 'The Haunting']
+    };
+
+    function generateGame() {
+      const genre = document.getElementById('genre').value;
+      const setting = document.getElementById('setting').value;
+      const theme = document.getElementById('theme').value || 'mysterious adventure';
+      const mechanics = document.getElementById('mechanics').value;
+
+      // Generate title
+      const titleOptions = gameTitles[genre];
+      let title = titleOptions[Math.floor(Math.random() * titleOptions.length)];
+      if (genre === 'rpg') {
+        title += ' ' + theme.split(' ')[0].charAt(0).toUpperCase() + theme.split(' ')[0].slice(1);
+      }
+      title += ': ' + setting.charAt(0).toUpperCase() + setting.slice(1) + ' Edition';
+
+      // Generate description
+      const description = `An immersive ${genre} game set in a ${setting} world, where ${theme} takes center stage. Players will experience cutting-edge gameplay mechanics combined with stunning visuals and deep storytelling.`;
+
+      // Generate features
+      const features = [
+        `Dynamic ${genre} gameplay with innovative controls`,
+        `Expansive ${setting} world to explore`,
+        `Advanced AI and procedural generation`,
+        `Multiplayer and co-op modes`,
+        mechanics ? mechanics.substring(0, 60) + '...' : 'Customizable character progression system',
+        'Rich narrative with multiple endings',
+        'Stunning graphics and immersive sound design'
+      ];
+
+      // Generate storyline
+      const storyline = `In a ${setting} realm shaped by ${theme}, you must navigate through challenging quests and make crucial decisions that will determine the fate of the world. Uncover ancient secrets, forge alliances, and face formidable adversaries in this epic ${genre} adventure.`;
+
+      // Set values
+      document.getElementById('gameTitle').textContent = title;
+      document.getElementById('gameDescription').textContent = description;
+      
+      const featureList = document.getElementById('featureList');
+      featureList.innerHTML = '';
+      features.forEach(feature => {
+        const li = document.createElement('li');
+        li.textContent = feature;
+        featureList.appendChild(li);
+      });
+
+      document.getElementById('storyline').textContent = storyline;
+      document.getElementById('platform').textContent = 'PC, Console, Mobile';
+      document.getElementById('difficulty').textContent = ['Easy', 'Medium', 'Hard', 'Adaptive'][Math.floor(Math.random() * 4)];
+      document.getElementById('playtime').textContent = (10 + Math.floor(Math.random() * 90)) + '+ hours';
+
+      // Show results
+      document.getElementById('resultSection').style.display = 'block';
+      document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

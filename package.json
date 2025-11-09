@@ -1,0 +1,29 @@
+{
+  "name": "infinity-portal",
+  "version": "1.0.0",
+  "description": "Complete Infinity Portal - 30+ Apps with Voice UI and Professional Networking",
+  "main": "infinity-portal-complete/index.html",
+  "scripts": {
+    "start": "cd infinity-portal-complete && python3 server.py",
+    "deploy": "bash auto-deploy.sh",
+    "dev": "cd infinity-portal-complete && python3 server.py",
+    "build": "bash build-deployment-package.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pewpi-infinity/infinity-portal.git"
+  },
+  "keywords": [
+    "infinity",
+    "portal",
+    "voice-ui",
+    "professional-networking",
+    "token-economy"
+  ],
+  "author": "Infinity Team <infinitystockinvesting@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.8.0"
+  }
+}
