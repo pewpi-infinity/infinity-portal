@@ -4,7 +4,7 @@ if(c){
   let t=0;
   function draw(){
     x.clearRect(0,0,c.width,c.height);
-    x.strokeStyle=`hsl(${(Date.now()/60)%360},70%,60%)`;
+    x.strokeStyle=`hsl(${(Date.now()/70)%360},70%,60%)`;
     x.beginPath();
     for(let i=0;i<80;i++){
       x.lineTo(
@@ -13,7 +13,7 @@ if(c){
       );
     }
     x.stroke();
-    t+=0.025;
+    t+=0.02;
     requestAnimationFrame(draw);
   }
   draw();
