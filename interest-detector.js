@@ -104,6 +104,20 @@ class InterestDetector {
     return null;
   }
 
+  detectFromDevice() {
+    // Check if this is a Mongoose OS device
+    const isMongooseDevice = localStorage.getItem('mongoose_device_id');
+    
+    if (isMongooseDevice) {
+      const lastTheme = localStorage.getItem('mongoose_theme');
+      if (lastTheme) {
+        return lastTheme;
+      }
+    }
+    
+    return null;
+  }
+
   detectFromReferrer() {
     const referrer = document.referrer.toLowerCase();
     
@@ -120,15 +134,22 @@ class InterestDetector {
   detect() {
     // Priority order:
     // 1. URL parameters (explicit user choice)
-    // 2. Stored interests (returning user)
-    // 3. Referrer (where they came from)
-    // 4. User agent (device/platform)
-    // 5. Time of day (contextual)
+    // 2. Mongoose OS device (embedded device)
+    // 3. Stored interests (returning user)
+    // 4. Referrer (where they came from)
+    // 5. User agent (device/platform)
+    // 6. Time of day (contextual)
     
     let detected = this.detectFromURL();
     if (detected) {
       this.detectedTheme = detected;
       this.saveInterest(detected);
+      return detected;
+    }
+    
+    detected = this.detectFromDevice();
+    if (detected) {
+      this.detectedTheme = detected;
       return detected;
     }
     

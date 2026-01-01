@@ -43,7 +43,8 @@
     "useReferrer": true,
     "useUserAgent": true,
     "useTime": true,
-    "priority": ["url", "storage", "referrer", "userAgent", "time"]
+    "useDevice": true,
+    "priority": ["url", "device", "storage", "referrer", "userAgent", "time"]
   },
   "arenas": {
     "baseURL": "#/arena/",
@@ -80,6 +81,15 @@
         "url": "#/repos/infinity-os"
       }
     ]
+  },
+  "mongoose": {
+    "firmwareVersion": "1.0.0",
+    "supportedPlatforms": ["esp32", "esp8266"],
+    "mqttTopic": "infinity-portal/devices",
+    "syncInterval": 60,
+    "enableDeviceSync": true,
+    "deviceRegistryPath": "./sync/device-registry.json",
+    "firmwareManifestPath": "./sync/firmware-manifest.json"
   },
   "metadata": {
     "title": "Infinity Portal - Multi-Theme Gateway",

@@ -1,0 +1,223 @@
+{
+  "themes": {
+    "mario": {
+      "name": "Mario World",
+      "emoji": "🍄",
+      "colors": {
+        "primary": "#00a800",
+        "secondary": "#00d800",
+        "accent": "#78ff00"
+      },
+      "ledPattern": "pulse-green",
+      "soundEffect": "warp-pipe.mp3",
+      "description": "Warp pipe entrance to gaming realm",
+      "deviceMapping": {
+        "led": [0, 255, 0],
+        "neopixel": {"r": 0, "g": 168, "b": 0},
+        "servo": 90
+      }
+    },
+    "rock": {
+      "name": "Rock Arena",
+      "emoji": "🎸",
+      "colors": {
+        "primary": "#8b0000",
+        "secondary": "#ff0000",
+        "accent": "#ff4500"
+      },
+      "ledPattern": "strobe-red",
+      "soundEffect": "guitar-riff.mp3",
+      "description": "Backstage entrance to music world",
+      "deviceMapping": {
+        "led": [255, 0, 0],
+        "neopixel": {"r": 139, "g": 0, "b": 0},
+        "servo": 45
+      }
+    },
+    "electronics": {
+      "name": "Electronics Lab",
+      "emoji": "🔌",
+      "colors": {
+        "primary": "#00ffff",
+        "secondary": "#0080ff",
+        "accent": "#00ff00"
+      },
+      "ledPattern": "circuit-flow",
+      "soundEffect": "electric-buzz.mp3",
+      "description": "Lab door to circuits and tech",
+      "deviceMapping": {
+        "led": [0, 255, 255],
+        "neopixel": {"r": 0, "g": 255, "b": 255},
+        "servo": 135
+      }
+    },
+    "chemistry": {
+      "name": "Chemistry Lab",
+      "emoji": "🧪",
+      "colors": {
+        "primary": "#ff1493",
+        "secondary": "#9400d3",
+        "accent": "#00ced1"
+      },
+      "ledPattern": "bubble-fade",
+      "soundEffect": "bubbling.mp3",
+      "description": "Airlock to molecular world",
+      "deviceMapping": {
+        "led": [255, 20, 147],
+        "neopixel": {"r": 255, "g": 20, "b": 147},
+        "servo": 60
+      }
+    },
+    "robotics": {
+      "name": "Robotics Factory",
+      "emoji": "🤖",
+      "colors": {
+        "primary": "#c0c0c0",
+        "secondary": "#4169e1",
+        "accent": "#ff6347"
+      },
+      "ledPattern": "mechanical-blink",
+      "soundEffect": "servo-move.mp3",
+      "description": "Factory gate to automation",
+      "deviceMapping": {
+        "led": [192, 192, 192],
+        "neopixel": {"r": 192, "g": 192, "b": 192},
+        "servo": 180
+      }
+    },
+    "math": {
+      "name": "Mathematics Realm",
+      "emoji": "📐",
+      "colors": {
+        "primary": "#ffd700",
+        "secondary": "#ffa500",
+        "accent": "#ff4500"
+      },
+      "ledPattern": "geometric-morph",
+      "soundEffect": "calculation.mp3",
+      "description": "Geometric portal to equations",
+      "deviceMapping": {
+        "led": [255, 215, 0],
+        "neopixel": {"r": 255, "g": 215, "b": 0},
+        "servo": 120
+      }
+    },
+    "physics": {
+      "name": "Physics Field",
+      "emoji": "⚛️",
+      "colors": {
+        "primary": "#9370db",
+        "secondary": "#4169e1",
+        "accent": "#00ffff"
+      },
+      "ledPattern": "quantum-flicker",
+      "soundEffect": "quantum.mp3",
+      "description": "Quantum gateway to forces",
+      "deviceMapping": {
+        "led": [147, 112, 219],
+        "neopixel": {"r": 147, "g": 112, "b": 219},
+        "servo": 30
+      }
+    },
+    "biology": {
+      "name": "Biology Center",
+      "emoji": "🧬",
+      "colors": {
+        "primary": "#32cd32",
+        "secondary": "#00ff00",
+        "accent": "#228b22"
+      },
+      "ledPattern": "helix-twist",
+      "soundEffect": "nature.mp3",
+      "description": "DNA helix to life sciences",
+      "deviceMapping": {
+        "led": [50, 205, 50],
+        "neopixel": {"r": 50, "g": 205, "b": 50},
+        "servo": 75
+      }
+    },
+    "art": {
+      "name": "Art Studio",
+      "emoji": "🎨",
+      "colors": {
+        "primary": "#ff69b4",
+        "secondary": "#ffd700",
+        "accent": "#00ced1"
+      },
+      "ledPattern": "rainbow-fade",
+      "soundEffect": "brush-stroke.mp3",
+      "description": "Canvas portal to creativity",
+      "deviceMapping": {
+        "led": [255, 105, 180],
+        "neopixel": {"r": 255, "g": 105, "b": 180},
+        "servo": 100
+      }
+    },
+    "music": {
+      "name": "Music Studio",
+      "emoji": "🎵",
+      "colors": {
+        "primary": "#ff00ff",
+        "secondary": "#00ffff",
+        "accent": "#ffff00"
+      },
+      "ledPattern": "sound-wave",
+      "soundEffect": "melody.mp3",
+      "description": "Sound wave portal to melodies",
+      "deviceMapping": {
+        "led": [255, 0, 255],
+        "neopixel": {"r": 255, "g": 0, "b": 255},
+        "servo": 150
+      }
+    },
+    "space": {
+      "name": "Space Station",
+      "emoji": "🚀",
+      "colors": {
+        "primary": "#000033",
+        "secondary": "#4169e1",
+        "accent": "#ffffff"
+      },
+      "ledPattern": "starfield",
+      "soundEffect": "space-ambient.mp3",
+      "description": "Cosmic tunnel to the stars",
+      "deviceMapping": {
+        "led": [65, 105, 225],
+        "neopixel": {"r": 65, "g": 105, "b": 225},
+        "servo": 0
+      }
+    }
+  },
+  "ledPatterns": {
+    "pulse-green": "Smooth pulsing green light",
+    "strobe-red": "Fast strobing red light",
+    "circuit-flow": "Sequential LED flow like circuit traces",
+    "bubble-fade": "Random fade in/out like bubbles",
+    "mechanical-blink": "Regular mechanical blink pattern",
+    "geometric-morph": "Geometric pattern transformation",
+    "quantum-flicker": "Random quantum-like flicker",
+    "helix-twist": "DNA double helix rotation pattern",
+    "rainbow-fade": "Smooth rainbow color fade",
+    "sound-wave": "Sine wave pattern",
+    "starfield": "Random twinkling stars"
+  },
+  "deviceTypes": {
+    "esp32": {
+      "supported": true,
+      "capabilities": ["led", "neopixel", "servo", "pwm", "i2c", "spi"]
+    },
+    "esp8266": {
+      "supported": true,
+      "capabilities": ["led", "neopixel", "servo", "pwm", "i2c"]
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "c13b0": {
+      "mode": "ADDITIVE",
+      "operator": "Kris Watson",
+      "system": "Infinity / Octave / Mongoose"
+    },
+    "description": "Theme mappings for physical device visualization and control"
+  }
+}

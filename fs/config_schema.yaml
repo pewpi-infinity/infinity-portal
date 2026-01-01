@@ -1,0 +1,53 @@
+# Device Configuration Schema
+# Mongoose OS config for Infinity Portal Gateway
+
+config_schema:
+  # Device identification
+  - ["device", "o", {title: "Device settings"}]
+  - ["device.id", "s", "", {title: "Unique device identifier"}]
+  - ["device.name", "s", "Portal Gateway", {title: "Friendly device name"}]
+  - ["device.location", "s", "", {title: "Device physical location"}]
+  
+  # Portal connection settings
+  - ["portal", "o", {title: "Portal settings"}]
+  - ["portal.url", "s", "", {title: "Portal server URL"}]
+  - ["portal.sync_interval", "i", 60, {title: "Sync interval in seconds"}]
+  - ["portal.theme", "s", "mario", {title: "Default theme"}]
+  - ["portal.mqtt_topic", "s", "infinity-portal/devices", {title: "MQTT topic prefix"}]
+  - ["portal.auto_sync", "b", true, {title: "Enable automatic sync"}]
+  - ["portal.retry_count", "i", 3, {title: "Sync retry count"}]
+  - ["portal.retry_delay", "i", 5, {title: "Retry delay in seconds"}]
+  
+  # WiFi settings
+  - ["wifi.sta.enable", "b", true, {title: "Enable WiFi station mode"}]
+  - ["wifi.sta.ssid", "s", "", {title: "WiFi SSID"}]
+  - ["wifi.sta.pass", "s", "", {title: "WiFi password"}]
+  - ["wifi.ap.enable", "b", false, {title: "Enable access point"}]
+  - ["wifi.ap.ssid", "s", "InfinityPortal", {title: "AP SSID"}]
+  - ["wifi.ap.pass", "s", "infinity123", {title: "AP password"}]
+  
+  # MQTT settings
+  - ["mqtt.enable", "b", true, {title: "Enable MQTT"}]
+  - ["mqtt.server", "s", "", {title: "MQTT broker address"}]
+  - ["mqtt.port", "i", 1883, {title: "MQTT broker port"}]
+  - ["mqtt.user", "s", "", {title: "MQTT username"}]
+  - ["mqtt.pass", "s", "", {title: "MQTT password"}]
+  - ["mqtt.client_id", "s", "", {title: "MQTT client ID"}]
+  - ["mqtt.keep_alive", "i", 60, {title: "MQTT keep alive in seconds"}]
+  - ["mqtt.clean_session", "b", true, {title: "MQTT clean session"}]
+  
+  # HTTP server settings
+  - ["http.enable", "b", true, {title: "Enable HTTP server"}]
+  - ["http.port", "i", 80, {title: "HTTP server port"}]
+  - ["http.hidden_files", "s", "", {title: "Hidden files pattern"}]
+  
+  # Debug settings
+  - ["debug.level", "i", 2, {title: "Debug level (0-4)"}]
+  - ["debug.stderr_uart", "i", 0, {title: "UART for stderr"}]
+  - ["debug.stdout_uart", "i", 0, {title: "UART for stdout"}]
+  
+  # C13B0 metadata
+  - ["c13b0", "o", {title: "C13B0 settings"}]
+  - ["c13b0.mode", "s", "ADDITIVE", {title: "C13B0 operation mode"}]
+  - ["c13b0.operator", "s", "Kris Watson", {title: "System operator"}]
+  - ["c13b0.system", "s", "Infinity / Octave / Mongoose", {title: "System designation"}]
