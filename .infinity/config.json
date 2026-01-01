@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "portal": {
+    "defaultTheme": "mario",
+    "enableAutoDetect": true,
+    "enableMRWEffects": true,
+    "enableJoystick": true,
+    "transitionSpeed": "normal"
+  },
+  "themes": {
+    "enabled": [
+      "mario",
+      "rock",
+      "electronics",
+      "chemistry",
+      "robotics",
+      "math",
+      "physics",
+      "biology",
+      "art",
+      "music",
+      "space"
+    ],
+    "blendMode": false,
+    "customThemesPath": "./theme-portals/"
+  },
+  "animations": {
+    "transitionDuration": 800,
+    "particleCount": 8,
+    "enableSound": false,
+    "performanceMode": "auto"
+  },
+  "mrw": {
+    "characterInterval": 3000,
+    "carInterval": 5000,
+    "mushroomCount": 5,
+    "joystickPosition": "bottom-right",
+    "joystickSize": 120
+  },
+  "detection": {
+    "useURL": true,
+    "useStorage": true,
+    "useReferrer": true,
+    "useUserAgent": true,
+    "useTime": true,
+    "priority": ["url", "storage", "referrer", "userAgent", "time"]
+  },
+  "arenas": {
+    "baseURL": "#/arena/",
+    "enablePreview": true,
+    "transitionEffect": "gateway-warp"
+  },
+  "energy": {
+    "enableCollection": true,
+    "collectOnZoom": 1,
+    "collectOnPan": 0.5,
+    "collectOnPortalDiscovery": 10,
+    "collectOnEnter": 25
+  },
+  "repos": {
+    "legendRepos": [
+      {
+        "name": "Infinity Brain",
+        "emoji": "🧱",
+        "url": "https://github.com/pewpi-infinity/infinity-brain-111"
+      },
+      {
+        "name": "PEWPI Core",
+        "emoji": "🐶",
+        "url": "#/repos/pewpi-core"
+      },
+      {
+        "name": "Watson Systems",
+        "emoji": "🔬",
+        "url": "#/repos/watson"
+      },
+      {
+        "name": "Infinity OS",
+        "emoji": "♾️",
+        "url": "#/repos/infinity-os"
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Infinity Portal - Multi-Theme Gateway",
+    "description": "Adaptive gateway that morphs based on user interests",
+    "author": "Kris Watson",
+    "architecture": "legend",
+    "mode": "additive-only"
+  }
+}
