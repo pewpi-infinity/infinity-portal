@@ -1,0 +1,58 @@
+author: Kris Watson
+description: Infinity Portal Gateway - ESP32/ESP8266 firmware for portal synchronization
+version: 1.0.0
+manifest_version: 2017-09-29
+
+# Platform support
+platforms: [ esp32, esp8266 ]
+
+# Module sources
+sources:
+  - fs
+
+# Mongoose OS libraries
+libs:
+  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/mqtt
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/http-server
+  - origin: https://github.com/mongoose-os-libs/ota-http-server
+  - origin: https://github.com/mongoose-os-libs/rpc-ws
+  - origin: https://github.com/mongoose-os-libs/sntp
+
+# Build variables
+build_vars:
+  APP_SLOT_SIZE: 0x180000
+  FS_SIZE: 262144
+  MGOS_ROOT_FS_TYPE: LFS
+  MGOS_ROOT_FS_SIZE: 262144
+
+# Configuration schema
+config_schema:
+  - ["device.id", "s", "", {title: "Device ID"}]
+  - ["portal", "o", {title: "Portal settings"}]
+  - ["portal.url", "s", "", {title: "Portal server URL"}]
+  - ["portal.sync_interval", "i", 60, {title: "Sync interval (seconds)"}]
+  - ["portal.theme", "s", "mario", {title: "Default theme"}]
+  - ["portal.mqtt_topic", "s", "infinity-portal/devices", {title: "MQTT topic prefix"}]
+  - ["wifi.sta.enable", "b", true, {title: "Enable WiFi station"}]
+  - ["wifi.ap.enable", "b", false, {title: "Enable WiFi access point"}]
+  - ["mqtt.enable", "b", true, {title: "Enable MQTT"}]
+  - ["mqtt.server", "s", "", {title: "MQTT server address"}]
+  - ["debug.level", "i", 2, {title: "Debug level"}]
+
+# Application tags
+tags:
+  - c
+  - js
+  - mqtt
+  - wifi
+  - portal
+  - iot
+
+# C13B0 metadata
+cflags:
+  - "-DC13B0_MODE=ADDITIVE"
+  - "-DPORTAL_VERSION=1.0.0"
