@@ -105,14 +105,23 @@ class MQTTHandler {
           break;
           
         case 'register':
-          const deviceInfo = JSON.parse(payload);
-          this.sync.registerDevice(deviceId, deviceInfo);
-          
-          // Send acknowledgment
-          this.publish(`${this.topic}/${deviceId}/ack`, JSON.stringify({
-            success: true,
-            message: 'Registration confirmed'
-          }));
+          try {
+            const deviceInfo = JSON.parse(payload);
+            this.sync.registerDevice(deviceId, deviceInfo);
+            
+            // Send acknowledgment
+            this.publish(`${this.topic}/${deviceId}/ack`, JSON.stringify({
+              success: true,
+              message: 'Registration confirmed'
+            }));
+          } catch (parseError) {
+            console.error('❌ Failed to parse registration payload:', parseError);
+            // Send error acknowledgment
+            this.publish(`${this.topic}/${deviceId}/ack`, JSON.stringify({
+              success: false,
+              error: 'Invalid registration data'
+            }));
+          }
           break;
           
         default:

@@ -61,6 +61,20 @@ class PortalAPI {
       const { deviceId } = req.params;
       const status = req.body;
       
+      // Validate deviceId
+      if (!deviceId || deviceId.trim() === '') {
+        return res.status(400).json({
+          error: 'deviceId required'
+        });
+      }
+      
+      // Validate status object
+      if (!status || typeof status !== 'object') {
+        return res.status(400).json({
+          error: 'status object required'
+        });
+      }
+      
       this.sync.handleDeviceStatus(deviceId, status);
       
       res.json({

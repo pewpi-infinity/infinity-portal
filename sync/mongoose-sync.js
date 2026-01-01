@@ -239,6 +239,8 @@ class MongooseSync {
   /**
    * Save device registry (to be implemented with file system)
    * @private
+   * Note: Persistence is optional for the initial version.
+   * In production, implement with fs.writeFileSync or database.
    */
   _saveRegistry() {
     // This would save to device-registry.json
@@ -250,11 +252,14 @@ class MongooseSync {
     
     // For now, just log
     // In real implementation: fs.writeFileSync('sync/device-registry.json', JSON.stringify(registry, null, 2));
+    console.log('💾 Device registry updated (in-memory only)');
   }
   
   /**
    * Save firmware manifest (to be implemented with file system)
    * @private
+   * Note: Persistence is optional for the initial version.
+   * In production, implement with fs.writeFileSync or database.
    */
   _saveManifest() {
     const manifest = {
@@ -267,6 +272,7 @@ class MongooseSync {
     
     // For now, just log
     // In real implementation: fs.writeFileSync('sync/firmware-manifest.json', JSON.stringify(manifest, null, 2));
+    console.log('💾 Firmware manifest updated (in-memory only)');
   }
 }
 

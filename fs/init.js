@@ -128,12 +128,16 @@ MQTT.setEventHandler(function(conn, ev, edata) {
     MQTT.sub(cmdTopic, function(conn, topic, msg) {
       print('📨 Received command:', msg);
       
-      let cmd = JSON.parse(msg);
-      if (cmd.action === 'sync') {
-        syncWithPortal();
-      } else if (cmd.action === 'restart') {
-        print('🔄 Restarting device...');
-        Sys.reboot(1000);
+      try {
+        let cmd = JSON.parse(msg);
+        if (cmd.action === 'sync') {
+          syncWithPortal();
+        } else if (cmd.action === 'restart') {
+          print('🔄 Restarting device...');
+          Sys.reboot(1000);
+        }
+      } catch (e) {
+        print('❌ Failed to parse command:', e);
       }
     }, null);
     
