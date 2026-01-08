@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "firmwareVersion": "1.0.0",
+  "buildDate": "2026-01-01T00:00:00Z",
+  "syncCount": 0,
+  "lastSync": null,
+  "devices": 0,
+  "portalState": null,
+  "platforms": {
+    "esp32": {
+      "supported": true,
+      "minVersion": "2.20.0",
+      "features": ["wifi", "mqtt", "http", "rpc", "ota"]
+    },
+    "esp8266": {
+      "supported": true,
+      "minVersion": "2.20.0",
+      "features": ["wifi", "mqtt", "http", "rpc", "ota"]
+    }
+  },
+  "files": {
+    "mos.yml": {
+      "description": "Mongoose OS configuration",
+      "required": true
+    },
+    "fs/init.js": {
+      "description": "Main firmware entry point",
+      "required": true
+    },
+    "fs/api_portal.js": {
+      "description": "Portal API RPC handlers",
+      "required": true
+    },
+    "fs/config_schema.yaml": {
+      "description": "Device configuration schema",
+      "required": true
+    }
+  },
+  "dependencies": {
+    "mongoose-os-libs/wifi": ">=1.0.0",
+    "mongoose-os-libs/mqtt": ">=1.0.0",
+    "mongoose-os-libs/rpc": ">=1.0.0",
+    "mongoose-os-libs/http-server": ">=1.0.0"
+  },
+  "themes": [
+    "mario",
+    "rock",
+    "electronics",
+    "chemistry",
+    "robotics",
+    "math",
+    "physics",
+    "biology",
+    "art",
+    "music",
+    "space"
+  ],
+  "c13b0": {
+    "mode": "ADDITIVE",
+    "operator": "Kris Watson",
+    "system": "Infinity / Octave / Mongoose",
+    "intent": "Non-destructive firmware sync for portal-device integration"
+  },
+  "deployment": {
+    "steps": [
+      "Install Mongoose OS tools",
+      "Configure WiFi credentials",
+      "Configure MQTT broker",
+      "Flash firmware to device",
+      "Verify device connection",
+      "Test theme sync"
+    ]
+  }
+}

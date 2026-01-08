@@ -4,3 +4,4 @@ ibm-watson
 flask-jwt-extended
 flask-sqlalchemy
 bcrypt
+requests

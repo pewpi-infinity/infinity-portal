@@ -1,4 +1,40 @@
 <!DOCTYPE html>
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/pewpi-infinity/infinity-brain-111.git
+	fetch = +refs/heads/main:refs/remotes/origin/main
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+<!-- 🐶 PEWPI SIGN-IN (GLOBAL) -->
+<div id="pewpi-gate">
+  <h1>🐶 pewpi</h1>
+  <input id="pewpi_user" placeholder="Handle">
+  <button onclick="pewpiUnlock()">Enter</button>
+</div>
+<script>
+function pewpiUnlock(){
+  localStorage.setItem("pewpi_user", document.getElementById("pewpi_user").value);
+  document.getElementById("pewpi-gate").style.display="none";
+  document.body.classList.add("pewpi-live");
+}
+if(localStorage.getItem("pewpi_user")){
+  document.addEventListener("DOMContentLoaded",()=>{
+    const g=document.getElementById("pewpi-gate");
+    if(g) g.style.display="none";
+    document.body.classList.add("pewpi-live");
+  });
+}
+</script>
+<style>
+#pewpi-gate{position:fixed;inset:0;background:#0e0e0e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+#pewpi-gate button{background:#ff69b4;border:0;padding:10px 18px}
+body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
+</style>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -133,7 +169,101 @@
       div.textContent = text;
       msgBox.appendChild(div);
       msgBox.scrollTop = msgBox.scrollHeight;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>∞ infinity-portal</title>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar elements -->
+    </div>
+    <div class="chat">
+        <!-- Chat components -->
+    </div>
+    <div class="bot-farm">
+        <!-- Bot farm components -->
+    </div>
+    <div class="job-progress">
+        <!-- Job progress panel -->
+    </div>
+    <script src="botfarm.js"></script>
+</body>
+<!-- C13B0_CHAT_WIDGET_BEGIN -->
+<style>
+  .c13b0-chatfab{position:fixed;right:18px;bottom:18px;z-index:99999;border-radius:999px;padding:12px 14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25);cursor:pointer;user-select:none}
+  .c13b0-chatpanel{position:fixed;right:18px;bottom:72px;width:min(520px,calc(100vw - 36px));height:min(560px,calc(100vh - 120px));z-index:99999;border-radius:18px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35);display:none}
+  .c13b0-chathead{padding:10px 12px;font-weight:800;display:flex;align-items:center;justify-content:space-between}
+  .c13b0-chatbody{height:calc(100% - 94px);overflow:auto;padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px}
+  .c13b0-chatline{white-space:pre-wrap;margin:8px 0}
+  .c13b0-chatbar{display:flex;gap:8px;padding:10px 12px;border-top:1px solid rgba(255,255,255,.10)}
+  .c13b0-chatin{flex:1;border-radius:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);outline:none}
+  .c13b0-chatbtn{border-radius:12px;padding:10px 12px;font-weight:800;border:0;cursor:pointer}
+</style>
+
+<div id="c13b0_chat_fab" class="c13b0-chatfab">🧱💬🧱 CHAT</div>
+
+<div id="c13b0_chat_panel" class="c13b0-chatpanel" role="dialog" aria-label="C13B0 Chat">
+  <div class="c13b0-chathead">
+    <div>🧱💬🧱 Repo Terminal</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <small id="c13b0_chat_repo" style="opacity:.8">repo: (auto)</small>
+      <button id="c13b0_chat_close" class="c13b0-chatbtn">✕</button>
+    </div>
+  </div>
+  <div id="c13b0_chat_body" class="c13b0-chatbody"></div>
+  <div class="c13b0-chatbar">
+    <input id="c13b0_chat_in" class="c13b0-chatin" placeholder="Ask this repo... (returns tokenized answer)" />
+    <button id="c13b0_chat_send" class="c13b0-chatbtn">SEND</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Theme: tries to inherit page colors; keeps your design intact.
+  const fab = document.getElementById("c13b0_chat_fab");
+  const panel = document.getElementById("c13b0_chat_panel");
+  const body = document.getElementById("c13b0_chat_body");
+  const input = document.getElementById("c13b0_chat_in");
+  const send = document.getElementById("c13b0_chat_send");
+  const close = document.getElementById("c13b0_chat_close");
+  const repoLabel = document.getElementById("c13b0_chat_repo");
+
+  const repo = (location.pathname.split("/")[1] || "").trim(); // for org pages it’s the repo root on pages
+  repoLabel.textContent = "repo: " + (repo || "(root)");
+
+  // Minimal styling decisions; avoid fighting your CSS
+  fab.style.background = "rgba(0,0,0,.82)";
+  fab.style.color = "white";
+  panel.style.background = "rgba(0,0,0,.90)";
+  panel.style.color = "white";
+  document.querySelector(".c13b0-chathead").style.borderBottom = "1px solid rgba(255,255,255,.10)";
+  input.style.background = "rgba(255,255,255,.06)";
+  input.style.color = "white";
+  send.style.background = "rgba(255,255,255,.14)";
+  send.style.color = "white";
+  close.style.background = "rgba(255,255,255,.14)";
+  close.style.color = "white";
+
+  function line(txt){
+    const div=document.createElement("div");
+    div.className="c13b0-chatline";
+    div.textContent=txt;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function open(){ panel.style.display="block"; input.focus(); }
+  function shut(){ panel.style.display="none"; }
+
+  fab.addEventListener("click", open);
+  close.addEventListener("click", shut);
+  window.addEventListener("click",(e)=>{
+    if(panel.style.display==="block"){
+      // click outside closes
+      if(!panel.contains(e.target) && e.target!==fab) shut();
     }
+  });
 
     async function ask(){
       const q = input.value.trim();
@@ -153,8 +283,36 @@
       } catch(err) {
         msgBox.removeChild(msgBox.lastChild);
         add('ai', '⚠️ Connection issue.');
+  async function ask(){
+    const q=(input.value||"").trim();
+    if(!q) return;
+
+    line("> " + q);
+    input.value="";
+
+    // Router endpoint (you’ll create it in your router repo)
+    // expected response: { ok:true, repo:"x", answer:"...", token:{id:"...", value:"...", type:"..."} }
+    try{
+      const res = await fetch("/router/ask", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ repo, query:q, t: Date.now() })
+      });
+      const data = await res.json();
+      if(!data || !data.ok){
+        line("⚠️ Router error: " + (data && data.error ? data.error : "unknown"));
+        return;
       }
+      if(data.answer) line(data.answer);
+      if(data.token){
+        line("🧱🟡🧱 TOKEN → " + JSON.stringify(data.token));
+      } else {
+        line("🧱📍🧱 no token returned");
+      }
+    }catch(err){
+      line("⚠️ fetch failed: " + err);
     }
+  }
 
     if (input) {
       input.addEventListener('keydown', e => {
@@ -169,3 +327,63 @@
   </script>
 </body>
 </html>
+  send.addEventListener("click", ask);
+  input.addEventListener("keydown",(e)=>{ if(e.key==="Enter") ask(); });
+})();
+</script>
+<!-- C13B0_CHAT_WIDGET_END -->
+</html><!-- C13B0_TOKEN_BLOCK -->
+<style>
+.c13b0{font-family:monospace;background:#0b0f14;color:#e6edf3;padding:16px}
+.c13b0 .value{font-size:2em;color:#ffd700}
+.c13b0 button{padding:12px;font-size:1em;width:100%;margin-top:8px}
+</style>
+
+<div class="c13b0">
+  <h2>🧱🍄⭐ Token</h2>
+  <div class="value">Value: 43</div>
+  <p>🧱 Base • 🍄 Growth • ⭐ Star Power</p>
+
+  <h3>Support / Acquire</h3>
+  <p>This token represents real work, research, and structure.</p>
+
+  <a href="https://www.paypal.com/paypalme/watsonkris61@gmail.com/43" target="_blank">
+    <button>Pay $43 via PayPal</button>
+  </a>
+
+  <p style="font-size:0.8em;">
+    PayPal recipient: watsonkris61@gmail.com<br/>
+    Repo: infinity-portal<br/>
+    Generated: 2025-12-20T15:41:01Z
+  </p>
+</div>
+
+
+<!-- INDEX_VALUE_START -->
+<div class="box">
+<h2>🧱 Index License Token</h2>
+<p><strong>Operator:</strong> Kris Watson</p>
+<p><strong>License Value (monotonic):</strong> $110 USD</p>
+<p><small>Value increases daily via Infinity Plus + Mongoose growth.</small></p>
+<form action="https://www.paypal.com/paypalme/marvaseater@gmail.com/110" method="get" target="_blank">
+  <button type="submit">Buy License Token</button>
+</form>
+<p><small>Token grants right to display/use/operate this index for business. No ownership transfer.</small></p>
+<p><small>Contact: 808-342-9974</small></p>
+</div>
+<!-- INDEX_VALUE_END -->
+
+<!-- C13B0:MAP_VIEWER -->
+<section>
+  <h3>🧱🔗🧱 Infinity Ecosystem</h3>
+  <select onchange="location=this.value">
+    <!-- populated by bots -->
+  </select>
+</section>
+
+<!-- C13B0:PAYPAL_BLOCK -->
+<section>
+  <h3>🧱💰🧱 Acquire Access License</h3>
+  <p>Starting price shown below. Value increases with growth.</p>
+  <button>Buy Now (PayPal)</button>
+</section>
