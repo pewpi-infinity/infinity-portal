@@ -148,7 +148,6 @@
       const m = modeEl.value;
       if(/^search\s+/i.test(userText) || m==='searchlink'){
         const q = userText.replace(/^search\s+/i,'').trim();
-        const url = 'https://www.google.com/search?q='+ encodeURIComponent(q || userText);
         return `Opening search in a new tab → ${url}`;
       }
       if(m==='summarize'){

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚪 Infinity Portal - Multi-Theme Gateway</title>
+  <meta name="description" content="Adaptive gateway that morphs based on user interests">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a0e1a;
+      color: #e9ecef;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 1s ease;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #00d4ff, #ff00ff, #00ff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1.1em;
+      color: #93a1b0;
+    }
+
+    /* Main portal container */
+    .portal-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 200px);
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    #portal-mount {
+      position: relative;
+      z-index: 50;
+    }
+
+    .portal-info {
+      margin-top: 30px;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .portal-info h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      animation: fade-in 0.5s ease;
+    }
+
+    .portal-info p {
+      font-size: 1.2em;
+      color: #93a1b0;
+      margin-bottom: 20px;
+      animation: fade-in 0.7s ease;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Theme selector */
+    .theme-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .theme-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-card.active {
+      border-color: #00ff00;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+
+    .theme-emoji {
+      font-size: 3em;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .theme-name {
+      font-weight: bold;
+      font-size: 1em;
+    }
+
+    /* Arena links */
+    .arena-links {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .arena-links h3 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5em;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #e9ecef;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+      display: block;
+    }
+
+    .link-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #00d4ff;
+      transform: translateX(5px);
+    }
+
+    .link-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #00d4ff;
+    }
+
+    /* MRW Terminal preview */
+    .mrw-preview {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid rgba(0, 255, 0, 0.5);
+      border-radius: 12px;
+      padding: 15px;
+      max-width: 300px;
+      z-index: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .mrw-preview h4 {
+      margin-bottom: 10px;
+      color: #00ff00;
+    }
+
+    .mrw-preview p {
+      font-size: 0.9em;
+      color: #93a1b0;
+      margin-bottom: 8px;
+    }
+
+    .terminal-line {
+      font-family: 'Courier New', monospace;
+      color: #00ff00;
+      font-size: 0.85em;
+      margin: 4px 0;
+    }
+
+    /* Enter button */
+    .enter-portal-btn {
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: linear-gradient(45deg, #00d4ff, #00ff00);
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+    }
+
+    .enter-portal-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 25px rgba(0, 255, 0, 0.5);
+    }
+
+    .enter-portal-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Legend repos */
+    .legend-repos {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .legend-repos h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .repo-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .repo-card:hover {
+      border-color: #ff00ff;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 0, 255, 0.3);
+    }
+
+    .repo-card h4 {
+      margin-bottom: 10px;
+      color: #ff00ff;
+    }
+
+    .repo-card a {
+      color: #00d4ff;
+      text-decoration: none;
+    }
+
+    .repo-card a:hover {
+      text-decoration: underline;
+    }
+
+    /* Token formula display */
+    .token-formula {
+      text-align: center;
+      margin: 40px auto;
+      padding: 30px;
+      max-width: 600px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+    }
+
+    .token-formula h3 {
+      margin-bottom: 15px;
+      color: #ffd700;
+    }
+
+    .formula {
+      font-size: 1.5em;
+      font-family: 'Courier New', monospace;
+      color: #ffd700;
+      margin: 10px 0;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.5);
+      margin-top: 60px;
+      border-top: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer p {
+      color: #93a1b0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .theme-selector {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      }
+
+      .mrw-preview {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>🚪 Infinity Portal</h1>
+    <p>Multi-Theme Gateway System • Powered by Kris🔑 + 👑📶⚪</p>
+  </div>
+
+  <!-- Main Portal Container -->
+  <div class="portal-container">
+    <div id="portal-mount"></div>
+    <div class="portal-info">
+      <h2 id="theme-title">Detecting your interests...</h2>
+      <p id="theme-description">Portal will morph to match your vibe</p>
+      <button class="enter-portal-btn" id="enter-btn" onclick="enterPortal()">Enter Portal</button>
+    </div>
+  </div>
+
+  <!-- Theme Selector -->
+  <div class="theme-selector" id="theme-selector">
+    <!-- Theme cards will be generated here -->
+  </div>
+
+  <!-- Arena Links -->
+  <div class="arena-links">
+    <h3>🌀 Available Theme Arenas</h3>
+    <div class="links-grid" id="arena-links">
+      <!-- Links will be generated here -->
+    </div>
+  </div>
+
+  <!-- Token Formula -->
+  <div class="token-formula">
+    <h3>🧱 Token Formula</h3>
+    <div class="formula">🧱Kris🔑 + 👑📶⚪ + 🚪 PORTAL</div>
+    <p>= Powerful gateway orchestration</p>
+  </div>
+
+  <!-- Legend Repositories -->
+  <div class="legend-repos">
+    <h3>🔗 Legend Repositories & Ecosystem</h3>
+    <div class="repo-grid">
+      <div class="repo-card">
+        <h4>🧱 Infinity Brain</h4>
+        <a href="https://github.com/pewpi-infinity/infinity-brain-111" target="_blank">github.com/pewpi-infinity/infinity-brain-111</a>
+      </div>
+      <div class="repo-card">
+        <h4>🐶 PEWPI Core</h4>
+        <a href="#/repos/pewpi-core">Core systems and foundations</a>
+      </div>
+      <div class="repo-card">
+        <h4>🔬 Watson Systems</h4>
+        <a href="#/repos/watson">Watson field models and research</a>
+      </div>
+      <div class="repo-card">
+        <h4>♾️ Infinity OS</h4>
+        <a href="#/repos/infinity-os">Operating system layer</a>
+      </div>
+      <div class="repo-card">
+        <h4>🎮 MRW Terminal</h4>
+        <a href="#/tools/mrw-terminal">Mario + Rogers + Watson interactive terminal</a>
+      </div>
+      <div class="repo-card">
+        <h4>🧪 Hydrogen Cloud</h4>
+        <a href="#/energy/hydrogen-cloud">Energy collection system</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MRW Terminal Preview -->
+  <div class="mrw-preview">
+    <h4>🎮 MRW Terminal</h4>
+    <p>Characters, cars, and mushrooms will appear when you enter a portal</p>
+    <div class="terminal-line">> Joystick navigation ready</div>
+    <div class="terminal-line">> Portal effects active</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>✅ Additive Only • Legend Architecture • Full Theme Support</p>
+    <p>Built with 🧱 by Kris Watson • Infinity Portal System</p>
+  </div>
+
+  <!-- Scripts -->
+  <script src="interest-detector.js"></script>
+  <script src="portal-morpher.js"></script>
+  <script src="gateway-animations.js"></script>
+  <script>
+    // Initialize systems
+    const detector = new InterestDetector();
+    const morpher = new PortalMorpher(document.getElementById('portal-mount'));
+    const animations = new GatewayAnimations();
+
+    let currentTheme = null;
+
+    // Detect theme on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const detectedTheme = detector.detect();
+      console.log('Detected theme:', detectedTheme);
+      
+      currentTheme = detectedTheme;
+      morpher.morph(detectedTheme);
+      
+      // Update info
+      const themeInfo = detector.getThemeInfo(detectedTheme);
+      if (themeInfo) {
+        document.getElementById('theme-title').textContent = themeInfo.name;
+        document.getElementById('theme-description').textContent = themeInfo.description;
+      }
+
+      // Generate theme selector
+      generateThemeSelector();
+      
+      // Generate arena links
+      generateArenaLinks(detectedTheme);
+
+      // Start MRW effects
+      animations.startMRWEffects(detectedTheme);
+
+      // Create joystick
+      animations.createJoystick((direction, pos) => {
+        console.log('Joystick:', direction, pos);
+        // Navigate between portals based on direction
+        navigateToTheme(direction);
+      });
+    });
+
+    function generateThemeSelector() {
+      const themes = detector.getAvailableThemes();
+      const container = document.getElementById('theme-selector');
+      
+      themes.forEach(theme => {
+        const info = detector.getThemeInfo(theme);
+        if (!info) return;
+        
+        const card = document.createElement('div');
+        card.className = 'theme-card' + (theme === currentTheme ? ' active' : '');
+        card.innerHTML = `
+          <span class="theme-emoji">${info.emoji}</span>
+          <div class="theme-name">${info.name}</div>
+        `;
+        card.onclick = () => switchTheme(theme);
+        container.appendChild(card);
+      });
+    }
+
+    function generateArenaLinks(theme) {
+      const container = document.getElementById('arena-links');
+      const themes = detector.getAvailableThemes();
+      
+      themes.forEach(t => {
+        const info = detector.getThemeInfo(t);
+        if (!info) return;
+        
+        const link = document.createElement('a');
+        link.className = 'link-card';
+        link.href = `#/arena/${t}`;
+        link.innerHTML = `
+          <strong>${info.emoji} ${info.name}</strong>
+          <small>${info.description}</small>
+        `;
+        container.appendChild(link);
+      });
+    }
+
+    function switchTheme(theme) {
+      if (theme === currentTheme) return;
+      
+      // Stop old effects
+      animations.stopMRWEffects();
+      
+      // Morph to new theme
+      morpher.morph(theme);
+      currentTheme = theme;
+      
+      // Update info
+      const themeInfo = detector.getThemeInfo(theme);
+      if (themeInfo) {
+        document.getElementById('theme-title').textContent = themeInfo.name;
+        document.getElementById('theme-description').textContent = themeInfo.description;
+      }
+      
+      // Save interest
+      detector.setInterest(theme);
+      
+      // Update active state
+      document.querySelectorAll('.theme-card').forEach((card, i) => {
+        card.classList.toggle('active', detector.getAvailableThemes()[i] === theme);
+      });
+      
+      // Start new effects
+      animations.startMRWEffects(theme);
+      
+      // Apply background
+      morpher.applyThemeBackground(theme);
+    }
+
+    function navigateToTheme(direction) {
+      const themes = detector.getAvailableThemes();
+      const currentIndex = themes.indexOf(currentTheme);
+      
+      let newIndex = currentIndex;
+      if (direction === 'up' || direction === 'right') {
+        newIndex = (currentIndex + 1) % themes.length;
+      } else if (direction === 'down' || direction === 'left') {
+        newIndex = (currentIndex - 1 + themes.length) % themes.length;
+      }
+      
+      if (newIndex !== currentIndex) {
+        switchTheme(themes[newIndex]);
+      }
+    }
+
+    function enterPortal() {
+      const portal = morpher.getPortalElement();
+      if (!portal) return;
+      
+      // Get portal position
+      const rect = portal.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      
+      // Play gateway transition
+      animations.playGatewayTransition(x, y, morpher.getCurrentTheme());
+      
+      // Animate portal entrance
+      animations.animatePortalEntrance(portal);
+      
+      // Show energy collection
+      animations.showEnergyCollect(x, y - 50, '+25 Energy');
+      
+      // Navigate to arena (placeholder)
+      setTimeout(() => {
+        window.location.hash = `/arena/${currentTheme}`;
+        console.log(`Entering ${currentTheme} arena...`);
+      }, 1500);
+    }
+
+    // Listen for portal morph events
+    document.addEventListener('portal-morphed', (e) => {
+      console.log('Portal morphed:', e.detail);
+    });
+  </script>
+</body>
+</html>

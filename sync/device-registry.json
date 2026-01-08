@@ -1,0 +1,13 @@
+{
+  "devices": [],
+  "lastUpdate": null,
+  "metadata": {
+    "version": "1.0.0",
+    "c13b0": {
+      "mode": "ADDITIVE",
+      "operator": "Kris Watson",
+      "system": "Infinity / Octave / Mongoose"
+    },
+    "description": "Registry of connected Mongoose OS devices for Infinity Portal"
+  }
+}

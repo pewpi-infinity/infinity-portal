@@ -1,4 +1,40 @@
 <!DOCTYPE html>
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/pewpi-infinity/infinity-brain-111.git
+	fetch = +refs/heads/main:refs/remotes/origin/main
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+<!-- 🐶 PEWPI SIGN-IN (GLOBAL) -->
+<div id="pewpi-gate">
+  <h1>🐶 pewpi</h1>
+  <input id="pewpi_user" placeholder="Handle">
+  <button onclick="pewpiUnlock()">Enter</button>
+</div>
+<script>
+function pewpiUnlock(){
+  localStorage.setItem("pewpi_user", document.getElementById("pewpi_user").value);
+  document.getElementById("pewpi-gate").style.display="none";
+  document.body.classList.add("pewpi-live");
+}
+if(localStorage.getItem("pewpi_user")){
+  document.addEventListener("DOMContentLoaded",()=>{
+    const g=document.getElementById("pewpi-gate");
+    if(g) g.style.display="none";
+    document.body.classList.add("pewpi-live");
+  });
+}
+</script>
+<style>
+#pewpi-gate{position:fixed;inset:0;background:#0e0e0e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+#pewpi-gate button{background:#ff69b4;border:0;padding:10px 18px}
+body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
+</style>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -73,6 +109,349 @@
     // setTimeout(() => {
     //   window.location.href = 'infinity-portal-main.html';
     // }, 3000);
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+    .user-info { font-size: 0.9rem; display: flex; gap: 0.5rem; align-items: center; }
+    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; }
+    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
+    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
+    .user { background: #d0ebff; align-self: flex-end; }
+    .ai { background: #e9ecef; align-self: flex-start; }
+    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
+    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
+    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
+    button:hover { background: #005f9e; }
+    .hidden { display: none; }
+    .auth-container { max-width: 400px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .auth-container h2 { margin-top: 0; color: #0070ba; }
+    .auth-container input { width: 100%; margin-bottom: 1rem; padding: 0.6rem; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
+    .auth-container button { width: 100%; margin-bottom: 0.5rem; }
+    .auth-link { text-align: center; color: #0070ba; cursor: pointer; text-decoration: underline; }
+    .error { color: red; font-size: 0.9rem; margin-bottom: 1rem; }
+    .logout-btn { background: #d9534f; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+    .logout-btn:hover { background: #c9302c; }
+  </style>
+</head>
+<body>
+  <div id="authView" class="auth-container">
+    <h2 id="authTitle">Login to Infinity Portal</h2>
+    <div id="authError" class="error"></div>
+    <input type="text" id="authUsername" placeholder="Username" />
+    <input type="password" id="authPassword" placeholder="Password" />
+    <button id="authSubmit" onclick="handleAuth()">Login</button>
+    <div class="auth-link" id="authToggle" onclick="toggleAuthMode()">Don't have an account? Sign up</div>
+  </div>
+
+  <div id="appView" class="hidden">
+    <header>
+      <span>�� Rogers AI — Infinity Portal</span>
+      <div class="user-info">
+        <span id="currentUser"></span>
+        <span class="logout-btn" onclick="logout()">Logout</span>
+      </div>
+    </header>
+    <main>
+      <div id="messages">
+        <div class="msg ai">Hey there — Rogers is live. Ask me anything!</div>
+      </div>
+    </main>
+    <footer>
+      <input id="userInput" placeholder="Type your question..." />
+      <button onclick="ask()">Send</button>
+    </footer>
+  </div>
+
+  <script>
+    let isLoginMode = true;
+    let authToken = localStorage.getItem('authToken');
+    let username = localStorage.getItem('username');
+
+    // Check if user is already logged in
+    if (authToken && username) {
+      showApp();
+    }
+
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      document.getElementById('authTitle').textContent = isLoginMode ? 'Login to Infinity Portal' : 'Sign Up for Infinity Portal';
+      document.getElementById('authSubmit').textContent = isLoginMode ? 'Login' : 'Sign Up';
+      document.getElementById('authToggle').textContent = isLoginMode ? "Don't have an account? Sign up" : "Already have an account? Login";
+      document.getElementById('authError').textContent = '';
+    }
+
+    async function handleAuth() {
+      const usernameInput = document.getElementById('authUsername').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const errorDiv = document.getElementById('authError');
+
+      if (!usernameInput || !password) {
+        errorDiv.textContent = 'Username and password are required';
+        return;
+      }
+
+      const endpoint = isLoginMode ? '/api/login' : '/api/register';
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: usernameInput, password: password })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          authToken = data.access_token;
+          username = data.username;
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('username', username);
+          showApp();
+        } else {
+          errorDiv.textContent = data.message || 'Authentication failed';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Connection error. Please try again.';
+      }
+    }
+
+    function showApp() {
+      document.getElementById('authView').classList.add('hidden');
+      document.getElementById('appView').classList.remove('hidden');
+      document.getElementById('currentUser').textContent = username;
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      authToken = null;
+      username = null;
+      location.reload();
+    }
+
+    const msgBox = document.getElementById('messages');
+    const input = document.getElementById('userInput');
+
+    function add(role, text){
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      msgBox.appendChild(div);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>∞ infinity-portal</title>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar elements -->
+    </div>
+    <div class="chat">
+        <!-- Chat components -->
+    </div>
+    <div class="bot-farm">
+        <!-- Bot farm components -->
+    </div>
+    <div class="job-progress">
+        <!-- Job progress panel -->
+    </div>
+    <script src="botfarm.js"></script>
+</body>
+<!-- C13B0_CHAT_WIDGET_BEGIN -->
+<style>
+  .c13b0-chatfab{position:fixed;right:18px;bottom:18px;z-index:99999;border-radius:999px;padding:12px 14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25);cursor:pointer;user-select:none}
+  .c13b0-chatpanel{position:fixed;right:18px;bottom:72px;width:min(520px,calc(100vw - 36px));height:min(560px,calc(100vh - 120px));z-index:99999;border-radius:18px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35);display:none}
+  .c13b0-chathead{padding:10px 12px;font-weight:800;display:flex;align-items:center;justify-content:space-between}
+  .c13b0-chatbody{height:calc(100% - 94px);overflow:auto;padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px}
+  .c13b0-chatline{white-space:pre-wrap;margin:8px 0}
+  .c13b0-chatbar{display:flex;gap:8px;padding:10px 12px;border-top:1px solid rgba(255,255,255,.10)}
+  .c13b0-chatin{flex:1;border-radius:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);outline:none}
+  .c13b0-chatbtn{border-radius:12px;padding:10px 12px;font-weight:800;border:0;cursor:pointer}
+</style>
+
+<div id="c13b0_chat_fab" class="c13b0-chatfab">🧱💬🧱 CHAT</div>
+
+<div id="c13b0_chat_panel" class="c13b0-chatpanel" role="dialog" aria-label="C13B0 Chat">
+  <div class="c13b0-chathead">
+    <div>🧱💬🧱 Repo Terminal</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <small id="c13b0_chat_repo" style="opacity:.8">repo: (auto)</small>
+      <button id="c13b0_chat_close" class="c13b0-chatbtn">✕</button>
+    </div>
+  </div>
+  <div id="c13b0_chat_body" class="c13b0-chatbody"></div>
+  <div class="c13b0-chatbar">
+    <input id="c13b0_chat_in" class="c13b0-chatin" placeholder="Ask this repo... (returns tokenized answer)" />
+    <button id="c13b0_chat_send" class="c13b0-chatbtn">SEND</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Theme: tries to inherit page colors; keeps your design intact.
+  const fab = document.getElementById("c13b0_chat_fab");
+  const panel = document.getElementById("c13b0_chat_panel");
+  const body = document.getElementById("c13b0_chat_body");
+  const input = document.getElementById("c13b0_chat_in");
+  const send = document.getElementById("c13b0_chat_send");
+  const close = document.getElementById("c13b0_chat_close");
+  const repoLabel = document.getElementById("c13b0_chat_repo");
+
+  const repo = (location.pathname.split("/")[1] || "").trim(); // for org pages it’s the repo root on pages
+  repoLabel.textContent = "repo: " + (repo || "(root)");
+
+  // Minimal styling decisions; avoid fighting your CSS
+  fab.style.background = "rgba(0,0,0,.82)";
+  fab.style.color = "white";
+  panel.style.background = "rgba(0,0,0,.90)";
+  panel.style.color = "white";
+  document.querySelector(".c13b0-chathead").style.borderBottom = "1px solid rgba(255,255,255,.10)";
+  input.style.background = "rgba(255,255,255,.06)";
+  input.style.color = "white";
+  send.style.background = "rgba(255,255,255,.14)";
+  send.style.color = "white";
+  close.style.background = "rgba(255,255,255,.14)";
+  close.style.color = "white";
+
+  function line(txt){
+    const div=document.createElement("div");
+    div.className="c13b0-chatline";
+    div.textContent=txt;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function open(){ panel.style.display="block"; input.focus(); }
+  function shut(){ panel.style.display="none"; }
+
+  fab.addEventListener("click", open);
+  close.addEventListener("click", shut);
+  window.addEventListener("click",(e)=>{
+    if(panel.style.display==="block"){
+      // click outside closes
+      if(!panel.contains(e.target) && e.target!==fab) shut();
+    }
+  });
+
+    async function ask(){
+      const q = input.value.trim();
+      if(!q) return;
+      add('user', q);
+      input.value = '';
+      add('ai', 'Thinking...');
+      try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
+        const data = await res.json();
+        let answer = data.Answer || data.AbstractText || data.Definition || '';
+        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
+          answer = data.RelatedTopics[0].Text;
+        }
+        msgBox.removeChild(msgBox.lastChild);
+        add('ai', answer || 'No clear result — try rephrasing your question.');
+      } catch(err) {
+        msgBox.removeChild(msgBox.lastChild);
+        add('ai', '⚠️ Connection issue.');
+  async function ask(){
+    const q=(input.value||"").trim();
+    if(!q) return;
+
+    line("> " + q);
+    input.value="";
+
+    // Router endpoint (you’ll create it in your router repo)
+    // expected response: { ok:true, repo:"x", answer:"...", token:{id:"...", value:"...", type:"..."} }
+    try{
+      const res = await fetch("/router/ask", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ repo, query:q, t: Date.now() })
+      });
+      const data = await res.json();
+      if(!data || !data.ok){
+        line("⚠️ Router error: " + (data && data.error ? data.error : "unknown"));
+        return;
+      }
+      if(data.answer) line(data.answer);
+      if(data.token){
+        line("🧱🟡🧱 TOKEN → " + JSON.stringify(data.token));
+      } else {
+        line("🧱📍🧱 no token returned");
+      }
+    }catch(err){
+      line("⚠️ fetch failed: " + err);
+    }
+  }
+
+    if (input) {
+      input.addEventListener('keydown', e => {
+        if(e.key === 'Enter') ask();
+      });
+    }
+
+    // Handle auth form enter key
+    document.getElementById('authPassword')?.addEventListener('keydown', e => {
+      if(e.key === 'Enter') handleAuth();
+    });
   </script>
 </body>
 </html>
+  send.addEventListener("click", ask);
+  input.addEventListener("keydown",(e)=>{ if(e.key==="Enter") ask(); });
+})();
+</script>
+<!-- C13B0_CHAT_WIDGET_END -->
+</html><!-- C13B0_TOKEN_BLOCK -->
+<style>
+.c13b0{font-family:monospace;background:#0b0f14;color:#e6edf3;padding:16px}
+.c13b0 .value{font-size:2em;color:#ffd700}
+.c13b0 button{padding:12px;font-size:1em;width:100%;margin-top:8px}
+</style>
+
+<div class="c13b0">
+  <h2>🧱🍄⭐ Token</h2>
+  <div class="value">Value: 43</div>
+  <p>🧱 Base • 🍄 Growth • ⭐ Star Power</p>
+
+  <h3>Support / Acquire</h3>
+  <p>This token represents real work, research, and structure.</p>
+
+  <a href="https://www.paypal.com/paypalme/watsonkris61@gmail.com/43" target="_blank">
+    <button>Pay $43 via PayPal</button>
+  </a>
+
+  <p style="font-size:0.8em;">
+    PayPal recipient: watsonkris61@gmail.com<br/>
+    Repo: infinity-portal<br/>
+    Generated: 2025-12-20T15:41:01Z
+  </p>
+</div>
+
+
+<!-- INDEX_VALUE_START -->
+<div class="box">
+<h2>🧱 Index License Token</h2>
+<p><strong>Operator:</strong> Kris Watson</p>
+<p><strong>License Value (monotonic):</strong> $110 USD</p>
+<p><small>Value increases daily via Infinity Plus + Mongoose growth.</small></p>
+<form action="https://www.paypal.com/paypalme/marvaseater@gmail.com/110" method="get" target="_blank">
+  <button type="submit">Buy License Token</button>
+</form>
+<p><small>Token grants right to display/use/operate this index for business. No ownership transfer.</small></p>
+<p><small>Contact: 808-342-9974</small></p>
+</div>
+<!-- INDEX_VALUE_END -->
+
+<!-- C13B0:MAP_VIEWER -->
+<section>
+  <h3>🧱🔗🧱 Infinity Ecosystem</h3>
+  <select onchange="location=this.value">
+    <!-- populated by bots -->
+  </select>
+</section>
+
+<!-- C13B0:PAYPAL_BLOCK -->
+<section>
+  <h3>🧱💰🧱 Acquire Access License</h3>
+  <p>Starting price shown below. Value increases with growth.</p>
+  <button>Buy Now (PayPal)</button>
+</section>
