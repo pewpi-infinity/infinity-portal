@@ -9,6 +9,38 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>∞</text></svg>" />
   
   <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+    .header-title { flex: 1; text-align: center; }
+    .zoom-controls { display: flex; gap: 0.5rem; }
+    .zoom-btn { background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 5px; padding: 0.4rem 0.7rem; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
+    .zoom-btn:hover { background: rgba(255,255,255,0.3); }
+    .zoom-btn:focus { outline: 2px solid white; outline-offset: 2px; }
+    .header-spacer { width: 200px; } /* Matches zoom-controls width for centered title */
+    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; transform-origin: center top; transition: transform 0.2s ease; }
+    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
+    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
+    .user { background: #d0ebff; align-self: flex-end; }
+    .ai { background: #e9ecef; align-self: flex-start; }
+    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
+    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
+    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
+    button:hover { background: #005f9e; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out (Ctrl + - or _)">−</button>
+      <button class="zoom-btn" id="reset-zoom-btn" onclick="resetZoom()" title="Reset Zoom (Ctrl + 0)">100%</button>
+      <button class="zoom-btn" onclick="zoomIn()" title="Zoom In (Ctrl + +)">+</button>
+    </div>
+    <div class="header-title">🧠 Rogers AI — Infinity Portal</div>
+    <div class="header-spacer"></div>
+  </header>
+  <main>
+    <div id="messages">
+      <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
@@ -425,6 +457,53 @@
   <input type="file" id="fileInput" multiple accept="image/*,application/pdf,text/*" onchange="handleFiles(this.files)" />
   
   <script>
+    const msgBox = document.getElementById('messages');
+    const input = document.getElementById('userInput');
+    const mainElem = document.querySelector('main');
+    const resetZoomBtn = document.getElementById('reset-zoom-btn');
+    
+    let zoomPercent = 100;
+    const zoomStep = 10; // 10%
+    const minZoom = 50;  // 50%
+    const maxZoom = 200; // 200%
+
+    function updateZoom() {
+      mainElem.style.transform = `scale(${zoomPercent / 100})`;
+      resetZoomBtn.textContent = zoomPercent + '%';
+    }
+
+    function zoomIn() {
+      zoomPercent = Math.min(maxZoom, zoomPercent + zoomStep);
+      updateZoom();
+    }
+
+    function zoomOut() {
+      zoomPercent = Math.max(minZoom, zoomPercent - zoomStep);
+      updateZoom();
+    }
+
+    function resetZoom() {
+      zoomPercent = 100;
+      updateZoom();
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          zoomIn();
+        } else if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          zoomOut();
+        } else if (e.key === '0') {
+          e.preventDefault();
+          resetZoom();
+        }
+      }
+    });
+
+    function add(role, text){
     // ========== State ==========
     let authConfig = { google_client_id: '', allowed_emails: [], chat_endpoint: '' };
     let currentUser = null;
