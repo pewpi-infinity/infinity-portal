@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Government 501 Portal - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #0891b2; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #0891b2;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .section-card {
+      background: #f0fdfa;
+      border: 2px solid #99f6e4;
+      border-radius: 10px;
+      padding: 25px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .section-card:hover {
+      transform: translateY(-5px);
+      border-color: #0891b2;
+      box-shadow: 0 8px 16px rgba(8, 145, 178, 0.2);
+    }
+    .section-card h3 {
+      color: #0891b2;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    .section-card ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    .section-card li {
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    .btn {
+      background: #0891b2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 15px;
+      display: inline-block;
+    }
+    .btn:hover { background: #0e7490; }
+    .info-banner {
+      background: #e0f2fe;
+      border-left: 4px solid #0891b2;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>📋 Government 501 Non-Profit Portal</h1>
+    <p>Comprehensive tools and resources for non-profit organizations, laws, code enforcement, and regulatory compliance</p>
+    
+    <div class="info-banner">
+      <h3 style="color: #0891b2; margin-bottom: 10px;">🏛️ About This Portal</h3>
+      <p>This portal provides essential resources for 501(c)(3) non-profit organizations, government compliance, code enforcement, and regulatory requirements. Access forms, guidelines, and support tools all in one place.</p>
+    </div>
+    
+    <div class="section-grid">
+      <div class="section-card" onclick="openSection('nonprofit-setup')">
+        <h3>🏢 Non-Profit Setup & Formation</h3>
+        <p>Everything you need to start a 501(c)(3) organization:</p>
+        <ul>
+          <li>Articles of Incorporation templates</li>
+          <li>Bylaws examples</li>
+          <li>IRS Form 1023 guidance</li>
+          <li>State registration requirements</li>
+          <li>Board governance best practices</li>
+        </ul>
+        <button class="btn">Get Started</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('compliance')">
+        <h3>✅ Compliance & Reporting</h3>
+        <p>Stay compliant with federal and state requirements:</p>
+        <ul>
+          <li>Annual Form 990 filing</li>
+          <li>State charitable registration</li>
+          <li>Financial reporting standards</li>
+          <li>Audit requirements</li>
+          <li>Record keeping guidelines</li>
+        </ul>
+        <button class="btn">View Requirements</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('laws')">
+        <h3>⚖️ Laws & Regulations</h3>
+        <p>Understand the legal framework:</p>
+        <ul>
+          <li>Tax exemption requirements</li>
+          <li>Charitable solicitation laws</li>
+          <li>Employment regulations</li>
+          <li>Privacy and data protection</li>
+          <li>Lobbying restrictions</li>
+        </ul>
+        <button class="btn">Browse Laws</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('code-enforcement')">
+        <h3>🏗️ Code Enforcement</h3>
+        <p>Building and operational codes:</p>
+        <ul>
+          <li>Facility safety requirements</li>
+          <li>ADA compliance</li>
+          <li>Fire safety codes</li>
+          <li>Health department regulations</li>
+          <li>Zoning requirements</li>
+        </ul>
+        <button class="btn">Check Codes</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('fundraising')">
+        <h3>💰 Fundraising & Grants</h3>
+        <p>Resources for sustainable funding:</p>
+        <ul>
+          <li>Grant application guides</li>
+          <li>Donor management tools</li>
+          <li>Campaign best practices</li>
+          <li>Fundraising compliance</li>
+          <li>Grant databases</li>
+        </ul>
+        <button class="btn">Explore Options</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('tax')">
+        <h3>📊 Tax Information</h3>
+        <p>Tax benefits and obligations:</p>
+        <ul>
+          <li>Tax-deductible donations</li>
+          <li>Unrelated business income</li>
+          <li>Employment taxes</li>
+          <li>Property tax exemptions</li>
+          <li>Sales tax exemptions</li>
+        </ul>
+        <button class="btn">Tax Resources</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('governance')">
+        <h3>👥 Board Governance</h3>
+        <p>Effective board management:</p>
+        <ul>
+          <li>Board member responsibilities</li>
+          <li>Meeting procedures</li>
+          <li>Conflict of interest policies</li>
+          <li>Executive compensation</li>
+          <li>Succession planning</li>
+        </ul>
+        <button class="btn">Learn More</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('financial')">
+        <h3>💵 Financial Management</h3>
+        <p>Sound financial practices:</p>
+        <ul>
+          <li>Budget templates</li>
+          <li>Internal controls</li>
+          <li>Investment policies</li>
+          <li>Financial statements</li>
+          <li>Expense policies</li>
+        </ul>
+        <button class="btn">Access Tools</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('volunteer')">
+        <h3>🤝 Volunteer Management</h3>
+        <p>Build and manage your volunteer team:</p>
+        <ul>
+          <li>Recruitment strategies</li>
+          <li>Background checks</li>
+          <li>Training programs</li>
+          <li>Liability insurance</li>
+          <li>Recognition programs</li>
+        </ul>
+        <button class="btn">Get Started</button>
+      </div>
+      
+      <div class="section-card" onclick="openSection('resources')">
+        <h3>📚 Additional Resources</h3>
+        <p>More helpful materials:</p>
+        <ul>
+          <li>Sample policies and procedures</li>
+          <li>Legal document templates</li>
+          <li>Educational webinars</li>
+          <li>Industry associations</li>
+          <li>Consulting services</li>
+        </ul>
+        <button class="btn">View All</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function openSection(sectionId) {
+      alert(`Opening ${sectionId} section. This will provide detailed information, forms, and resources for this area of non-profit management.`);
+    }
+  </script>
+</body>
+</html>

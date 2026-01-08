@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Live Hosting - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #0070ba; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #0070ba;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .video-container {
+      background: #000;
+      border-radius: 10px;
+      margin: 20px 0;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2em;
+    }
+    video {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: #0070ba;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn:hover { background: #005f9e; }
+    .btn.danger { background: #dc2626; }
+    .btn.danger:hover { background: #b91c1c; }
+    .btn.success { background: #22c55e; }
+    .btn.success:hover { background: #16a34a; }
+    .share-options {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .share-options h3 {
+      color: #0070ba;
+      margin-bottom: 15px;
+    }
+    .share-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+    }
+    .twitter { background: #1DA1F2; }
+    .facebook { background: #4267B2; }
+    .youtube { background: #FF0000; }
+    .twitch { background: #9146FF; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>🎥 Video Live Hosting Platform</h1>
+    <p>Stream live video with multi-platform sharing to Twitter Spaces and more.</p>
+    
+    <div class="video-container" id="videoContainer">
+      <video id="videoElement" autoplay playsinline></video>
+      <div id="placeholder">Click "Start Camera" to begin</div>
+    </div>
+    
+    <div class="controls">
+      <button class="btn success" onclick="startCamera()">Start Camera</button>
+      <button class="btn danger" onclick="stopCamera()">Stop Camera</button>
+      <button class="btn" onclick="toggleMute()">Toggle Mute</button>
+      <button class="btn" onclick="takeSnapshot()">Take Snapshot</button>
+    </div>
+    
+    <div class="share-options">
+      <h3>🌐 Share Live Stream</h3>
+      <p>Share your live stream across multiple platforms simultaneously:</p>
+      <div style="margin-top: 15px;">
+        <a href="#" class="share-btn twitter" onclick="shareToTwitter()">Share to Twitter Spaces</a>
+        <a href="#" class="share-btn facebook" onclick="shareToFacebook()">Share to Facebook Live</a>
+        <a href="#" class="share-btn youtube" onclick="shareToYouTube()">Share to YouTube Live</a>
+        <a href="#" class="share-btn twitch" onclick="shareToTwitch()">Share to Twitch</a>
+      </div>
+    </div>
+    
+    <canvas id="snapshotCanvas" style="display: none;"></canvas>
+  </div>
+  
+  <script>
+    let stream = null;
+    const video = document.getElementById('videoElement');
+    const placeholder = document.getElementById('placeholder');
+    
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        placeholder.style.display = 'none';
+        console.log('Camera started successfully');
+      } catch (err) {
+        alert('Unable to access camera: ' + err.message);
+        console.error('Camera error:', err);
+      }
+    }
+    
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        video.style.display = 'none';
+        placeholder.style.display = 'block';
+        stream = null;
+      }
+    }
+    
+    function toggleMute() {
+      if (stream) {
+        const audioTrack = stream.getAudioTracks()[0];
+        if (audioTrack) {
+          audioTrack.enabled = !audioTrack.enabled;
+          alert(audioTrack.enabled ? 'Audio unmuted' : 'Audio muted');
+        }
+      }
+    }
+    
+    function takeSnapshot() {
+      if (!stream) {
+        alert('Please start camera first');
+        return;
+      }
+      
+      const canvas = document.getElementById('snapshotCanvas');
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `snapshot-${Date.now()}.png`;
+        a.addEventListener('click', () => {
+          // Clean up to prevent memory leaks
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, { once: true });
+        a.click();
+      });
+    }
+    
+    function shareToTwitter() {
+      alert('Twitter Spaces integration coming soon. This will allow you to share your live stream directly to Twitter Spaces.');
+    }
+    
+    function shareToFacebook() {
+      alert('Facebook Live integration coming soon.');
+    }
+    
+    function shareToYouTube() {
+      alert('YouTube Live integration coming soon.');
+    }
+    
+    function shareToTwitch() {
+      alert('Twitch integration coming soon.');
+    }
+  </script>
+</body>
+</html>

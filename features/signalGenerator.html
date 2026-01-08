@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rare Earth Signal Generator - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #7c3aed; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #7c3aed;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .info-box {
+      background: #f5f3ff;
+      border-left: 4px solid #7c3aed;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .control-panel {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    .element-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .element-btn {
+      background: white;
+      border: 2px solid #e0e0e0;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .element-btn:hover {
+      border-color: #7c3aed;
+      transform: scale(1.05);
+    }
+    .element-btn.active {
+      background: #7c3aed;
+      color: white;
+      border-color: #7c3aed;
+    }
+    .slider-group {
+      margin: 20px 0;
+    }
+    .slider-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: #e0e0e0;
+      outline: none;
+    }
+    .value-display {
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #7c3aed;
+      margin-top: 5px;
+    }
+    .btn {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      margin: 10px 5px;
+    }
+    .btn:hover { background: #6d28d9; }
+    .btn.danger { background: #dc2626; }
+    .btn.danger:hover { background: #b91c1c; }
+    .output-display {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 20px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      min-height: 200px;
+      margin-top: 20px;
+      overflow-y: auto;
+    }
+    .visualization {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      border-radius: 10px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7c3aed;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>⚡ Rare Earth Element Signal Generator</h1>
+    <p>Synthetically propagate waves and emissions of rare earth elements without physical form</p>
+    
+    <div class="info-box">
+      <h3 style="color: #7c3aed; margin-bottom: 10px;">🔬 Advanced Technology</h3>
+      <p>This system propagates the electromagnetic signatures and wave patterns of rare earth elements synthetically, bypassing the need for physical materials. The same technology can be applied to gold and precious metals for shielding and protection applications.</p>
+    </div>
+    
+    <div class="control-panel">
+      <h2 style="margin-bottom: 20px;">Select Element</h2>
+      <div class="element-grid">
+        <div class="element-btn" onclick="selectElement('Neodymium', 'Nd')">
+          <div style="font-size: 1.5em; font-weight: bold;">Nd</div>
+          <div style="font-size: 0.8em;">Neodymium</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Dysprosium', 'Dy')">
+          <div style="font-size: 1.5em; font-weight: bold;">Dy</div>
+          <div style="font-size: 0.8em;">Dysprosium</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Terbium', 'Tb')">
+          <div style="font-size: 1.5em; font-weight: bold;">Tb</div>
+          <div style="font-size: 0.8em;">Terbium</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Europium', 'Eu')">
+          <div style="font-size: 1.5em; font-weight: bold;">Eu</div>
+          <div style="font-size: 0.8em;">Europium</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Yttrium', 'Y')">
+          <div style="font-size: 1.5em; font-weight: bold;">Y</div>
+          <div style="font-size: 0.8em;">Yttrium</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Gold', 'Au')">
+          <div style="font-size: 1.5em; font-weight: bold;">Au</div>
+          <div style="font-size: 0.8em;">Gold</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Platinum', 'Pt')">
+          <div style="font-size: 1.5em; font-weight: bold;">Pt</div>
+          <div style="font-size: 0.8em;">Platinum</div>
+        </div>
+        <div class="element-btn" onclick="selectElement('Palladium', 'Pd')">
+          <div style="font-size: 1.5em; font-weight: bold;">Pd</div>
+          <div style="font-size: 0.8em;">Palladium</div>
+        </div>
+      </div>
+      
+      <div id="selectedElement" style="text-align: center; margin: 20px 0; font-size: 1.2em; color: #7c3aed;">
+        Select an element to begin
+      </div>
+      
+      <div class="slider-group">
+        <label>Frequency (Hz)</label>
+        <input type="range" id="frequency" min="1" max="10000" value="440" oninput="updateValue('frequency')">
+        <div class="value-display" id="frequencyValue">440 Hz</div>
+      </div>
+      
+      <div class="slider-group">
+        <label>Amplitude (%)</label>
+        <input type="range" id="amplitude" min="0" max="100" value="50" oninput="updateValue('amplitude')">
+        <div class="value-display" id="amplitudeValue">50%</div>
+      </div>
+      
+      <div class="slider-group">
+        <label>Propagation Intensity</label>
+        <input type="range" id="intensity" min="1" max="100" value="50" oninput="updateValue('intensity')">
+        <div class="value-display" id="intensityValue">50%</div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn" onclick="startGeneration()">🚀 Start Generation</button>
+        <button class="btn danger" onclick="stopGeneration()">⏹️ Stop</button>
+      </div>
+    </div>
+    
+    <div class="visualization" id="visualization">
+      Waveform Visualization (Inactive)
+    </div>
+    
+    <div class="output-display" id="output">
+      System ready. Select element and parameters to begin signal generation.
+    </div>
+  </div>
+  
+  <script>
+    let selectedElement = null;
+    let isGenerating = false;
+    
+    function selectElement(name, symbol) {
+      selectedElement = { name, symbol };
+      
+      // Find clicked button through event delegation
+      const buttons = document.querySelectorAll('.element-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(symbol)) {
+          btn.classList.add('active');
+        }
+      });
+      
+      document.getElementById('selectedElement').textContent = `Selected: ${name} (${symbol})`;
+    }
+    
+    function updateValue(type) {
+      const value = document.getElementById(type).value;
+      const display = document.getElementById(type + 'Value');
+      
+      if (type === 'frequency') {
+        display.textContent = `${value} Hz`;
+      } else {
+        display.textContent = `${value}%`;
+      }
+    }
+    
+    function startGeneration() {
+      if (!selectedElement) {
+        alert('Please select an element first');
+        return;
+      }
+      
+      isGenerating = true;
+      const frequency = document.getElementById('frequency').value;
+      const amplitude = document.getElementById('amplitude').value;
+      const intensity = document.getElementById('intensity').value;
+      
+      const output = document.getElementById('output');
+      output.innerHTML = `
+> Initializing synthetic propagation system...<br>
+> Element: ${selectedElement.name} (${selectedElement.symbol})<br>
+> Frequency: ${frequency} Hz<br>
+> Amplitude: ${amplitude}%<br>
+> Intensity: ${intensity}%<br>
+> <br>
+> Generating electromagnetic signature...<br>
+> Propagating ${selectedElement.name} wave patterns...<br>
+> Signal strength: ${intensity}%<br>
+> <br>
+> [ACTIVE] Synthetic ${selectedElement.name} field established<br>
+> Status: Broadcasting synthetic element signature<br>
+> Note: This system bypasses physical material requirements
+      `;
+      
+      document.getElementById('visualization').innerHTML = `
+        <canvas id="waveCanvas" width="900" height="180"></canvas>
+      `;
+      
+      // Wait for DOM update before animating
+      setTimeout(() => {
+        animateWave(frequency);
+      }, 50);
+    }
+    
+    function stopGeneration() {
+      if (!isGenerating) return;
+      
+      isGenerating = false;
+      document.getElementById('output').innerHTML += `<br><br>> Signal generation stopped<br>> System standby mode`;
+      document.getElementById('visualization').textContent = 'Waveform Visualization (Inactive)';
+    }
+    
+    function animateWave(freq) {
+      if (!isGenerating) return;
+      
+      const canvas = document.getElementById('waveCanvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      let x = 0;
+      
+      function draw() {
+        if (!isGenerating) return;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.strokeStyle = '#7c3aed';
+        ctx.lineWidth = 2;
+        
+        for (let i = 0; i < canvas.width; i++) {
+          const y = canvas.height / 2 + Math.sin((i + x) * freq / 1000) * 50;
+          if (i === 0) {
+            ctx.moveTo(i, y);
+          } else {
+            ctx.lineTo(i, y);
+          }
+        }
+        
+        ctx.stroke();
+        x += 2;
+        
+        requestAnimationFrame(draw);
+      }
+      
+      draw();
+    }
+  </script>
+</body>
+</html>

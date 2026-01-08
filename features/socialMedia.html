@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Platform - Infinity Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    h1 { color: #3b82f6; margin-bottom: 20px; }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+    }
+    .sidebar {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .sidebar h3 {
+      color: #3b82f6;
+      margin-bottom: 15px;
+      font-size: 1em;
+    }
+    .category-list {
+      list-style: none;
+    }
+    .category-item {
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9em;
+    }
+    .category-item:hover {
+      background: #3b82f6;
+      color: white;
+    }
+    .feed {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .post-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .post-box textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 1em;
+    }
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .btn:hover { background: #1d4ed8; }
+    .post {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-right: 12px;
+    }
+    .post-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .post-action {
+      color: #666;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .post-action:hover { color: #3b82f6; }
+    .trending {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .trending h3 {
+      color: #3b82f6;
+      margin-bottom: 15px;
+      font-size: 1em;
+    }
+    .trending-item {
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+    .category-badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.75em;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    @media (max-width: 968px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../infinity-portal-main.html" class="back-btn">← Back to Portal</a>
+    <h1>📱 Social Media Platform</h1>
+    <p>Share news and connect with like-minded people across 100+ categories</p>
+    
+    <div class="layout">
+      <div class="sidebar">
+        <h3>📚 Main Categories (100+)</h3>
+        <ul class="category-list">
+          <li class="category-item" onclick="selectCategory('Technology')">💻 Technology</li>
+          <li class="category-item" onclick="selectCategory('Science')">🔬 Science</li>
+          <li class="category-item" onclick="selectCategory('Health')">🏥 Health & Wellness</li>
+          <li class="category-item" onclick="selectCategory('Business')">💼 Business</li>
+          <li class="category-item" onclick="selectCategory('Arts')">🎨 Arts & Culture</li>
+          <li class="category-item" onclick="selectCategory('Sports')">⚽ Sports</li>
+          <li class="category-item" onclick="selectCategory('Education')">📖 Education</li>
+          <li class="category-item" onclick="selectCategory('Travel')">✈️ Travel</li>
+          <li class="category-item" onclick="selectCategory('Food')">🍳 Food & Cooking</li>
+          <li class="category-item" onclick="selectCategory('Music')">🎵 Music</li>
+          <li class="category-item" onclick="selectCategory('Gaming')">🎮 Gaming</li>
+          <li class="category-item" onclick="selectCategory('Fashion')">👗 Fashion</li>
+          <li class="category-item" onclick="selectCategory('Environment')">🌍 Environment</li>
+          <li class="category-item" onclick="selectCategory('Politics')">🏛️ Politics</li>
+          <li class="category-item" onclick="selectCategory('Finance')">💰 Finance</li>
+        </ul>
+        <p style="text-align: center; color: #666; margin-top: 10px; font-size: 0.85em;">
+          + 85 more categories<br>+ 1000s of subcategories
+        </p>
+      </div>
+      
+      <div class="feed">
+        <div class="post-box">
+          <textarea id="postContent" rows="3" placeholder="What's on your mind? Share with your community..."></textarea>
+          <div style="margin-top: 10px;">
+            <select id="postCategory" style="padding: 8px; border-radius: 5px; margin-right: 10px;">
+              <option value="">Select category...</option>
+              <option value="Technology">Technology</option>
+              <option value="Science">Science</option>
+              <option value="Health">Health</option>
+              <option value="Business">Business</option>
+              <option value="Other">Other</option>
+            </select>
+            <button class="btn" onclick="createPost()">Share Post</button>
+          </div>
+        </div>
+        
+        <div id="postsContainer">
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar">JD</div>
+              <div>
+                <strong>John Doe</strong>
+                <span class="category-badge">Technology</span>
+                <div style="font-size: 0.85em; color: #666;">2 hours ago</div>
+              </div>
+            </div>
+            <p>Just discovered an amazing new framework for web development. Anyone else excited about the future of web tech? 🚀</p>
+            <div class="post-actions">
+              <span class="post-action">👍 Like (24)</span>
+              <span class="post-action">💬 Comment (8)</span>
+              <span class="post-action">🔄 Share (3)</span>
+            </div>
+          </div>
+          
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar">SE</div>
+              <div>
+                <strong>Sarah Evans</strong>
+                <span class="category-badge">Science</span>
+                <div style="font-size: 0.85em; color: #666;">5 hours ago</div>
+              </div>
+            </div>
+            <p>New research published today shows promising results in renewable energy! This could be a game-changer. 🌱⚡</p>
+            <div class="post-actions">
+              <span class="post-action">👍 Like (156)</span>
+              <span class="post-action">💬 Comment (42)</span>
+              <span class="post-action">🔄 Share (67)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="trending">
+        <h3>🔥 Trending Topics</h3>
+        <div class="trending-item">
+          <strong>#Innovation2025</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">1.2K posts</div>
+        </div>
+        <div class="trending-item">
+          <strong>#SustainableFuture</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">892 posts</div>
+        </div>
+        <div class="trending-item">
+          <strong>#TechBreakthrough</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">645 posts</div>
+        </div>
+        <div class="trending-item">
+          <strong>#CommunityFirst</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">534 posts</div>
+        </div>
+        
+        <h3 style="margin-top: 20px;">💡 Suggested for You</h3>
+        <div class="trending-item">
+          <strong>AI & Machine Learning</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">Follow this topic</div>
+        </div>
+        <div class="trending-item">
+          <strong>Space Exploration</strong>
+          <div style="color: #666; font-size: 0.85em; margin-top: 5px;">Follow this topic</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function selectCategory(category) {
+      alert(`Filtering posts by: ${category}\n\nThis will show all posts and subcategories within ${category}.`);
+    }
+    
+    function createPost() {
+      const content = document.getElementById('postContent').value.trim();
+      const category = document.getElementById('postCategory').value;
+      
+      if (!content) {
+        alert('Please enter some content for your post');
+        return;
+      }
+      
+      if (!category) {
+        alert('Please select a category');
+        return;
+      }
+      
+      const container = document.getElementById('postsContainer');
+      const post = document.createElement('div');
+      post.className = 'post';
+      
+      const postHeader = document.createElement('div');
+      postHeader.className = 'post-header';
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = 'ME';
+      
+      const headerContent = document.createElement('div');
+      const userName = document.createElement('strong');
+      userName.textContent = 'You';
+      
+      const categoryBadge = document.createElement('span');
+      categoryBadge.className = 'category-badge';
+      categoryBadge.textContent = category;
+      
+      const timestamp = document.createElement('div');
+      timestamp.style.fontSize = '0.85em';
+      timestamp.style.color = '#666';
+      timestamp.textContent = 'Just now';
+      
+      headerContent.appendChild(userName);
+      headerContent.appendChild(categoryBadge);
+      headerContent.appendChild(timestamp);
+      
+      postHeader.appendChild(avatar);
+      postHeader.appendChild(headerContent);
+      
+      const contentP = document.createElement('p');
+      contentP.textContent = content;
+      
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'post-actions';
+      actionsDiv.innerHTML = `
+        <span class="post-action">👍 Like (0)</span>
+        <span class="post-action">💬 Comment (0)</span>
+        <span class="post-action">🔄 Share (0)</span>
+      `;
+      
+      post.appendChild(postHeader);
+      post.appendChild(contentP);
+      post.appendChild(actionsDiv);
+      
+      container.insertBefore(post, container.firstChild);
+      document.getElementById('postContent').value = '';
+      document.getElementById('postCategory').value = '';
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

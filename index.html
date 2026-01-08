@@ -39,8 +39,76 @@ body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity • Rogers AI</title>
+  <title>Infinity Portal</title>
   <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    p {
+      font-size: 1.3em;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    .btn {
+      display: inline-block;
+      padding: 15px 40px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.2em;
+      margin: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    .features {
+      margin-top: 40px;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌌 Welcome to Infinity Portal</h1>
+    <p>Your Gateway to Infinite Possibilities</p>
+    
+    <a href="infinity-portal-main.html" class="btn">🚀 Enter Portal</a>
+    
+    <div class="features">
+      <p>✨ 15+ Integrated Features</p>
+      <p>🌐 Media Hosting | 💬 Communication | 🏛️ Themed Spaces</p>
+      <p>🔧 Specialized Tools | 🚀 Innovation | 🏛️ Government & Civic</p>
+    </div>
+  </div>
+  
+  <script>
+    // Optional: Auto-redirect after 3 seconds
+    // setTimeout(() => {
+    //   window.location.href = 'infinity-portal-main.html';
+    // }, 3000);
     body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
     header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
     .user-info { font-size: 0.9rem; display: flex; gap: 0.5rem; align-items: center; }
