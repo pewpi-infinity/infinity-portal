@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity • Rogers AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Rogers Portal – Infinity</title>
+  
+  <!-- Inline favicon to eliminate 404 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>∞</text></svg>" />
+  
   <style>
     body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
     header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; }
@@ -37,13 +41,421 @@
   <main>
     <div id="messages">
       <div class="msg ai">Hey Kris — Rogers is live. Ask me anything!</div>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --brand-color: #0070ba;
+      --bg: #f9f9f9;
+      --text: #222;
+      --border: #ccc;
+      --user-msg: #d0ebff;
+      --ai-msg: #e9ecef;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    header {
+      background: var(--brand-color);
+      color: white;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .hamburger {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+    
+    .header-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .color-picker-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 2px solid white;
+      cursor: pointer;
+      background: var(--brand-color);
+    }
+    
+    .google-btn {
+      background: white;
+      color: #444;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: none;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: none;
+    }
+    
+    /* Drawer */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+      display: none;
+    }
+    
+    .drawer-overlay.open {
+      display: block;
+    }
+    
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: white;
+      z-index: 999;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    }
+    
+    .drawer.open {
+      left: 0;
+    }
+    
+    .drawer-header {
+      background: var(--brand-color);
+      color: white;
+      padding: 1rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .drawer-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .drawer-item:hover {
+      background: #f0f0f0;
+    }
+    
+    .drawer-item-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* Main content area */
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    #stage {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    #chatContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    #messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .msg {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .msg-content {
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      max-width: 85%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    
+    .msg.user .msg-content {
+      background: var(--user-msg);
+      align-self: flex-end;
+    }
+    
+    .msg.ai .msg-content {
+      background: var(--ai-msg);
+      align-self: flex-start;
+    }
+    
+    .msg-tokens {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 0.25rem;
+      display: flex;
+      gap: 0.5rem;
+      align-self: flex-start;
+    }
+    
+    .msg.user .msg-tokens {
+      align-self: flex-end;
+    }
+    
+    .token-chip {
+      background: #ddd;
+      padding: 0.15rem 0.4rem;
+      border-radius: 10px;
+    }
+    
+    /* Composer area */
+    .composer-wrapper {
+      background: #f0f0f0;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    
+    .attachment-preview {
+      display: none;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    
+    .attachment-preview.show {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .preview-item {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    
+    .composer {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      align-items: flex-end;
+    }
+    
+    .composer-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    #userInput {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      resize: none;
+      max-height: 120px;
+      font-family: inherit;
+    }
+    
+    .composer-btn {
+      background: var(--brand-color);
+      color: white;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .composer-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .composer-btn:not(:disabled):active {
+      transform: scale(0.95);
+    }
+    
+    /* Footer */
+    footer {
+      background: #f0f0f0;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.75rem;
+      color: #666;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    
+    footer strong {
+      color: var(--brand-color);
+    }
+    
+    /* Hidden input for file upload */
+    #fileInput {
+      display: none;
+    }
+    
+    /* Mobile keyboard handling */
+    @media (max-width: 768px) {
+      .composer-wrapper {
+        position: sticky;
+        bottom: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <button class="hamburger" onclick="toggleDrawer()" aria-label="Menu">☰</button>
+      <div class="header-title">🧠 Rogers Portal</div>
     </div>
-  </main>
+    <div class="header-right">
+      <div class="color-picker-btn" onclick="pickColor()" title="Theme color"></div>
+      <button class="google-btn" id="googleBtn" onclick="googleSignIn()">Sign in</button>
+      <img class="user-avatar" id="userAvatar" alt="User" />
+    </div>
+  </header>
+  
+  <!-- Drawer overlay -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+  
+  <!-- Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">Apps</div>
+    <div id="drawerContent">
+      <div class="drawer-item" onclick="loadApp('chat')">
+        <span class="drawer-item-icon">💬</span>
+        <span>Chat</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main content area -->
+  <div class="content-wrapper">
+    <!-- Stage for apps/PDFs -->
+    <iframe id="stage"></iframe>
+    
+    <!-- Chat container -->
+    <div id="chatContainer">
+      <div id="messages">
+        <div class="msg ai">
+          <div class="msg-content">Hey Kris — Rogers is live. Ask me anything!</div>
+        </div>
+      </div>
+      
+      <!-- Composer -->
+      <div class="composer-wrapper">
+        <div class="attachment-preview" id="attachmentPreview"></div>
+        <div class="composer">
+          <button class="composer-btn" onclick="triggerFileSelect()" title="Attach file">📎</button>
+          <button class="composer-btn" id="micBtn" onclick="startVoice()" title="Voice input">🎤</button>
+          <div class="composer-input-wrapper">
+            <textarea id="userInput" placeholder="Type your message..." rows="1"></textarea>
+          </div>
+          <button class="composer-btn" onclick="sendMessage()" title="Send">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
   <footer>
-    <input id="userInput" placeholder="Type your question..." />
-    <button onclick="ask()">Send</button>
+    Powered by <strong>INFINITY</strong>
   </footer>
-
+  
+  <!-- Hidden file input -->
+  <input type="file" id="fileInput" multiple accept="image/*,application/pdf,text/*" onchange="handleFiles(this.files)" />
+  
   <script>
     const msgBox = document.getElementById('messages');
     const input = document.getElementById('userInput');
@@ -92,35 +504,355 @@
     });
 
     function add(role, text){
-      const div = document.createElement('div');
-      div.className = 'msg ' + role;
-      div.textContent = text;
-      msgBox.appendChild(div);
-      msgBox.scrollTop = msgBox.scrollHeight;
-    }
-
-    async function ask(){
-      const q = input.value.trim();
-      if(!q) return;
-      add('user', q);
-      input.value = '';
-      add('ai', 'Thinking...');
-      try {
-        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
-        const data = await res.json();
-        let answer = data.Answer || data.AbstractText || data.Definition || '';
-        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
-          answer = data.RelatedTopics[0].Text;
-        }
-        add('ai', answer || 'No clear result — try rephrasing your question.');
-      } catch(err) {
-        add('ai', '⚠️ Connection issue.');
+    // ========== State ==========
+    let authConfig = { google_client_id: '', allowed_emails: [], chat_endpoint: '' };
+    let currentUser = null;
+    let attachments = [];
+    let recognition = null;
+    
+    // ========== Initialization ==========
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTheme();
+      loadAuthConfig();
+      loadApps();
+      setupInput();
+      setupVoice();
+    });
+    
+    // ========== Theme ==========
+    function loadTheme() {
+      const saved = localStorage.getItem('infinity-theme-color');
+      if (saved) {
+        document.documentElement.style.setProperty('--brand-color', saved);
+        document.querySelector('.color-picker-btn').style.background = saved;
       }
     }
-
-    input.addEventListener('keydown', e => {
-      if(e.key === 'Enter') ask();
-    });
+    
+    function pickColor() {
+      const current = getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim();
+      const newColor = prompt('Enter theme color (e.g., #0070ba):', current);
+      if (newColor && /^#[0-9A-Fa-f]{6}$/.test(newColor)) {
+        document.documentElement.style.setProperty('--brand-color', newColor);
+        document.querySelector('.color-picker-btn').style.background = newColor;
+        localStorage.setItem('infinity-theme-color', newColor);
+      }
+    }
+    
+    // ========== Auth Config ==========
+    async function loadAuthConfig() {
+      try {
+        const res = await fetch('auth.json');
+        if (res.ok) {
+          authConfig = await res.json();
+          if (authConfig.google_client_id) {
+            document.getElementById('googleBtn').style.display = 'block';
+          }
+        }
+      } catch (e) {
+        console.log('No auth.json found, using defaults');
+      }
+    }
+    
+    function googleSignIn() {
+      // Placeholder for Google OAuth - would integrate with Google Identity Services
+      const email = prompt('Demo mode: Enter your email:');
+      if (email) {
+        currentUser = { email, picture: '' };
+        document.getElementById('googleBtn').style.display = 'none';
+        const avatar = document.getElementById('userAvatar');
+        avatar.style.display = 'block';
+        avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(email)}&background=random`;
+      }
+    }
+    
+    // ========== Apps / Drawer ==========
+    async function loadApps() {
+      try {
+        const res = await fetch('apps.json');
+        if (!res.ok) throw new Error('No apps.json');
+        const apps = await res.json();
+        const content = document.getElementById('drawerContent');
+        
+        // Add chat back button
+        content.innerHTML = '<div class="drawer-item" onclick="loadApp(\'chat\')"><span class="drawer-item-icon">💬</span><span>Chat</span></div>';
+        
+        apps.forEach(app => {
+          const icon = app.path.endsWith('.pdf') ? '📄' : '🔗';
+          const item = document.createElement('div');
+          item.className = 'drawer-item';
+          item.innerHTML = `<span class="drawer-item-icon">${icon}</span><span>${app.title}</span>`;
+          item.onclick = () => loadApp(app.path);
+          content.appendChild(item);
+        });
+      } catch (e) {
+        console.log('No apps.json found, showing chat only');
+      }
+    }
+    
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('drawerOverlay');
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+    
+    function loadApp(path) {
+      toggleDrawer();
+      
+      if (path === 'chat') {
+        document.getElementById('stage').style.display = 'none';
+        document.getElementById('chatContainer').style.display = 'flex';
+        return;
+      }
+      
+      document.getElementById('chatContainer').style.display = 'none';
+      const stage = document.getElementById('stage');
+      stage.style.display = 'block';
+      stage.src = path;
+    }
+    
+    // ========== Input handling ==========
+    function setupInput() {
+      const input = document.getElementById('userInput');
+      
+      // Auto-resize
+      input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+      });
+      
+      // Enter to send (Shift+Enter for newline)
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      // Mobile: scroll input into view on focus
+      input.addEventListener('focus', () => {
+        setTimeout(() => {
+          input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      });
+    }
+    
+    // ========== Voice input ==========
+    function setupVoice() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        document.getElementById('micBtn').title = 'Speech recognition not available';
+        return;
+      }
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById('userInput');
+        input.value = (input.value ? input.value + ' ' : '') + transcript;
+        input.dispatchEvent(new Event('input'));
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+      };
+      
+      recognition.onend = () => {
+        document.getElementById('micBtn').textContent = '🎤';
+      };
+    }
+    
+    function startVoice() {
+      if (!recognition) {
+        alert('Speech recognition not available on this device/browser');
+        return;
+      }
+      
+      document.getElementById('micBtn').textContent = '🔴';
+      recognition.start();
+    }
+    
+    // ========== File attachments ==========
+    function triggerFileSelect() {
+      document.getElementById('fileInput').click();
+    }
+    
+    function handleFiles(files) {
+      const preview = document.getElementById('attachmentPreview');
+      
+      Array.from(files).forEach((file, idx) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            attachments.push({ file, dataUrl: e.target.result });
+            showAttachmentPreview();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          attachments.push({ file, dataUrl: null });
+          showAttachmentPreview();
+        }
+      });
+    }
+    
+    function showAttachmentPreview() {
+      const preview = document.getElementById('attachmentPreview');
+      preview.innerHTML = '';
+      
+      attachments.forEach((att, idx) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        
+        if (att.dataUrl) {
+          item.innerHTML = `
+            <img src="${att.dataUrl}" alt="Preview" />
+            <button class="preview-remove" onclick="removeAttachment(${idx})">×</button>
+          `;
+        } else {
+          item.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:1.5rem;">📎</div>
+            <button class="preview-remove" onclick="removeAttachment(${idx})">×</button>
+          `;
+        }
+        
+        preview.appendChild(item);
+      });
+      
+      if (attachments.length > 0) {
+        preview.classList.add('show');
+      } else {
+        preview.classList.remove('show');
+      }
+    }
+    
+    function removeAttachment(idx) {
+      attachments.splice(idx, 1);
+      showAttachmentPreview();
+    }
+    
+    // ========== Token estimation ==========
+    function estimateTokens(text) {
+      // Rough estimate: ~4 chars per token
+      return Math.ceil(text.length / 4);
+    }
+    
+    // ========== Messaging ==========
+    function addMessage(role, text, tokens = null) {
+      const msgBox = document.getElementById('messages');
+      const msg = document.createElement('div');
+      msg.className = 'msg ' + role;
+      
+      let html = `<div class="msg-content">${escapeHtml(text)}</div>`;
+      
+      if (tokens) {
+        html += `<div class="msg-tokens">`;
+        if (tokens.user !== undefined) {
+          html += `<span class="token-chip">User: ${tokens.user}</span>`;
+        }
+        if (tokens.ai !== undefined) {
+          html += `<span class="token-chip">Bot: ${tokens.ai}</span>`;
+        }
+        if (tokens.total !== undefined) {
+          html += `<span class="token-chip">Total: ${tokens.total}</span>`;
+        }
+        html += `</div>`;
+      }
+      
+      msg.innerHTML = html;
+      msgBox.appendChild(msg);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      
+      if (!text && attachments.length === 0) return;
+      
+      const userTokens = estimateTokens(text);
+      
+      // Display user message
+      if (text) {
+        addMessage('user', text, { user: userTokens });
+      }
+      
+      // Display attachments info
+      if (attachments.length > 0) {
+        addMessage('user', `[${attachments.length} file(s) attached]`);
+      }
+      
+      input.value = '';
+      input.style.height = 'auto';
+      attachments = [];
+      showAttachmentPreview();
+      
+      // Show thinking
+      const thinkingMsg = document.createElement('div');
+      thinkingMsg.className = 'msg ai';
+      thinkingMsg.innerHTML = '<div class="msg-content">Thinking...</div>';
+      document.getElementById('messages').appendChild(thinkingMsg);
+      
+      // Call backend or stub
+      let reply = '';
+      let aiTokens = 0;
+      
+      if (authConfig.chat_endpoint) {
+        try {
+          const res = await fetch(authConfig.chat_endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              messages: [{ role: 'user', content: text }]
+            })
+          });
+          const data = await res.json();
+          reply = data.reply || 'No response from backend.';
+        } catch (e) {
+          reply = '⚠️ Backend connection failed.';
+        }
+      } else {
+        // Watson-style stub
+        reply = watsonStub(text);
+      }
+      
+      aiTokens = estimateTokens(reply);
+      const totalTokens = userTokens + aiTokens;
+      
+      // Remove thinking
+      thinkingMsg.remove();
+      
+      // Add AI reply
+      addMessage('ai', reply, { ai: aiTokens, total: totalTokens });
+    }
+    
+    function watsonStub(text) {
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes('hello') || lowerText.includes('hi')) {
+        return "Hello! I'm Rogers, your AI assistant. How can I help you today?";
+      }
+      if (lowerText.includes('infinity')) {
+        return "The INFINITY platform represents boundless possibilities in AI and computation. What would you like to know?";
+      }
+      if (lowerText.includes('help')) {
+        return "I can assist with questions, provide information, and help you navigate the portal. Try asking me anything!";
+      }
+      if (lowerText.includes('what') || lowerText.includes('how') || lowerText.includes('why')) {
+        return `That's an interesting question about "${text}". In the spirit of Watson and Rogers, I'd say: knowledge expands infinitely when we keep asking questions. What specifically would you like to explore?`;
+      }
+      
+      return `I received your message: "${text}". As a Watson-style assistant, I'm here to help. Try connecting a live chat endpoint in auth.json for enhanced responses!`;
+    }
   </script>
 </body>
 </html>
