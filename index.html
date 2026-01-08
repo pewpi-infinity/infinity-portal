@@ -37,6 +37,138 @@ body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
 </style>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinity • Rogers AI</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #222; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+    header { background: #0070ba; color: white; text-align: center; padding: 1rem; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+    .user-info { font-size: 0.9rem; display: flex; gap: 0.5rem; align-items: center; }
+    main { flex: 1; display: flex; flex-direction: column; padding: 1rem; overflow-y: auto; }
+    #messages { flex: 1; border: 1px solid #ccc; background: white; border-radius: 10px; padding: 1rem; overflow-y: auto; }
+    .msg { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 10px; max-width: 80%; word-break: break-word; }
+    .user { background: #d0ebff; align-self: flex-end; }
+    .ai { background: #e9ecef; align-self: flex-start; }
+    footer { display: flex; gap: 0.5rem; padding: 0.75rem; background: #f0f0f0; border-top: 1px solid #ccc; }
+    input { flex: 1; padding: 0.6rem; border-radius: 5px; border: 1px solid #bbb; }
+    button { background: #0070ba; color: white; border: none; border-radius: 5px; padding: 0.6rem 1rem; cursor: pointer; }
+    button:hover { background: #005f9e; }
+    .hidden { display: none; }
+    .auth-container { max-width: 400px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .auth-container h2 { margin-top: 0; color: #0070ba; }
+    .auth-container input { width: 100%; margin-bottom: 1rem; padding: 0.6rem; border: 1px solid #bbb; border-radius: 5px; box-sizing: border-box; }
+    .auth-container button { width: 100%; margin-bottom: 0.5rem; }
+    .auth-link { text-align: center; color: #0070ba; cursor: pointer; text-decoration: underline; }
+    .error { color: red; font-size: 0.9rem; margin-bottom: 1rem; }
+    .logout-btn { background: #d9534f; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+    .logout-btn:hover { background: #c9302c; }
+  </style>
+</head>
+<body>
+  <div id="authView" class="auth-container">
+    <h2 id="authTitle">Login to Infinity Portal</h2>
+    <div id="authError" class="error"></div>
+    <input type="text" id="authUsername" placeholder="Username" />
+    <input type="password" id="authPassword" placeholder="Password" />
+    <button id="authSubmit" onclick="handleAuth()">Login</button>
+    <div class="auth-link" id="authToggle" onclick="toggleAuthMode()">Don't have an account? Sign up</div>
+  </div>
+
+  <div id="appView" class="hidden">
+    <header>
+      <span>�� Rogers AI — Infinity Portal</span>
+      <div class="user-info">
+        <span id="currentUser"></span>
+        <span class="logout-btn" onclick="logout()">Logout</span>
+      </div>
+    </header>
+    <main>
+      <div id="messages">
+        <div class="msg ai">Hey there — Rogers is live. Ask me anything!</div>
+      </div>
+    </main>
+    <footer>
+      <input id="userInput" placeholder="Type your question..." />
+      <button onclick="ask()">Send</button>
+    </footer>
+  </div>
+
+  <script>
+    let isLoginMode = true;
+    let authToken = localStorage.getItem('authToken');
+    let username = localStorage.getItem('username');
+
+    // Check if user is already logged in
+    if (authToken && username) {
+      showApp();
+    }
+
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      document.getElementById('authTitle').textContent = isLoginMode ? 'Login to Infinity Portal' : 'Sign Up for Infinity Portal';
+      document.getElementById('authSubmit').textContent = isLoginMode ? 'Login' : 'Sign Up';
+      document.getElementById('authToggle').textContent = isLoginMode ? "Don't have an account? Sign up" : "Already have an account? Login";
+      document.getElementById('authError').textContent = '';
+    }
+
+    async function handleAuth() {
+      const usernameInput = document.getElementById('authUsername').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const errorDiv = document.getElementById('authError');
+
+      if (!usernameInput || !password) {
+        errorDiv.textContent = 'Username and password are required';
+        return;
+      }
+
+      const endpoint = isLoginMode ? '/api/login' : '/api/register';
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: usernameInput, password: password })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          authToken = data.access_token;
+          username = data.username;
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('username', username);
+          showApp();
+        } else {
+          errorDiv.textContent = data.message || 'Authentication failed';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Connection error. Please try again.';
+      }
+    }
+
+    function showApp() {
+      document.getElementById('authView').classList.add('hidden');
+      document.getElementById('appView').classList.remove('hidden');
+      document.getElementById('currentUser').textContent = username;
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      authToken = null;
+      username = null;
+      location.reload();
+    }
+
+    const msgBox = document.getElementById('messages');
+    const input = document.getElementById('userInput');
+
+    function add(role, text){
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      msgBox.appendChild(div);
+      msgBox.scrollTop = msgBox.scrollHeight;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
@@ -133,6 +265,24 @@ body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
     }
   });
 
+    async function ask(){
+      const q = input.value.trim();
+      if(!q) return;
+      add('user', q);
+      input.value = '';
+      add('ai', 'Thinking...');
+      try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`);
+        const data = await res.json();
+        let answer = data.Answer || data.AbstractText || data.Definition || '';
+        if(!answer && data.RelatedTopics && data.RelatedTopics[0]?.Text) {
+          answer = data.RelatedTopics[0].Text;
+        }
+        msgBox.removeChild(msgBox.lastChild);
+        add('ai', answer || 'No clear result — try rephrasing your question.');
+      } catch(err) {
+        msgBox.removeChild(msgBox.lastChild);
+        add('ai', '⚠️ Connection issue.');
   async function ask(){
     const q=(input.value||"").trim();
     if(!q) return;
@@ -164,6 +314,19 @@ body:not(.pewpi-live)>*:not(#pewpi-gate){filter:blur(6px);pointer-events:none}
     }
   }
 
+    if (input) {
+      input.addEventListener('keydown', e => {
+        if(e.key === 'Enter') ask();
+      });
+    }
+
+    // Handle auth form enter key
+    document.getElementById('authPassword')?.addEventListener('keydown', e => {
+      if(e.key === 'Enter') handleAuth();
+    });
+  </script>
+</body>
+</html>
   send.addEventListener("click", ask);
   input.addEventListener("keydown",(e)=>{ if(e.key==="Enter") ask(); });
 })();
